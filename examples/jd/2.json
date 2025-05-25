@@ -1,0 +1,28 @@
+{
+  "company_name": "Schweitzer Engineering Laboratories (SEL)",
+  "role_title": "(Lead) Software Engineer",
+  "employment_type": null,
+  "about_the_company": "SELs corporate office is located in Eastern Washington where you'll enjoy an unmatched quality of life. Enjoy the smaller town life: country space, freedom from traffic, easy access to recreational activities in nearby mountains, rivers, and forests, as well as great schools and universities.",
+  "job_responsibilities": [
+    "Lead a team, conducting white and black box testing of devices and software for security flaws and vulnerabilities.",
+    "Identify areas of concern and recommendations for an improved cybersecurity stance.",
+    "Will require staying up to date and training others about current security vulnerabilities and mitigation processes.",
+    "Lead the specification, design, implementation, and test of firmwaresoftware systems.",
+    "Understand hardware and software interactions, and collaborate with Hardware Engineers.",
+    "Lead the development of designs and test documentation.",
+    "Mentor Engineers, Associate Engineers, and Technicians."
+  ],
+  "required_hard_skills": [
+    "Object Oriented andor Embedded Programming (C, C++, C#, Python)",
+    "Network Communications (IS andor ICS Protocols)",
+    "Digital Forensics",
+    "Reverse Engineering",
+    "industrial control systems",
+    "information security",
+    "cyber analysisoperations"
+  ],
+  "required_soft_skills": [],
+  "required_language_proficiencies": [],
+  "required_work_authorization": "United States Citizenship is required",
+  "job_location": "Pullman, WA"
+}
