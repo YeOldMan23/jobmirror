@@ -1,0 +1,42 @@
+{
+  "company_name": "Schweitzer Engineering Laboratories (SEL)",
+  "role_title": "Lead Software Engineer",
+  "employment_type": "Full-time",
+  "about_the_company": "Schweitzer Engineering Laboratories (SEL) is a company focused on infrastructure defense, particularly in the power engineering community. They offer competitive pay, superior benefits, and a strong emphasis on employee growth and development.",
+  "job_responsibilities": [
+    "Lead a team in conducting white and black box testing of devices and software for security flaws and vulnerabilities.",
+    "Identify areas of concern and provide recommendations for an improved cybersecurity stance.",
+    "Stay up to date and train others about current security vulnerabilities and mitigation processes.",
+    "Lead the specification, design, implementation, and test of firmware/software systems.",
+    "Understand hardware and software interactions, and collaborate with Hardware Engineers.",
+    "Lead the development of designs and test documentation.",
+    "Mentor Engineers, Associate Engineers, and Technicians."
+  ],
+  "required_hard_skills": [
+    "Object-Oriented Programming (C, C++, C#, Python)",
+    "Embedded Programming",
+    "Network Communications (IS and/or ICS Protocols)",
+    "Digital Forensics",
+    "Reverse Engineering",
+    "Industrial Control Systems",
+    "Information Security",
+    "Cyber Analysis/Operations"
+  ],
+  "required_soft_skills": [
+    "Leadership",
+    "Team Collaboration",
+    "Mentoring",
+    "Communication",
+    "Problem-Solving"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": "B.S. in Electrical Engineering, Computer Science, Cybersecurity, Information Technology, Software Engineering, Information Systems, Computer Engineering, or equivalent.",
+  "required_work_authorization": "United States Citizenship",
+  "job_location": "Pullman, WA",
+  "certifications": [
+    "NICCS Work Role ID: PR-VAM-001",
+    "AN-EXP-001"
+  ]
+}

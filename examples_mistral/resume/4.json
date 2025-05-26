@@ -1,0 +1,106 @@
+{
+  "name": null,
+  "location_preference": null,
+  "work_authorizaton": null,
+  "employment_type_preference": null,
+  "hard_skills": [
+    "Business Analysis",
+    "SDLC",
+    "Project Management",
+    "Programming",
+    "Systems Analysis",
+    "Systems Development",
+    "People Management",
+    "Process Improvement",
+    "Technical Training Development",
+    "HP Quality Center",
+    "Business Intelligence 6.5",
+    "BOXI",
+    "Crystal Reports",
+    "Microsoft Excel",
+    "SQL",
+    "SAS",
+    "Unix SVR 4",
+    "Visual Basic",
+    "C",
+    "DOS",
+    "TSO",
+    "Super Wilber 2001",
+    "ACS",
+    "Windows 95",
+    "Windows 98",
+    "Windows 2000",
+    "Windows NT 4.0",
+    "WordPerfect",
+    "Microsoft Word",
+    "Microsoft PowerPoint",
+    "Microsoft Project",
+    "Microsoft Outlook",
+    "SharePoint",
+    "Remedy 7.5 & 7.6",
+    "Ghost Utility",
+    "PeopleSoft",
+    "Visio",
+    "EDW-Business Objects 6.5 & XI",
+    "NCR@service",
+    "Microstrategy",
+    "Oracle",
+    "OBIEE",
+    "SQL Server 2005 & 2008",
+    "Aqua (SQL) 5.1"
+  ],
+  "soft_skills": [
+    "Communication",
+    "Teamwork",
+    "Leadership",
+    "Problem Solving",
+    "Analytical Skills",
+    "Customer Service"
+  ],
+  "languages": [
+    "English"
+  ],
+  "experience": [
+    {
+      "role": "Business Analyst/Data Analyst",
+      "company": "Tyler Technologies",
+      "date_start": "2014-10-01T00:00:00Z",
+      "date_end": "2015-04-01T00:00:00Z",
+      "role_description": "SDLC for USPS Postal stores software CD installation development, procedures & support. Wrote SQL scripts, created test plans, updated test plans, created defects in HP Quality Center, created Business Object Queries, tested and created EDW queries, created reports in Business Objects, created Deep Dive Analysis reports, collaborated with customers on reporting requirements."
+    },
+    {
+      "role": "Deployment Engineer",
+      "company": "A Place For Mom",
+      "date_start": "2010-01-01T00:00:00Z",
+      "date_end": "2014-01-01T00:00:00Z",
+      "role_description": "Wrote SQL scripts, created test plans, updated test plans, created UAT testing, created defects in HP Quality Center, scheduled deployment for Hospital reporting contract, triage defects in V&V testing cycle, worked with release manager on development and defect, monitored all remedy tickets for Hospital reporting contract, created and updated PowerBuilder reports, updated SQL packages, inserted data into tables, defect lead for CMS account, fixed production reports, worked with BA's on new requirements documentation."
+    },
+    {
+      "role": "Business Analyst",
+      "company": "A Place For Mom",
+      "date_start": "2010-01-01T00:00:00Z",
+      "date_end": "2010-01-01T00:00:00Z",
+      "role_description": "Business Analyst for DOL ICERT system application modules. Analyzed business or scientific problems, gathered information from users, defined work problems, designed computer programs and procedures, developed complete specifications, prepared work diagrams and data flow charts, coordinated tests of the system, recommended computer equipment changes."
+    },
+    {
+      "role": "Business Analyst",
+      "company": "NCR",
+      "date_start": "1996-01-01T00:00:00Z",
+      "date_end": "2009-01-01T00:00:00Z",
+      "role_description": "Moved customer and internal reporting to Business Objects, developed Helpdesk standard reports, used Business Object XI applications, ran EDW reports, Crystal reports, deep dive analysis, created multiple reporting for Helpdesk, converted reporting from GEMS Remedy to EDW-Business Objects, created Crystal reports, initiated project plan for tracking products, acted as USPS Postal Stores Project Manager, developed and tested 3rd party applications, wrote support procedures, setup and implemented training, collaborated on customer requirements, created and developed technical documentation."
+    }
+  ],
+  "education": [
+    {
+      "degree": "AA: Computer Electronics Applied Science & Technical Engineering",
+      "institution": "ITT Technical School",
+      "date_start": null,
+      "date_end": null,
+      "grade": null,
+      "description": "Expected in Youngstown, OH. GPA: Status"
+    }
+  ],
+  "certifications": [
+    "PMP certification (PMI George Washington University)"
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": null,
+  "location_preference": null,
+  "work_authorizaton": null,
+  "employment_type_preference": "Contract",
+  "hard_skills": [
+    "Power Distribution Systems",
+    "NETA",
+    "NFPA 70E",
+    "OHSA electrical standards",
+    "PSPS",
+    "SIS",
+    "SAP",
+    "Legacy Systems",
+    "COMIII Adapters",
+    "D-Space test bench",
+    "Grade Control Displays",
+    "Electronic Technician (ET)",
+    "Creo",
+    "Teamcenter",
+    "XML",
+    "Auto-Cad",
+    "Arc-Flash Studies",
+    "meggers",
+    "DLROs",
+    "digital synchronized timers",
+    "high current and high voltage test sets"
+  ],
+  "soft_skills": [
+    "Excellent communication",
+    "interpersonal skills",
+    "teamwork",
+    "problem-solving",
+    "leadership",
+    "time management",
+    "adaptability"
+  ],
+  "languages": [
+    "English"
+  ],
+  "experience": [
+    {
+      "role": "Facilities Software Coordinator",
+      "company": "Caterpillar",
+      "date_start": "2012-08-01T00:00:00Z",
+      "date_end": null,
+      "role_description": "Responsible for managing software across all products in Decatur IL, Joliet IL, and North Little Rock AR. On-call 24 hours a day to provide support to field reps, assembly workers, and line supervisors around the world including India, Russia, China, and Brazil. Managed multiple software releases concerning CPI projects and controlled software effectivity for machines in the plant and outside of Caterpillar using SIS, SAP, and Legacy Systems."
+    },
+    {
+      "role": "Senior Circuit Breaker Engineer/Production Manager",
+      "company": "NA",
+      "date_start": "2009-12-01T00:00:00Z",
+      "date_end": "2011-11-01T00:00:00Z",
+      "role_description": "Managed production and rebuild of LV and MV circuit breakers. Conducted projects on various job sites involving testing and installation of electrical switchgear. Established lockout/tag-out procedures and implemented Auto-Cad to design electrical and mechanical diagrams."
+    },
+    {
+      "role": "Senior Circuit Breaker Technician",
+      "company": "Electric Power Systems Intl",
+      "date_start": "2007-12-01T00:00:00Z",
+      "date_end": "2009-12-01T00:00:00Z",
+      "role_description": "Met customer demands with promised time of delivery of completed circuit breakers. Conducted training courses concerning safety awareness and use of test equipment. Reconditioned LV and MV circuit breakers to meet the latest standards of power conventional flow."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master of Science",
+      "institution": null,
+      "date_start": null,
+      "date_end": "2014-12-01T00:00:00Z",
+      "grade": null,
+      "description": "Industrial Management"
+    },
+    {
+      "degree": "Bachelor of Science",
+      "institution": "Northern Illinois University",
+      "date_start": null,
+      "date_end": "2006-12-01T00:00:00Z",
+      "grade": 3.3,
+      "description": "Industrial Engineering Management, Electrical Engineering Technology"
+    }
+  ],
+  "certifications": []
+}

@@ -1,0 +1,89 @@
+{
+  "name": null,
+  "location_preference": null,
+  "work_authorizaton": null,
+  "employment_type_preference": "Full-time",
+  "hard_skills": [
+    "Diagnostics and troubleshooting",
+    "OSHA requirements",
+    "Electrical codes familiarity",
+    "Safety awareness",
+    "Power and hand tool operation",
+    "Schematics and blueprints",
+    "Lift up to 20,000 pounds",
+    "Electrical diagnostics",
+    "Finish work",
+    "System installations",
+    "Standard power tool knowledge",
+    "Wiring diagrams and plans",
+    "Out of hours calls",
+    "Safety protocols",
+    "High voltage termination",
+    "Mathematical ability",
+    "Computer savvy",
+    "Project planning"
+  ],
+  "soft_skills": [
+    "Leadership",
+    "Reliability",
+    "Accuracy",
+    "Highly organized",
+    "Proactive",
+    "Punctual",
+    "Team-oriented mentality",
+    "Communication",
+    "Problem-solving"
+  ],
+  "languages": [
+    "English"
+  ],
+  "experience": [
+    {
+      "role": "Electrical Apprentice",
+      "company": "Milestone",
+      "date_start": null,
+      "date_end": null,
+      "role_description": "Review projects to have a six-week look ahead, manage multiple crews, work in team-based environments to accomplish projects, put in new electrical components, fixtures and motors, operate hand and power tools and diagnostic equipment, follow electrical and building codes, keep work areas clean and safe, measure and prepare supplies, maintain organization and safety, review blueprints and electrical schematics, adhere to OSHA regulations, dig trenches, resolve issues with existing systems, utilize knowledge and equipment to test wiring, verify measurements, inspect existing wiring, collaborate with professionals, examine and test electrical systems, assist with electrical installation tasks, listen to directives of senior electrical professionals, set up equipment and configure settings."
+    },
+    {
+      "role": "Electrical Apprentice",
+      "company": "Milestone",
+      "date_start": "2017-06-01T00:00:00Z",
+      "date_end": "2017-12-01T00:00:00Z",
+      "role_description": "Put in new electrical components, fixtures and motors, operate hand and power tools and diagnostic equipment, work in team-based environments, follow electrical and building codes, keep work areas clean and safe, measure and prepare supplies, listen to directives of senior electrical professionals, adhere to OSHA regulations, complete semi-skilled and skilled work, assist with electrical installation tasks, examine and test electrical systems, inspect existing wiring, collaborate with professionals, utilize knowledge and equipment to test wiring, resolve issues with existing systems."
+    },
+    {
+      "role": "Dog Handler",
+      "company": "Trugreen",
+      "date_start": "2014-08-01T00:00:00Z",
+      "date_end": "2017-06-01T00:00:00Z",
+      "role_description": "Develop long-term relationships with clients, care for pets, walk animals, monitor animals during group play sessions, juggle multiple projects and tasks, prioritize and organize tasks, work closely with team members, acclimate new animals to training team, evaluate animals, monitor and document animal health."
+    },
+    {
+      "role": "Lifeguard/Snack Bar Attendant",
+      "company": "Hampton Golf",
+      "date_start": "2013-07-01T00:00:00Z",
+      "date_end": "2016-12-01T00:00:00Z",
+      "role_description": "Take orders from customers, restock condiments and supplies, deliver food and beverage items, minimize spoilage risk, assess inventory, operate cash registers, open and close stand, stock and restock food and equipment, clean and polish counters, greet customers, prepare bills, handle cash and credit card transactions, review food preparation, maintain high standards of customer service, talk pleasantly with customers, serve drinks, store food, wipe down tables."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Journeyman Wireman",
+      "institution": "Electrical Training Alliance of Jacksonville",
+      "date_start": null,
+      "date_end": null,
+      "grade": null,
+      "description": null
+    },
+    {
+      "degree": "High School Diploma",
+      "institution": "Fleming Island High School",
+      "date_start": null,
+      "date_end": null,
+      "grade": null,
+      "description": null
+    }
+  ],
+  "certifications": []
+}

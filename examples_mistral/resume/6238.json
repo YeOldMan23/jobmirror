@@ -1,0 +1,100 @@
+{
+  "name": null,
+  "location_preference": null,
+  "work_authorizaton": null,
+  "employment_type_preference": null,
+  "hard_skills": [
+    "JavaScript",
+    "JSP",
+    "XML",
+    "HTML5",
+    "DHTML",
+    "DOM",
+    "XHTML",
+    "jQuery",
+    "CSS3",
+    "Ajax",
+    "Angular.js",
+    "Node.js",
+    "RESTful",
+    "SOAP",
+    "SQL Server",
+    "T-SQL",
+    "Hadoop",
+    "Hive",
+    "Postgres",
+    "Cassandra",
+    "Mongo",
+    "Mocha",
+    "Jasmine",
+    "Selenium",
+    "TFS",
+    "Bitbucket",
+    "GitHub",
+    "C",
+    "Java",
+    "Python",
+    "Windows",
+    "MySQL",
+    "Java Servlets",
+    "Bootstrap",
+    "VB Scripting",
+    "Powershell",
+    "Perl"
+  ],
+  "soft_skills": [
+    "Highly motivated self-starter",
+    "Hard worker",
+    "Team player",
+    "Research orientated",
+    "Flexible",
+    "Get-it-done personality"
+  ],
+  "languages": [
+    "English"
+  ],
+  "experience": [
+    {
+      "role": "Software Engineer Intern",
+      "company": "Viasat Inc.",
+      "date_start": null,
+      "date_end": null,
+      "role_description": "Designed Frontend with VB Scripting. Developed Single page application using the Router concept. Used CISA, PYTHON, CISM. Used Powershell, Perl for fast-going application. Improved the performance of the application by replacing the existing process and controls with the most suitable process flow, optimized queries and code snippets. Introduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master Of Science: Information Technology",
+      "institution": null,
+      "date_start": null,
+      "date_end": null,
+      "grade": null,
+      "description": "Expected in Hyderabad, GPA: Status-Information Technology"
+    },
+    {
+      "degree": "B.Tech: Electrical and Electronics Engineering",
+      "institution": null,
+      "date_start": null,
+      "date_end": "1970-01-01T00:33:36Z",
+      "grade": 70.4,
+      "description": "Kakinada with 70.40% marks"
+    },
+    {
+      "degree": "Diploma: Electrical and Electronics Engineering",
+      "institution": "SBTET Andhra Pradesh",
+      "date_start": null,
+      "date_end": "1970-01-01T00:33:33Z",
+      "grade": 69.49,
+      "description": "with 69.49% marks"
+    },
+    {
+      "degree": "S.S.C.",
+      "institution": "State Board of Andhra Pradesh",
+      "date_start": null,
+      "date_end": "1970-01-01T00:33:30Z",
+      "grade": 74.0,
+      "description": "with 74.00% marks"
+    }
+  ],
+  "certifications": []
+}

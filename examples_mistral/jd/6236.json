@@ -1,0 +1,32 @@
+{
+  "company_name": "Cerebral Technologies, Inc (D.B.A CBLSolutions)",
+  "role_title": "Data Engineer (Oracle and DataStage)",
+  "employment_type": "Contract",
+  "about_the_company": null,
+  "job_responsibilities": [
+    "Data engineering experience",
+    "Expert level experience with SQL",
+    "Experience with the cloud (AWS, Azure, and/or Google Cloud Platform)",
+    "Experience in cloud-based data warehouses (Snowflake, Google BigQuery, Amazon Redshift, Azure Synapse Analytics)",
+    "Experience with cloud-based ETL/ELT tools (Matillion, Glue, Data Factory) and data modelling",
+    "Experience with version control systems (Git, SVN)",
+    "Understanding of and willingness to embrace Agile Principles"
+  ],
+  "required_hard_skills": [
+    "Oracle",
+    "Datastage",
+    "UNIX",
+    "PLSQL",
+    "SQL"
+  ],
+  "required_soft_skills": [
+    "Willingness to embrace Agile Principles"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": null,
+  "required_work_authorization": null,
+  "job_location": "Remote",
+  "certifications": []
+}

@@ -1,0 +1,41 @@
+{
+  "company_name": "Capgemini",
+  "role_title": "Software Engineer",
+  "employment_type": "Full-time",
+  "about_the_company": "Capgemini is a global leader in consulting, technology services, and digital transformation. Capgemini Engineering is a world leader in engineering and R&D services, combining broad industry knowledge and cutting-edge technologies to support the convergence of the physical and digital worlds.",
+  "job_responsibilities": [
+    "Proactively create and review team contributions",
+    "Participate as a 'code owner' and partner with collaborators in code-reviews",
+    "Automate unit, integration, and end-to-end testing solutions and incorporate them with the testing lifecycle",
+    "Be able to run code in pre-production and ensure quality",
+    "Deploy solutions across environments and platforms, including production releases",
+    "Provide operational support of code and all code within the domain",
+    "Teardown old solutions, products, and resources when no longer needed",
+    "Resolve issues within the team and prevent problems from occurring",
+    "Be proactive and identify, resolve, mitigate, and prevent technical issues, risks, and provide solutions"
+  ],
+  "required_hard_skills": [
+    "C#",
+    ".NET Core",
+    ".NET",
+    "CI/CD tools (Source Control, Build, Deploy)",
+    "GitHub",
+    "Jenkins",
+    "Spinnaker",
+    "DevOps deployments"
+  ],
+  "required_soft_skills": [
+    "Team collaboration",
+    "Problem-solving",
+    "Proactiveness",
+    "Attention to detail",
+    "Communication"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": "Computer Science degree or equivalent experience",
+  "required_work_authorization": null,
+  "job_location": null,
+  "certifications": []
+}

@@ -1,0 +1,40 @@
+{
+  "company_name": null,
+  "role_title": "DHT - Front End Software Engineer",
+  "employment_type": "Full-time",
+  "about_the_company": null,
+  "job_responsibilities": [
+    "Build sophisticated and elegant user interfaces for web that are responsive and can be ported to mobile solutions easily",
+    "Collaborate with user experience and visual designers, developers and product owners to implement scalable and interactive applications",
+    "Keep abreast of novel technical concepts and markets",
+    "Provide technical leadership and documentation to developers and stakeholders",
+    "Apply usability procedures and principles as defined at the project or Product Line level or through customer input",
+    "Build prototypes, products and systems that meet the project quality standards and requirements",
+    "Contribute to and support re-use through common components that are well documented and tested",
+    "Interact and engage with customers, users, Product Managers and Technical Architects to understand needs and increase the positive impact on users experience"
+  ],
+  "required_hard_skills": [
+    "Frontend development for Cloud applications",
+    "Angular",
+    "React",
+    "StencilJS",
+    "Three.js",
+    "WebComponents",
+    "Progressive Web Apps (PWAs)",
+    "Unity development",
+    "C#"
+  ],
+  "required_soft_skills": [
+    "Collaboration",
+    "Technical leadership",
+    "Documentation",
+    "Engagement with stakeholders"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": "Bachelor, Masters or PhD in Computer Science, Web Design, User Experience, Interaction Design, Visual Design",
+  "required_work_authorization": null,
+  "job_location": "Menlo Park, CA 94025",
+  "certifications": []
+}
