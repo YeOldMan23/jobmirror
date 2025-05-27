@@ -41,13 +41,16 @@
     "WebAPI",
     "Azure Service Bus",
     "Azure App Services",
-    "WebsitesVirtual Machines"
+    "Websites",
+    "Virtual Machines",
+    "Full-Stack software engineering",
+    "Angular"
   ],
   "required_soft_skills": [
-    "Strong technical and problem-solving skills.",
-    "Ability to work effectively in a small team.",
-    "Excellent written and oral communication skills.",
-    "Agile development experience."
+    "Strong technical and problem-solving skills",
+    "Ability to work effectively in a small team",
+    "Excellent written and oral communication skills",
+    "Agile development experience"
   ],
   "required_language_proficiencies": [],
   "required_work_authorization": null,

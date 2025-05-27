@@ -9,7 +9,7 @@
     "ASP.NET",
     "ASP.NET MVC",
     "ASP.NET Web API",
-    "EF",
+    "Entity Framework",
     "ADO.NET",
     "T-SQL",
     ".NET Framework",
@@ -63,19 +63,18 @@
     "DIRKS",
     "ISAD (G)",
     "ISO 15489",
-    "ADO",
-    "API",
-    "Drupal"
+    "Drupal",
+    "Lucene",
+    "LESS CSS",
+    "XML-RPC",
+    "JasperReports"
   ],
   "soft_skills": [
-    "Professional",
-    "creative",
-    "responsible",
-    "analytical skills",
-    "Fast learner",
-    "focused",
-    "problem solver",
-    "Team Player"
+    "Analytical Skills",
+    "Problem Solving",
+    "Team Player",
+    "Communication",
+    "Training"
   ],
   "languages": [
     "English",
@@ -121,5 +120,6 @@
       "grade": null,
       "description": null
     }
-  ]
+  ],
+  "certifications": []
 }

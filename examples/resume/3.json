@@ -5,9 +5,9 @@
   "employment_type_preference": null,
   "hard_skills": [
     "Electrical Systems",
-    "Controls",
+    "Electrical Controls",
     "2500KW Generators",
-    "Med Voltage Transformers",
+    "Medium Voltage Transformers",
     "Power Pods",
     "Switch Gear",
     "Circuit Breakers",
@@ -22,26 +22,17 @@
     "Electrical meters",
     "Solar Inverters",
     "Nextrackers",
-    "Start-Up",
-    "Commissioning",
     "MS Excel",
     "MS Word",
     "Blue Beam Software",
     "BIM Coordination",
     "BIM 360 Glue",
-    "Photovoltaic",
-    "Testing"
+    "Lutron Lighting Control",
+    "Medium Voltage Equipment"
   ],
   "soft_skills": [
-    "Strong Communication",
-    "Strong Analytical skills",
-    "Great Organizational Skills",
-    "Detail-Oriented",
-    "Comprehensive record keeping",
-    "Data Upload",
-    "Photo Upload",
     "Communication",
-    "Analytical skills",
+    "Analytical Skills",
     "Organizational Skills",
     "Detail-Oriented"
   ],
@@ -93,6 +84,18 @@
       "date_end": "2001-01-01T00:00:00",
       "grade": null,
       "description": "Emphasis in Cinematography4 years Accredited towards Degree"
+    },
+    {
+      "degree": null,
+      "institution": null,
+      "date_start": null,
+      "date_end": null,
+      "grade": null,
+      "description": null
     }
+  ],
+  "certifications": [
+    "OSHA-30 Certified",
+    "Confined Space Experience"
   ]
 }

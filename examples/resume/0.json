@@ -1,6 +1,6 @@
 {
   "name": null,
-  "location_preference": null,
+  "location_preference": "Lawrenceville, GA",
   "work_authorizaton": null,
   "employment_type_preference": null,
   "hard_skills": [
@@ -8,7 +8,6 @@
     "Sales",
     "Inventory",
     "Payroll",
-    "The Accounting",
     "Reconciliations",
     "Bookkeeper",
     "Audits",
@@ -25,13 +24,10 @@
     "Government Contracts",
     "Logistics",
     "Maintenance",
-    "Million",
     "Quality Assurance",
-    "Receptionist",
     "Retail Sales",
-    "Sales And",
     "Shipping",
-    "Usda",
+    "USDA",
     "Accounts Payable",
     "Solutions",
     "Staffing",
@@ -44,19 +40,16 @@
     "Software Training",
     "Training",
     "Accountant",
-    "The Accounts",
     "Accounts Receivable",
     "Credit",
     "Billing",
-    "Csi",
+    "CSI",
     "Excel",
-    "Ms Excel",
+    "MS Excel",
     "Networking",
-    "All Sales",
-    "Basis",
     "Cash Management",
     "Forecasting",
-    "Gl",
+    "GL",
     "Telephone",
     "Adjustments",
     "Audit",
@@ -65,11 +58,12 @@
     "Monthly Sales",
     "Sales Tax",
     "Annuities",
-    "Cpa",
-    "Life Insurance",
+    "CPA",
     "Microsoft Office",
-    "Ms Office",
-    "Purchase Orders"
+    "Purchase Orders",
+    "On-Base",
+    "AX",
+    "Avantis"
   ],
   "soft_skills": [
     "Public Speaking",
@@ -77,7 +71,8 @@
     "Team Building",
     "Project Management",
     "Procedure writing",
-    "Staff Supervision and Management",
+    "Staff Supervision",
+    "Management",
     "Ability to interface with professionals on all levels"
   ],
   "languages": [],
@@ -141,28 +136,31 @@
   ],
   "education": [
     {
-      "degree": "Master of Arts:Christian Education",
+      "degree": "Master of Arts: Christian Education",
       "institution": "Dallas Theological Seminary",
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "Status-Master of Arts in Christian Education - Dallas Theological Seminary, Dallas, TX"
+      "description": null
     },
     {
-      "degree": "Bachelor of Arts:Economics",
+      "degree": "Bachelor of Arts: Economics",
       "institution": "Marshall University",
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "Status-Bachelor of Arts in Economics - Marshall University, Huntington, WV"
+      "description": null
     },
     {
-      "degree": "Associates of Applied Science:Accounting",
+      "degree": "Associates of Applied Science: Accounting",
       "institution": "Hocking Technical College",
       "date_start": null,
       "date_end": null,
-      "grade": null,
-      "description": "Status-Associates of Applied Science in Accounting - Hocking Technical College, Nelsonville, OH Maintained a 4.0 GPA while completing 12 hours of upper level accounting courses."
+      "grade": 4.0,
+      "description": "Maintained a 4.0 GPA while completing 12 hours of upper level accounting courses."
     }
+  ],
+  "certifications": [
+    "Life Insurance License"
   ]
 }

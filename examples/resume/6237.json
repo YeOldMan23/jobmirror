@@ -22,8 +22,7 @@
     "Layout",
     "Virtuoso",
     "Spectre",
-    "Synopsys",
-    "DC Compiler",
+    "Synopsys DC Compiler",
     "Modelsim",
     "Questasim",
     "TFS",
@@ -33,27 +32,26 @@
     "ASIC",
     "controller",
     "database",
-    "Electronics",
     "Embedded Systems",
+    "Electronics",
     "Functional",
     "logic",
     "Microprocessor",
     "Operating Systems",
     "Programming",
+    "SDLC",
     "Scripting",
     "Simulation",
     "System Design"
   ],
   "soft_skills": [
-    "clients",
-    "Customer Satisfaction",
+    "communication",
+    "teamwork",
+    "leadership",
     "customer support",
-    "delivery",
-    "ergonomics",
     "managing",
-    "office",
-    "Safety",
-    "SDLC"
+    "ergonomics",
+    "customer satisfaction"
   ],
   "languages": [],
   "experience": [
@@ -77,7 +75,7 @@
       "degree": "Masters:Electrical & Computer Engineering",
       "institution": "PORTLAND STATE UNIVERSITY",
       "date_start": null,
-      "date_end": "2016-10-01T00:00:00",
+      "date_end": "2016-11-01T00:00:00",
       "grade": 4.0,
       "description": "Digital IC and Design(ECE 525) Ahsan\n*ASIC Design Modelling & Synthesis (ECE581) Xiaoyu Song \n*Verilog Workshop (ECE 510 )Roy Kravitz.:,Expected in--,GPA:Status-Microprocessor System Design (ECE585) Mark Faust \n*Embedded Systems Design with FPGAs (ECE544) Hammerstrom\n*Pre-silicon Functional Verification by Prof. Schubert:"
     },
@@ -97,5 +95,6 @@
       "grade": 0.8412,
       "description": "Core Subjects: Electronic components and devices Programming in C Digital techniques and microprocessor Micro-controllers Digital communication Embedded systems"
     }
-  ]
+  ],
+  "certifications": []
 }
