@@ -20,7 +20,19 @@ def extract_authorization(jd_json : dict):
 
     return []
 
+def extract_hard_skills_jd(jd_json : dict) -> list:
+    """
+    Extract the required job descriptions from the job descripton
+    """
+    hard_skills = jd_json['required_hard_skills']
+
+    for idx in range(len(hard_skills)):
+        hard_skills[idx] = hard_skills[idx].lower()
+
+    return hard_skills
+
 def extract_required_education(jd_json : dict):
     """
-    Extract the required education from the JD
+    Extract the required education from the from the JD
     """
+    pass

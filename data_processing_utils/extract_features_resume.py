@@ -43,3 +43,14 @@ def extract_language(resume_json : dict) -> list:
         languages.append('english')
 
     return languages
+
+def extract_hard_skills_resume(resume_json : dict) -> list:
+    """
+    Extract the required job descriptions from the resume
+    """
+    hard_skills = resume_json['hard_skills']
+
+    for idx in range(len(hard_skills)):
+        hard_skills[idx] = hard_skills[idx].lower()
+
+    return hard_skills
