@@ -11,6 +11,7 @@ import torch
 # BERT based comparison
 from sentence_transformers import SentenceTransformer, util
 
+# TODO Try JobBERT
 embedding_model = SentenceTransformer("BAAI/bge-large-en-v1.5")
 
 def get_hard_skill_match_score(jd_json : dict, resume_json : dict) -> float:
