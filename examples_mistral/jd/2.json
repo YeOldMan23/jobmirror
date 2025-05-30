@@ -1,12 +1,14 @@
 {
   "company_name": "Schweitzer Engineering Laboratories (SEL)",
   "role_title": "Lead Software Engineer",
+  "application_deadline": null,
+  "date_posted": null,
   "employment_type": "Full-time",
-  "about_the_company": "Schweitzer Engineering Laboratories (SEL) is a company focused on infrastructure defense and cybersecurity in the power engineering community. They offer competitive pay, superior benefits, and a strong emphasis on employee growth and development.",
+  "about_the_company": "Schweitzer Engineering Laboratories (SEL) is a company focused on infrastructure defense, particularly in the power engineering community. They offer competitive pay, superior benefits, and a strong emphasis on employee growth and development.",
   "job_responsibilities": [
     "Lead a team in conducting white and black box testing of devices and software for security flaws and vulnerabilities.",
     "Identify areas of concern and provide recommendations for improved cybersecurity.",
-    "Stay up to date and train others about current security vulnerabilities and mitigation processes.",
+    "Stay up to date and train others on current security vulnerabilities and mitigation processes.",
     "Lead the specification, design, implementation, and testing of firmware/software systems.",
     "Understand hardware and software interactions and collaborate with Hardware Engineers.",
     "Lead the development of designs and test documentation.",
@@ -31,8 +33,9 @@
   "required_soft_skills": [
     "Leadership",
     "Teamwork",
+    "Mentoring",
     "Communication",
-    "Mentoring"
+    "Collaboration"
   ],
   "required_language_proficiencies": [
     "English"

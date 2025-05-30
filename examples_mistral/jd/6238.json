@@ -1,6 +1,8 @@
 {
   "company_name": "LHH Recruitment Solutions",
   "role_title": "Software Engineer V",
+  "application_deadline": null,
+  "date_posted": null,
   "employment_type": "Full-time",
   "about_the_company": "A global people analytics and consulting firm focused on improving employee work experiences and driving better business results.",
   "job_responsibilities": [
@@ -46,8 +48,8 @@
   "required_soft_skills": [
     "Communication",
     "Teamwork",
-    "Leadership",
     "Problem-solving",
+    "Leadership",
     "Mentoring"
   ],
   "required_language_proficiencies": [

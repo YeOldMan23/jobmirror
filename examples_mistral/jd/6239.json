@@ -1,20 +1,22 @@
 {
-  "company_name": "Medical Device Company",
+  "company_name": "Growing Medical Device Company",
   "role_title": "Senior Digital Electronic Engineer",
+  "application_deadline": null,
+  "date_posted": null,
   "employment_type": "Full-time",
   "about_the_company": "A growing Medical Device company located in Parsippany, NJ.",
   "job_responsibilities": [
     "Implementing embedded controllers using Microcontrollers for various image capture systems",
     "Developing firmware utilizing C programming and Assembler",
     "Working with capture schematics, PCB layout, routing, and tools like PADs",
-    "Collaborating with the manufacturing team to ensure thorough documentation and production of products",
-    "Providing layout guidance for PCB designers",
-    "Using test tools for signal integrity and EMC"
+    "Collaborating with the manufacturing team to ensure thorough documentation and production of products"
   ],
   "required_hard_skills": [
     "Digital circuit design",
     "Schematics",
     "Microprocessors",
+    "DX Designer",
+    "Altium",
     "C programming",
     "Xilinx",
     "Altera",
@@ -25,22 +27,21 @@
     "TM4C",
     "NXP IMX family",
     "High-speed design tools",
-    "PCB design",
-    "PADs",
-    "Code Composer Studio",
-    "ARM microcontrollers",
-    "Embedded controllers"
+    "PCB layout",
+    "Signal integrity testing",
+    "EMC testing",
+    "Code Composer Studio (CCS)"
   ],
   "required_soft_skills": [
     "Teamwork",
-    "Communication",
-    "Documentation"
+    "Documentation",
+    "Communication"
   ],
   "required_language_proficiencies": [
     "English"
   ],
   "required_education": "Bachelor's degree in Electrical or Electronics Engineering (or similar)",
   "required_work_authorization": null,
-  "job_location": "Parsippany, NJ",
+  "job_location": "Parsippany, NJ (Onsite 5 days a week)",
   "certifications": []
 }

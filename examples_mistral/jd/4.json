@@ -1,26 +1,26 @@
 {
   "company_name": "Capgemini",
   "role_title": "Software Engineer",
+  "application_deadline": null,
+  "date_posted": null,
   "employment_type": "Full-time",
-  "about_the_company": "Capgemini is a global leader in engineering and R&D services, combining broad industry knowledge and cutting-edge technologies in digital and software. It supports the convergence of the physical and digital worlds and helps clients accelerate their journey towards Intelligent Industry. Capgemini Engineering has over 55,000 team members in more than 30 countries across various sectors.",
+  "about_the_company": "Capgemini is a global leader in engineering and R&D services, combining broad industry knowledge and cutting-edge technologies to support the convergence of the physical and digital worlds. It is part of the Capgemini Group, which has over 360,000 team members in more than 50 countries.",
   "job_responsibilities": [
-    "Design, architect, and write documentation for entire systems",
-    "Code entire software solutions",
-    "Identify and fix issues within their area of expertise",
     "Proactively create and review team contributions",
-    "Participate as a code owner and partner with collaborators in code reviews",
-    "Automate unit, integration, and end-to-end testing solutions",
+    "Participate as a 'code owner' and partner with collaborators in code-reviews",
+    "Automate unit, integration, and end-to-end testing solutions and incorporate them with the testing lifecycle",
+    "Run code in pre-production and ensure quality",
     "Deploy solutions across environments and platforms, including production releases",
-    "Provide operational support of code and all code within their domain",
+    "Provide operational support of code and all code within the domain",
     "Teardown old solutions, products, and resources when no longer needed",
     "Resolve issues within the team and prevent problems from occurring",
-    "Be proactive and identify, resolve, mitigate, and prevent technical issues and risks"
+    "Be proactive and identify, resolve, mitigate, and prevent technical issues, risks, and provide solutions"
   ],
   "required_hard_skills": [
     "C#",
     ".NET Core",
     ".NET",
-    "CICD tools",
+    "CI/CD tools",
     "Source Control",
     "Build",
     "Deploy",
@@ -31,10 +31,9 @@
   ],
   "required_soft_skills": [
     "Teamwork",
-    "Communication",
     "Problem-solving",
     "Proactiveness",
-    "Risk management"
+    "Communication"
   ],
   "required_language_proficiencies": [
     "English"

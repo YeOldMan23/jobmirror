@@ -14,28 +14,29 @@
     "Legacy Systems",
     "COMIII Adapters",
     "D-Space test bench",
+    "24V power supplies",
     "Grade Control Displays",
     "Electronic Technician (ET)",
     "Creo",
     "Teamcenter",
     "XML",
+    "Auto-Cad",
     "EDS",
     "MCS",
-    "Auto-Cad",
+    "Arc-Flash Studies",
     "meggers",
     "DLROs",
     "digital synchronized timers",
-    "high current and high voltage test sets",
-    "Cutler-Hammer trip units"
+    "high current and high voltage test sets"
   ],
   "soft_skills": [
     "communication",
     "interpersonal skills",
     "teamwork",
-    "problem-solving",
-    "leadership",
-    "time management",
-    "customer service"
+    "integrity",
+    "excellence",
+    "commitment",
+    "problem-solving"
   ],
   "languages": [
     "English"
@@ -46,21 +47,21 @@
       "company": "Caterpillar",
       "date_start": "2012-08-01T00:00:00",
       "date_end": null,
-      "role_description": "Managed software across all products in Decatur IL, Joliet IL, and North Little Rock AR. Provided 24-hour support to field reps, assembly workers, and line supervisors worldwide. Traveled to various locations including Russia, Mossville IL, East Peoria IL, and North Little Rock AR. Managed multiple software releases concerning CPI projects and developed Tier IV Final standards and procedures for BOM processing, flashing software, and documenting engine with engine-aftertreatment information."
+      "role_description": "Managed software across all products in Decatur IL, Joliet IL, and North Little Rock AR. Provided 24-hour support to field reps, assembly workers, and line supervisors worldwide. Traveled to various locations including Russia, Mossville IL, East Peoria IL, and North Little Rock AR. Managed multiple software releases concerning CPI projects and developed Tier IV Final standards and procedures for BOM processing and software documentation."
     },
     {
       "role": "Senior Circuit Breaker Engineer/Production Manager",
-      "company": null,
+      "company": "NA",
       "date_start": "2009-12-01T00:00:00",
       "date_end": "2011-11-01T00:00:00",
-      "role_description": "Managed production and rebuild of LV and MV circuit breakers. Conducted projects on various job sites involving testing and installation of electrical switchgear. Established lockout/tag-out procedures and implemented Auto-Cad to design electrical and mechanical diagrams."
+      "role_description": "Managed production and rebuild of LV and MV circuit breakers. Conducted projects involving testing and installation of electrical switchgear. Established lockout/tag-out procedures and implemented Auto-Cad for designing electrical and mechanical diagrams."
     },
     {
       "role": "Senior Circuit Breaker Technician",
       "company": "Electric Power Systems Intl",
       "date_start": "2007-12-01T00:00:00",
       "date_end": "2009-12-01T00:00:00",
-      "role_description": "Conducted training courses concerning safety awareness, use of test equipment, and machinery. Reconditioned LV and MV circuit breakers to meet the latest standards of power conventional flow. Tested circuit breakers using various test equipment."
+      "role_description": "Conducted training courses concerning safety awareness and use of test equipment. Reconditioned LV and MV circuit breakers and installed retrofit kits. Tested circuit breakers using various test equipment."
     }
   ],
   "education": [

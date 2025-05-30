@@ -1,26 +1,29 @@
 {
   "company_name": "Net2Source Inc.",
   "role_title": "Basel Business Analyst",
+  "application_deadline": null,
+  "date_posted": null,
   "employment_type": "Contract",
-  "about_the_company": "Net2Source Inc. is an award-winning total workforce solutions company recognized for accelerated growth with over 5500+ employees globally and operations in 32 countries. They provide staffing solutions and act as career coaches to consultants.",
+  "about_the_company": "Net2Source Inc. is an award-winning total workforce solutions company recognized for its accelerated growth with over 5500+ employees globally and operations in 32 countries. They provide staffing solutions and act as career coaches to their consultants.",
   "job_responsibilities": [
     "Gathering business requirements and developing functional specifications",
     "Defining test cases and providing user training and support",
-    "Working on Basel-related projects in credit risks",
-    "Defining and implementing technology solutions for financial institutions",
-    "Analyzing datasets using SQL"
+    "Implementing technology solutions for major financial institutions",
+    "Analyzing datasets using SQL and relational databases",
+    "Working on Basel-related projects in credit risks"
   ],
   "required_hard_skills": [
     "MS Excel",
     "SQL",
-    "Relational Databases",
-    "RDMS"
+    "Relational Databases (RDBMS)",
+    "Business Analysis",
+    "System Development Lifecycle Methodologies"
   ],
   "required_soft_skills": [
-    "Solution-oriented",
-    "Detail-focused",
-    "Strong analytical skills",
-    "Organization skills"
+    "Analytical skills",
+    "Organizational skills",
+    "Solution-oriented mindset",
+    "Detail-focused"
   ],
   "required_language_proficiencies": [
     "English"
