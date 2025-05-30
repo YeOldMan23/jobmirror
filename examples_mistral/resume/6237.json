@@ -23,7 +23,7 @@
     "Spectre",
     "DC Compiler",
     "Modelsim",
-    "Questasim",
+    "QuestaSim",
     "TFS",
     "Microsoft SQL Server",
     "Visual Studio",
@@ -32,23 +32,17 @@
     "Microprocessor",
     "Agile",
     "SDLC",
-    "System Design",
-    "Simulation",
-    "Digital IC Design",
-    "FPGAs"
+    "FPGA"
   ],
   "soft_skills": [
-    "Learning attitude",
-    "Teamwork",
-    "Leadership",
-    "Communication",
-    "Customer Satisfaction",
-    "Managing",
-    "Training",
-    "Client Interaction",
-    "Problem Solving",
-    "Ergonomics",
-    "Safety"
+    "teamwork",
+    "leadership",
+    "communication",
+    "customer support",
+    "training",
+    "managing",
+    "ergonomics",
+    "safety"
   ],
   "languages": [
     "English"
@@ -71,8 +65,8 @@
   ],
   "education": [
     {
-      "degree": "Masters",
-      "institution": "PORTLAND STATE UNIVERSITY",
+      "degree": "Master of Science",
+      "institution": "Portland State University",
       "date_start": null,
       "date_end": null,
       "grade": 4.0,
@@ -88,11 +82,11 @@
     },
     {
       "degree": "Diploma",
-      "institution": "MAHARASHTRA STATE BOARD OF TECHNICAL EDUCATION",
+      "institution": "Maharashtra State Board of Technical Education",
       "date_start": null,
       "date_end": "2009-07-01T00:00:00",
       "grade": 84.12,
-      "description": "Electronics & communications"
+      "description": "Electronics & Communications"
     }
   ],
   "certifications": []

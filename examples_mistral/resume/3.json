@@ -23,7 +23,6 @@
     "Start-Up and Commissioning",
     "MS Excel",
     "MS Word",
-    "Ipad fluency",
     "Blue Beam Software",
     "BIM Coordination",
     "BIM 360 Glue"
@@ -33,9 +32,7 @@
     "Strong Analytical skills",
     "Great Organizational Skills",
     "Detail-Oriented",
-    "Comprehensive record keeping",
-    "Multitasking",
-    "Safety conscious"
+    "Comprehensive record keeping"
   ],
   "languages": [
     "English"
@@ -46,7 +43,7 @@
       "company": "Nvent",
       "date_start": "2016-01-01T00:00:00",
       "date_end": "2017-06-01T00:00:00",
-      "role_description": "Complete installation of a 9MW, 4MW & 2MW electrical system which included the generator yard, all its components on a Cyrus One Data Hall build out by identifying, planning and supervising with robust strategies. Directed and supervised 45 electricians on the installation of Husky Cable Tray, 1000 kcmil, 2500KVA Medium Voltage Transformers and 2500KW Generators. On time and under budget."
+      "role_description": "Complete installation of a 9MW, 4MW & 2MW electrical system which included the generator yard, all its components on a Cyrus One Data Hall build out by identifying, planning and supervising with robust strategies. Directed and supervised 45 electricians on the installation of Husky Cable Tray, 1000 kcmil, 2500KVA Medium Voltage Transformers and 2500KW Generators. Collaborated with a diverse team of mechanical and electrical engineers to ensure the proper installation of feeders & conduit routing inside Commercial Chillers."
     },
     {
       "role": "Quality Control Inspector/Testing",
@@ -60,25 +57,33 @@
       "company": "Delta Diversified Enterprises Inc",
       "date_start": "2004-01-01T00:00:00",
       "date_end": "2015-07-01T00:00:00",
-      "role_description": "Successfully planned the layout and installation of electrical systems and components on over 25 commercial and industrial base build projects by identifying, planning and supervising with robust strategies. Led a team of 25 workers for the daily execution of coordinated work activities in a manner that is consistent with OSHA Safety Standards."
+      "role_description": "Successfully planned the layout and installation of electrical systems and components on over 25 commercial and industrial base build projects. Led a team of 25 workers for the daily execution of coordinated work activities in a manner that is consistent with OSHA Safety Standards."
     }
   ],
   "education": [
     {
-      "degree": "Associate of Applied Science",
+      "degree": "Associate of Applied Science: Electrical",
       "institution": "Gateway Community College",
       "date_start": null,
-      "date_end": null,
+      "date_end": "2010-01-01T00:00:00",
       "grade": 4.0,
-      "description": "Electrical. Outstanding Academic Achievement Award. 4 year Apprenticeship Program Accredited thru the United States Department of Labor."
+      "description": "Outstanding Academic Achievement Award"
     },
     {
-      "degree": "Bachelor of Fine Arts",
+      "degree": "Apprenticeship Program: Electrical",
+      "institution": "Gateway Community College-ABA",
+      "date_start": null,
+      "date_end": "2010-01-01T00:00:00",
+      "grade": null,
+      "description": "4 year Apprenticeship Program Accredited through the United States Department of Labor. Outstanding Academic Achievement Award. GPA 4.0"
+    },
+    {
+      "degree": "Bachelor of Fine Arts: Film & TV Production",
       "institution": "Chapman University",
       "date_start": null,
-      "date_end": null,
+      "date_end": "2001-01-01T00:00:00",
       "grade": null,
-      "description": "Film & TV Production. Emphasis in Cinematography. 4 years Accredited towards Degree."
+      "description": "Emphasis in Cinematography. 4 years Accredited towards Degree"
     }
   ],
   "certifications": [

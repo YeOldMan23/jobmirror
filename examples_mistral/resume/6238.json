@@ -39,13 +39,14 @@
     "Bootstrap",
     "Java Servlets",
     "VB Scripting",
-    "Powershell",
+    "PowerShell",
     "Perl"
   ],
   "soft_skills": [
     "team player",
     "hard worker",
     "self-starter",
+    "motivated",
     "research orientated",
     "flexible",
     "get-it-done personality"
@@ -59,7 +60,7 @@
       "company": "Viasat Inc.",
       "date_start": "2016-10-01T00:00:00",
       "date_end": null,
-      "role_description": "Designed Frontend with VB Scripting. Developed Single page application using the Router concept. Used CISA, PYTHON, CISM. Used Powershell, Perl for fast going application. Improved the performance of the application by replacing the existing process and controls with most suitable process flow, optimized queries and code snippets. Introduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
+      "role_description": "Designed Frontend with VB Scripting. Developed Single page application using the Router concept. Used CISA, PYTHON, CISM. Used PowerShell, Perl for fast going application. Improved the performance of the application by replacing the existing process and controls with most suitable process flow, optimized queries and code snippets. Introduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
     }
   ],
   "education": [

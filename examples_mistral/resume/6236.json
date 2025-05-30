@@ -1,5 +1,5 @@
 {
-  "name": "Results-driven Data Entry Clerk",
+  "name": null,
   "location_preference": null,
   "work_authorizaton": null,
   "employment_type_preference": null,
@@ -9,24 +9,22 @@
     "Adobe Software",
     "Microsoft Office Suite",
     "Microsoft Access",
-    "Data Management",
     "Database Management",
     "Data Compilation",
     "Data Review",
     "Data Verification",
-    "Document Management and Storage"
+    "Document Management",
+    "Workflow Management"
   ],
   "soft_skills": [
     "Decision Making",
     "Service-Oriented",
     "Self-Starter",
-    "Workflow Management",
     "Attention to Detail",
     "Multitasking and Prioritization",
     "Time Management",
     "Team Player",
-    "Communication",
-    "Leadership"
+    "Communication"
   ],
   "languages": [
     "English"
@@ -44,21 +42,21 @@
       "company": "Community Health System",
       "date_start": "2018-11-01T00:00:00",
       "date_end": "2020-09-01T00:00:00",
-      "role_description": "Trained employees on additional job positions to maintain coverage of roles. Assigned tasks to associates to fit skill levels and maximize team performance. Greeted and encouraged feedback from customers to implement in-store operational changes."
+      "role_description": "Trained employees on additional job positions to maintain coverage of roles. Assigned tasks to associates to fit skill levels and maximize team performance. Oversaw daily workloads and workflow for smooth operations."
     },
     {
       "role": "Crew Member",
       "company": "Marcus Corporation",
       "date_start": "2016-06-01T00:00:00",
       "date_end": "2018-08-01T00:00:00",
-      "role_description": "Wiped down tables and equipment, swept and refilled stock. Kept restaurant lobby, front counter and restrooms neat and clean throughout shift. Packed fast food products in approved containers, cups and bags."
+      "role_description": "Wiped down tables and equipment, kept restaurant areas clean. Entered orders into computer system, prepared quality products while maintaining portion control and presentation."
     },
     {
       "role": "Cashier",
       "company": "Kohler",
       "date_start": "2017-06-01T00:00:00",
       "date_end": "2018-04-01T00:00:00",
-      "role_description": "Collected payments and provided accurate change. Completed daily recovery tasks to keep areas clean and neat for maximum productivity. Worked closely with front-end staff to assist customers."
+      "role_description": "Collected payments and provided accurate change. Operated cash register or POS system to receive payment by cash, check and credit card. Trained new team members in cash register operation."
     }
   ],
   "education": [

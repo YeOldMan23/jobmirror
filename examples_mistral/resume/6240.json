@@ -72,9 +72,7 @@
     "Focused",
     "Problem solver",
     "Team Player",
-    "Communication",
-    "Client interaction",
-    "Training"
+    "Communication"
   ],
   "languages": [
     "English",
@@ -93,14 +91,14 @@
       "company": "City",
       "date_start": "2015-01-01T00:00:00",
       "date_end": "2016-04-01T00:00:00",
-      "role_description": "Developed using C#, ASP.NET MVC, ASP.NET Web API, ADO.NET .NET Framework, EF, LINQ, SQL Server, Hangfire, SignalR, MS SQL Server, T-SQL, AngularJS, jQuery, HTML5, CSS3, and MySQL a large-scale parking system from scratch. Rewrote and redesigned a poorly parking system implemented in Node.js. Developed using Hangfire to perform with .NET job scheduling, and SignalR to create a real-time application which allowed bi-directional communication between server and client. Created a sync job which listened to the records of a sensor in a MySQL database and synchronized them in a MS SQL Server database and showed real-time results in a dashboard. Developed using PHP, JasperReports for PHP REST Web Service API, MySQL, AngularJS, jQuery, HTML5, CSS3 and, Bootstrap a Report Module to integrate it into a police management system. Coded using PL/pgSQL several queries to compare and recover millions of damaged records."
+      "role_description": "Developed using C#, ASP.NET MVC, ASP.NET Web API, ADO.NET .NET Framework, EF, LINQ, SQL Server, Hangfire, SignalR, MS SQL Server, T-SQL, AngularJS, jQuery, HTML5, CSS3, and MySQL a large-scale parking system from scratch. Rewrote and redesigned a poorly parking system implemented in Node.js. Developed using Hangfire to perform with .NET job scheduling, and SignalR to create a real-time application which allowed bi-directional communication between server and client. Created a sync job which listened to the records of a sensor in a MySQL database and synchronized them in a MS SQL Server database and showed real-time results in a dashboard."
     },
     {
       "role": "Software Engineer and Professor",
       "company": "Newport Group",
       "date_start": "2008-09-01T00:00:00",
       "date_end": "2014-11-01T00:00:00",
-      "role_description": "Developed using PHP5, HTML, CSS, JavaScript, Drupal, jQuery, AJAX, JSON, MySQL and, XML-RPC an Intranet. Developed using Alfresco ECM, Alfresco REST API, PHP, XML, HTML, CSS, JavaScript, CodeIgniter, jQuery, PostgreSQL and, Lucene the modules File Sharing and Audit Log for a Document Management System. Integrated Alfresco ECM with OpenOffice.org. Developed using PHP, HTML5, CSS3, JavaScript, jQuery, AJAX, JSON, and, PostgreSQL the Dashboard and Report Management modules. Developed using Alfresco ECM, Activiti, REST Web Services, Freemarker, HTML, CSS3, LESS CSS, JavaScript, jQuery, AJAX, JSON PostgreSQL and, Lucene the modules Records Management, Classification Table Management, Task Management, Data List, Dashboard and, Project Files Management for different versions of a Document Management System. Performed Requirements Specification, Analysis and Design, and Test Case Design. Customized using Freemarker, Bootstrap, LESS CSS, XML and, JavaScript a Theme for Alfresco Share. Coded using XML, Content Models for Alfresco ECM. Interacted with clients to identify Business Requirements. Provided training courses for clients."
+      "role_description": "Developed using PHP5, HTML, CSS, JavaScript, Drupal, jQuery, AJAX, JSON, MySQL and, XML-RPC an Intranet. Developed using Alfresco ECM, Alfresco REST API, PHP, XML, HTML, CSS, JavaScript, CodeIgniter, jQuery, PostgreSQL and, Lucene the modules File Sharing and Audit Log for a Document Management System. Integrated Alfresco ECM with OpenOffice.org. Developed using PHP, HTML5, CSS3, JavaScript, jQuery, AJAX, JSON, and, PostgreSQL the Dashboard and Report Management modules. Performed Requirements Specification, Analysis and Design, and Test Case Design. Customized using Freemarker, Bootstrap, LESS CSS, XML and, JavaScript a Theme for Alfresco Share. Coded using XML, Content Models for Alfresco ECM. Interacted with clients to identify Business Requirements. Provided training courses for clients."
     }
   ],
   "education": [
@@ -110,7 +108,7 @@
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "BS: Computer Science, Expected in 2008"
+      "description": null
     },
     {
       "degree": "Accounting",
@@ -118,7 +116,7 @@
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "Degree: Accounting, Expected in 2003"
+      "description": null
     }
   ],
   "certifications": []

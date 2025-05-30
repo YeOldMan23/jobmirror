@@ -16,70 +16,49 @@
     "Iterative Development",
     "Work Breakdown Structure",
     "Resource Management",
-    "Risk Assessment",
     "Quality Assurance",
+    "Risk Assessment",
     "User Acceptance Testing",
+    "HP Quality Center",
     "Business Intelligence",
     "Crystal Reports",
     "Microsoft Excel",
     "SQL",
     "SAS",
-    "HP Quality Center",
-    "UAT Testing",
     "PowerPoint",
-    "Remedy Ticket System",
-    "Help Desk",
-    "Call Center Metrics",
-    "USPS Postal Stores Software",
-    "Project Management",
-    "Installation",
-    "Maintenance",
-    "Hardware Upgrades",
-    "Software Upgrades",
-    "Training",
-    "Communication",
-    "PMI Certification",
-    "Unix SVR 4",
+    "Remedy",
+    "PeopleSoft",
+    "Visio",
+    "Oracle",
+    "OBIEE",
+    "SQL Server",
+    "Microstrategy",
+    "Data Warehousing",
+    "Unix",
     "Visual Basic",
     "C",
     "DOS",
     "TSO",
-    "Super Wilber 2001",
-    "ACS",
-    "Windows 95",
-    "Windows 98",
-    "Windows 2000",
-    "Windows NT 4.0",
+    "Windows",
     "WordPerfect",
-    "Microsoft Word",
-    "Microsoft Excel",
-    "Microsoft PowerPoint",
-    "Microsoft Project",
-    "Microsoft Outlook",
     "SharePoint",
-    "Remedy 7.5 & 7.6",
-    "Ghost Utility",
-    "PeopleSoft",
-    "Visio",
-    "EDW-Business Objects 6.5 & XI",
-    "NCR@service",
-    "Microstrategy Reporting",
-    "Data Warehousing",
-    "Oracle",
-    "OBIEE",
-    "SQL Server 2005 & 2008",
-    "Aqua (SQL) 5.1"
+    "PowerBuilder",
+    "Business Objects",
+    "EDW",
+    "UAT Testing",
+    "Defect Triage",
+    "Deployment Engineering",
+    "Technical Documentation",
+    "SLA",
+    "SOW"
   ],
   "soft_skills": [
     "Communication",
     "Teamwork",
     "Leadership",
-    "Problem Solving",
-    "Analytical Skills",
     "Customer Service",
-    "Training Development",
-    "Process Improvement",
-    "People Management"
+    "Training",
+    "Problem Solving"
   ],
   "languages": [
     "English"
@@ -90,28 +69,28 @@
       "company": "Tyler Technologies",
       "date_start": "2014-10-01T00:00:00",
       "date_end": "2015-04-01T00:00:00",
-      "role_description": "SDLC for USPS Postal stores software CD installation development, procedures & support. Wrote SQL Scripts for reporting documents, created test plans in HP Quality Center, updated test plans, created defects, and created Business Object Queries for various accounts."
+      "role_description": "SDLC for USPS Postal stores software CD installation development, procedures & support. Wrote SQL Scripts for reporting, created test plans, updated test plans, created defects in HP Quality Center, created Business Object Queries, tested and created EDW queries, created reports in Business Objects, created Deep dive Analysis reports, collaborated with customers on reporting requirements, ensured data integrity, created Business requirement documents, worked with data analysts on new requirements and algorithms through SAS."
     },
     {
       "role": "Deployment Engineer",
       "company": "A Place For Mom",
       "date_start": "2010-01-01T00:00:00",
       "date_end": "2014-01-01T00:00:00",
-      "role_description": "Wrote SQL Scripts for reporting documents, created test plans in HP Quality Center, updated test plans, created UAT testing, created defects, scheduled deployment for Hospital reporting contract, and acted as a Business Process Analyst for deployments."
+      "role_description": "Wrote SQL Scripts for reporting, created test plans, updated test plans, created UAT testing, created defects in HP Quality Center, scheduled deployment for Hospital reporting contract, triaged defects, worked with release manager on development and defect monitoring, created reports for management on defect status, fixed production reports, worked with BA's on new requirements documentation."
     },
     {
       "role": "Business Analyst",
       "company": "A Place For Mom",
       "date_start": "2010-01-01T00:00:00",
       "date_end": "2010-01-01T00:00:00",
-      "role_description": "Business Analyst for DOL ICERT system application modules. Analyzed business problems, gathered information from users, defined work problems, and designed systems of computer programs and procedures to resolve the problems."
+      "role_description": "Business Analyst for DOL ICERT system application modules. Analyzed business problems, gathered information from users, defined work problems, designed computer programs and procedures, developed specifications, prepared work diagrams and data flow charts, coordinated system tests, recommended computer equipment changes."
     },
     {
       "role": "Business Analyst",
       "company": "NCR",
       "date_start": "1996-01-01T00:00:00",
       "date_end": "2009-01-01T00:00:00",
-      "role_description": "Moved customer and internal reporting to Business Objects, developed Helpdesk standard reports, used Business Object XI applications, ran EDW reports, Crystal reports, and deep dive analysis for the DECA helpdesk, and acted as USPS Postal Stores Project Manager and Software Developer."
+      "role_description": "Moved customer and internal reporting to Business Objects, developed Helpdesk standard reports, used Business Object XI applications, ran EDW reports, Crystal reports, and deep dive analysis, created multiple reporting for Helpdesk, converted reporting from GEMS Remedy to EDW-Business Object, created Crystal reports, acted as USPS Postal Stores Project Manager, developed and tested 3rd party applications, wrote support procedures, setup and implemented training, collaborated on customer requirements, created technical documentation."
     }
   ],
   "education": [
@@ -121,7 +100,7 @@
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "Expected in Youngstown, OH. GPA: Status."
+      "description": "Expected in Youngstown, OH"
     }
   ],
   "certifications": [
