@@ -1,5 +1,5 @@
 """
-Match the features between the JD and 
+Match the features between the JD and Resume to get more features
 """
 
 from .extract_features_jd import *
