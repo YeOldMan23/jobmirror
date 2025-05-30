@@ -11,7 +11,7 @@ import torch
 # BERT based comparison
 from sentence_transformers import SentenceTransformer, util
 
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+embedding_model = SentenceTransformer("BAAI/bge-large-en-v1.5")
 
 def get_hard_skill_match_score(jd_json : dict, resume_json : dict) -> float:
     """
@@ -22,20 +22,29 @@ def get_hard_skill_match_score(jd_json : dict, resume_json : dict) -> float:
     jd_skills_list     = extract_hard_skills_jd(jd_json)
     resume_skills_list = extract_hard_skills_resume(resume_json)
 
+    # Prompt engineering
+    jd_skills_list     = ["Represent this sentence for retrieval: " + i for i in jd_skills_list]
+    resume_skills_list = ["Represent this sentence for retrieval: " + i for i in resume_skills_list]
+
     # Get embeddings
-    resume_embeddings = embedding_model.encode(resume_skills_list, convert_to_tensor=True)
-    job_embeddings    = embedding_model.encode(jd_skills_list, convert_to_tensor=True)
+    resume_embeddings = embedding_model.encode(resume_skills_list, 
+                                               convert_to_tensor=True,
+                                               normalize_embeddings=True)
+    job_embeddings    = embedding_model.encode(jd_skills_list, 
+                                               convert_to_tensor=True,
+                                               normalize_embeddings=True)
 
     # Get similarity Matrix
     similarity_matrix = util.cos_sim(job_embeddings, resume_embeddings)
-    top_scores        = torch.max(similarity_matrix, dim=1).values
+    top_scores_jd     = torch.max(similarity_matrix, dim=1).values
+    # top_scores_resume  = torch.max(similarity_matrix, dim=0).values
 
     # Get the average score to do matching
-    top_1_matching_avg = torch.mean(top_scores).item()
+    average_score = torch.mean(top_scores_jd).item()
 
     # TODO We can also do fuzzy-matching between
 
-    return top_1_matching_avg
+    return average_score
 
 def get_date_of_applcation(jd_json : dict, resume_json : dict) -> datetime:
     """
