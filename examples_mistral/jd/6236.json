@@ -14,13 +14,18 @@
   ],
   "required_hard_skills": [
     "Oracle",
-    "Datastage",
+    "DataStage",
     "UNIX",
     "PLSQL",
-    "SQL"
+    "SQL",
+    "AWS",
+    "Matillion",
+    "Snowflake",
+    "Git",
+    "SVN"
   ],
   "required_soft_skills": [
-    "Willingness to embrace Agile Principles"
+    "Agile Principles"
   ],
   "required_language_proficiencies": [
     "English"

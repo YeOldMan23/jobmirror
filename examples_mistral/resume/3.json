@@ -1,5 +1,5 @@
 {
-  "name": null,
+  "name": "Certified Electrical Foreman",
   "location_preference": null,
   "work_authorizaton": null,
   "employment_type_preference": null,
@@ -23,6 +23,7 @@
     "Start-Up and Commissioning",
     "MS Excel",
     "MS Word",
+    "Ipad fluency",
     "Blue Beam Software",
     "BIM Coordination",
     "BIM 360 Glue"
@@ -34,8 +35,7 @@
     "Detail-Oriented",
     "Comprehensive record keeping",
     "Multitasking",
-    "Safety conscious",
-    "Team leadership"
+    "Safety conscious"
   ],
   "languages": [
     "English"
@@ -44,23 +44,23 @@
     {
       "role": "Electrical Foreman",
       "company": "Nvent",
-      "date_start": null,
-      "date_end": null,
-      "role_description": "Complete installation of a 9MW, 4MW & 2MW electrical system which included the generator yard, all its components on a Cyrus One Data Hall build out by identifying, planning and supervising with robust strategies. Directed and supervised 45 electricians on the installation of Husky Cable Tray, 1000 kcmil, 2500KVA Medium Voltage Transformers and 2500KW Generators. Collaborated with a diverse team of mechanical and electrical engineers to ensure the proper installation of feeders & conduit routing inside Commercial Chillers. Supervised the installation and wiring of VFD's, Motors, Divcon Mech Controls on 9 Commercial Chillers. Pulled in over 6000ft of 15KV MV wire intended for utility services and new building projects. Supervised the installation of all Branch Power and Lighting Control Circuits on a 3-story Banner Medical Bldg. Performed business management duties, such as maintaining records or files, preparing daily reports, calculating budgets, and ordering supplies for a small TI Banner Medical Bldg. Conducted quality control inspections on electrical systems. Start-up Testing on 480V SES, Transformers, Motor Control Centers, and Panels."
+      "date_start": "2016-01-01T00:00:00",
+      "date_end": "2017-06-01T00:00:00",
+      "role_description": "Complete installation of a 9MW, 4MW & 2MW electrical system which included the generator yard, all its components on a Cyrus One Data Hall build out by identifying, planning and supervising with robust strategies. Directed and supervised 45 electricians on the installation of Husky Cable Tray, 1000 kcmil, 2500KVA Medium Voltage Transformers and 2500KW Generators. On time and under budget."
     },
     {
       "role": "Quality Control Inspector/Testing",
       "company": "Hill Phoenix Solar Power Solutions",
-      "date_start": null,
-      "date_end": null,
-      "role_description": "Inspected and Tested Commercial Solar Skids during manufacturing and pre-fabrication process. Successfully approved quality control on over 30 Power Solar Skids with a 100% approval rating. Performed and Documented all 120V/480V testing on electrical equipment, such as Medium Voltage Transformers, Disconnects, Panels, Next Trackers, and Inverters on solar skids. Performed Hi-Pot testing on all medium voltage cables and produced legal documentation for clients. Inspected all electrical equipment for proper wiring, clearance and raceways to ensure compliance with NEC codes. Maintained extensive testing records and inspection photos. Successfully worked with structural & electrical line supervisors on proper installation of equipment and compliance of single-line diagrams. Implemented quality control procedures to ensure a high standard of craftsmanship within the labor force. Coordinated and resolved any issues with Electrical & Structural Engineers on drawings."
+      "date_start": "2015-07-01T00:00:00",
+      "date_end": "2016-01-01T00:00:00",
+      "role_description": "Inspected and Tested Commercial Solar Skids during manufacturing and pre-fabrication process. Successfully approved quality control on over 30 Power Solar Skids with a 100% approval rating. Performed and Documented all 120V/480V testing on electrical equipment."
     },
     {
       "role": "Commercial Electrical Foreman",
       "company": "Delta Diversified Enterprises Inc",
-      "date_start": null,
-      "date_end": null,
-      "role_description": "Successfully planned the layout and installation of electrical systems and components on over 25 commercial and industrial base build projects by identifying, planning and supervising with robust strategies. Led a team of 25 workers for the daily execution of coordinated work activities in a manner that is consistent with OSHA Safety Standards. Collaborated with a diverse team of architects and electrical and mechanical engineers to resolve all issues. On time and on budget project completion for five consecutive years. Fostered a safety conscious work environment where employees feel free to raise concerns. Conducted quality control inspections on electrical systems, equipment, or components to identify hazards, and defects. Start-up Testing on 480V SES, Transformers, Motor Control Centers, and Panels. Developed excellent multitasking and communication skills with sub-contractors and other trades. Implemented Rigorous hands on supervisor style to meet deadlines, cost and quality with emphasis on safe procedures. Diagnosed equipment malfunctions and completed repairs to restore equipment and maintain uptime. Repaired electrical equipment using hand and power tools and testing and diagnostic equipment."
+      "date_start": "2004-01-01T00:00:00",
+      "date_end": "2015-07-01T00:00:00",
+      "role_description": "Successfully planned the layout and installation of electrical systems and components on over 25 commercial and industrial base build projects by identifying, planning and supervising with robust strategies. Led a team of 25 workers for the daily execution of coordinated work activities in a manner that is consistent with OSHA Safety Standards."
     }
   ],
   "education": [
@@ -70,15 +70,7 @@
       "date_start": null,
       "date_end": null,
       "grade": 4.0,
-      "description": "Emphasis in Electrical. Outstanding Academic Achievement Award."
-    },
-    {
-      "degree": "Apprenticeship Program",
-      "institution": "Gateway Community College-ABA",
-      "date_start": null,
-      "date_end": null,
-      "grade": null,
-      "description": "4 year Apprenticeship Program Accredited through the United States Department of Labor. Outstanding Academic Achievement Award. GPA 4.0."
+      "description": "Electrical. Outstanding Academic Achievement Award. 4 year Apprenticeship Program Accredited thru the United States Department of Labor."
     },
     {
       "degree": "Bachelor of Fine Arts",
@@ -86,7 +78,7 @@
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "Emphasis in Film & TV Production, specifically Cinematography. 4 years Accredited towards Degree."
+      "description": "Film & TV Production. Emphasis in Cinematography. 4 years Accredited towards Degree."
     }
   ],
   "certifications": [

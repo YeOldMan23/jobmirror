@@ -8,7 +8,7 @@
     "C++",
     "C#",
     "SQL",
-    "PL/SQL",
+    "pl/sql",
     "Windows",
     "Linux",
     "Unix",
@@ -18,28 +18,37 @@
     "PERL",
     "Python",
     "TCL",
-    "Cadence (Layout, Virtuoso, Spectre)",
-    "Synopsys (DC Compiler)",
+    "Cadence",
+    "Virtuoso",
+    "Spectre",
+    "DC Compiler",
     "Modelsim",
-    "QuestaSim",
+    "Questasim",
     "TFS",
-    "Microsoft SQL Server 2012",
-    "Visual Studio 2008",
+    "Microsoft SQL Server",
+    "Visual Studio",
     "ASIC",
     "Embedded Systems",
     "Microprocessor",
     "Agile",
-    "SDLC"
+    "SDLC",
+    "System Design",
+    "Simulation",
+    "Digital IC Design",
+    "FPGAs"
   ],
   "soft_skills": [
+    "Learning attitude",
     "Teamwork",
     "Leadership",
     "Communication",
-    "Customer Support",
+    "Customer Satisfaction",
+    "Managing",
     "Training",
-    "Problem Solving",
     "Client Interaction",
-    "Project Management"
+    "Problem Solving",
+    "Ergonomics",
+    "Safety"
   ],
   "languages": [
     "English"
@@ -48,46 +57,43 @@
     {
       "role": "Software Engineer",
       "company": "Torch Technologies, Inc.",
-      "date_start": "2015-12-01T00:00:00Z",
-      "date_end": "2016-08-01T00:00:00Z",
+      "date_start": "2015-12-01T00:00:00",
+      "date_end": "2016-08-01T00:00:00",
       "role_description": "Analyze internal processes and recommend and implement procedural changes to improve operations in database. Analyze the requirement and make the necessary changes in the existing modules. Support and maintenance of the specific module."
     },
     {
       "role": "System Engineer",
       "company": "Apex Systems",
-      "date_start": "2013-04-01T00:00:00Z",
-      "date_end": "2015-12-01T00:00:00Z",
-      "role_description": "Worked in SDLC and Agile framework. Consistent performance and ownership of the task while maintaining the module in a Data Warehouse project. Interacted with clients during analysis, development, and implementation phases. Conducted training sessions for juniors."
+      "date_start": "2013-04-01T00:00:00",
+      "date_end": "2015-12-01T00:00:00",
+      "role_description": "Worked in SDLC and Agile framework. Consistent performance and ownership of the task while maintaining the module in Data warehouse project. Interacting with clients during analysis, development & implementation phase. Conducted training sessions to train juniors for the same technology."
     }
   ],
   "education": [
     {
-      "degree": "Master of Science",
-      "institution": "Portland State University",
+      "degree": "Masters",
+      "institution": "PORTLAND STATE UNIVERSITY",
       "date_start": null,
       "date_end": null,
       "grade": 4.0,
-      "description": "Electrical & Computer Engineering. Courses: Digital IC and Design, ASIC Design Modelling & Synthesis, Verilog Workshop, Microprocessor System Design, Embedded Systems Design with FPGAs, Pre-silicon Functional Verification."
+      "description": "Electrical & Computer Engineering"
     },
     {
       "degree": "Bachelor of Engineering",
       "institution": "Mumbai University",
       "date_start": null,
-      "date_end": null,
+      "date_end": "2012-07-01T00:00:00",
       "grade": 67.0,
-      "description": "Electronics & Telecommunications. Core Subjects: Digital Logic Design, Digital Communication, Electronics Devices and Circuits, Analog Digital IC Design Applications, Microprocessor and Micro-controllers."
+      "description": "Electronics & Telecommunications"
     },
     {
       "degree": "Diploma",
-      "institution": "Maharashtra State Board of Technical Education",
+      "institution": "MAHARASHTRA STATE BOARD OF TECHNICAL EDUCATION",
       "date_start": null,
-      "date_end": null,
+      "date_end": "2009-07-01T00:00:00",
       "grade": 84.12,
-      "description": "Electronics & Communications. Core Subjects: Electronic Components and Devices, Programming in C, Digital Techniques and Microprocessor, Micro-controllers, Digital Communication, Embedded Systems."
+      "description": "Electronics & communications"
     }
   ],
-  "certifications": [
-    "All India Mahindra Talent Scholarship",
-    "JRD TATA Scholarship"
-  ]
+  "certifications": []
 }

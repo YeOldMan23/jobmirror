@@ -1,35 +1,40 @@
 {
-  "company_name": "Growing Medical Device Company",
+  "company_name": "Medical Device Company",
   "role_title": "Senior Digital Electronic Engineer",
   "employment_type": "Full-time",
   "about_the_company": "A growing Medical Device company located in Parsippany, NJ.",
   "job_responsibilities": [
     "Implementing embedded controllers using Microcontrollers for various image capture systems",
-    "Developing firmware utilizing 'C' programming (and Assembler)",
+    "Developing firmware utilizing C programming and Assembler",
     "Working with capture schematics, PCB layout, routing, and tools like PADs",
-    "Collaborating closely with the manufacturing team to ensure thorough documentation and production of products"
+    "Collaborating with the manufacturing team to ensure thorough documentation and production of products",
+    "Providing layout guidance for PCB designers",
+    "Using test tools for signal integrity and EMC"
   ],
   "required_hard_skills": [
-    "Digital circuit design and schematics using microprocessors",
-    "Experience with tools like DX Designer, Altium",
-    "Microprocessor C programming",
-    "Xilinx, Altera, Lattice High-speed FPGA and SOC",
-    "Microprocessor experience with MSP430, TM4C, NXP IMX family",
+    "Digital circuit design",
+    "Schematics",
+    "Microprocessors",
+    "C programming",
+    "Xilinx",
+    "Altera",
+    "Lattice",
+    "FPGA",
+    "SOC",
+    "MSP430",
+    "TM4C",
+    "NXP IMX family",
     "High-speed design tools",
-    "Layout or layout guidance for PCB designer",
-    "Use of test tools for signal integrity, EMC",
-    "PCB Design (preferably PAD)",
-    "Schematic Capture and layout",
-    "Circuit Design",
-    "Firmware development using 'C' programming",
-    "Experience with Capture schematics, PCB layout, routing (PADs tools)",
-    "Code Composer Studio (CCS from TI)"
+    "PCB design",
+    "PADs",
+    "Code Composer Studio",
+    "ARM microcontrollers",
+    "Embedded controllers"
   ],
   "required_soft_skills": [
-    "Collaboration with manufacturing teams",
-    "Documentation skills",
-    "Problem-solving",
-    "Attention to detail"
+    "Teamwork",
+    "Communication",
+    "Documentation"
   ],
   "required_language_proficiencies": [
     "English"

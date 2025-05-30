@@ -1,6 +1,6 @@
 {
   "company_name": null,
-  "role_title": "DHT - Front End Software Engineer",
+  "role_title": "Front End Software Engineer",
   "employment_type": "Full-time",
   "about_the_company": null,
   "job_responsibilities": [
@@ -14,21 +14,19 @@
     "Interact and engage with customers, users, Product Managers and Technical Architects to understand needs and increase the positive impact on users experience"
   ],
   "required_hard_skills": [
-    "Frontend development for Cloud applications",
     "Angular",
     "React",
     "StencilJS",
     "Three.js",
     "WebComponents",
     "Progressive Web Apps (PWAs)",
-    "Unity development",
+    "Unity",
     "C#"
   ],
   "required_soft_skills": [
-    "Collaboration",
     "Technical leadership",
-    "Documentation",
-    "Engagement with stakeholders"
+    "Collaboration",
+    "Communication"
   ],
   "required_language_proficiencies": [
     "English"

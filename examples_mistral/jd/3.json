@@ -1,24 +1,25 @@
 {
   "company_name": "Mizick Miller & Company, Inc.",
   "role_title": "Staff Accountant",
-  "employment_type": "Full-time",
+  "employment_type": null,
   "about_the_company": "Mizick Miller & Company, Inc. offers payroll, accounting, business consulting, agri-business consulting, and tax services to businesses, organizations, and individuals.",
   "job_responsibilities": [
-    "Provide payroll, accounting, business consulting, agri-business consulting, and tax services",
+    "Provide accounting services",
+    "Handle payroll processing",
+    "Offer business consulting",
+    "Provide agri-business consulting",
+    "Assist with tax services",
     "Work in a fast-paced environment",
-    "Meet strict deadlines",
-    "Contribute to a fun, professional working environment"
+    "Meet strict deadlines"
   ],
   "required_hard_skills": [
-    "Microsoft Office Suite",
-    "Accounting",
-    "Payroll processing",
-    "Tax services"
+    "Microsoft Office Suite"
   ],
   "required_soft_skills": [
     "Attention to detail",
-    "Excellent written and oral communication skills",
-    "Ability to work in a fast-paced environment",
+    "Written communication",
+    "Oral communication",
+    "Teamwork",
     "Professionalism"
   ],
   "required_language_proficiencies": [

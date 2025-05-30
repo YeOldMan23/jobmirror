@@ -27,7 +27,7 @@ filelock==3.18.0
 filetype==1.2.0
 fonttools==4.58.0
 fqdn==1.5.1
-fsspec==2025.5.0
+fsspec==2024.3.1
 google-ai-generativelanguage==0.6.18
 google-api-core==2.24.2
 google-auth==2.40.2
@@ -104,7 +104,7 @@ pydantic==2.11.5
 pydantic_core==2.33.2
 Pygments==2.19.1
 pyparsing==3.2.3
-pyspark==3.5.5
+pyspark==3.5.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 python-json-logger==3.3.0
@@ -148,3 +148,7 @@ webcolors==24.11.1
 webencodings==0.5.1
 websocket-client==1.8.0
 zstandard==0.23.0
+mistralai==1.8.1
+datasets==2.19.1
+pymongo==4.7.2
+

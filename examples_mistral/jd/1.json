@@ -2,29 +2,27 @@
   "company_name": "Salas O'Brien",
   "role_title": "Electrical Engineering Intern",
   "employment_type": "Part-time",
-  "about_the_company": "Founded in 1975, Salas O'Brien is an employee-owned engineering and professional services firm focused on achieving impact for our clients, our team, and the world. We work across a variety of industries providing integrated engineering and consulting services.",
+  "about_the_company": "Salas O'Brien is an employee-owned engineering and professional services firm focused on achieving impact for clients, team members, and the world. Founded in 1975, the company provides integrated engineering and consulting services across various industries, including data centers, healthcare, science and technology, and more.",
   "job_responsibilities": [
-    "Work with engineer mentors in the design team and take ownership of portions of various projects.",
-    "Work in coordination with other engineering disciplines and learn how a complete design package is developed.",
-    "Acquire time management, communication, and CAD drafting skills.",
-    "Apply engineering concepts to real-world challenges."
+    "Work with engineer mentors in the design team and take ownership of portions of various projects",
+    "Coordinate with other engineering disciplines to develop complete design packages",
+    "Acquire time management, communication, and CAD drafting skills",
+    "Apply engineering concepts to real-world challenges"
   ],
   "required_hard_skills": [
-    "Microsoft Office programs (Word, Excel, Outlook)",
     "CAD drafting",
-    "Engineering concepts"
+    "Microsoft Office (Word, Excel, Outlook)"
   ],
   "required_soft_skills": [
     "Time management",
     "Communication",
-    "Organization",
-    "Flexibility"
+    "Organization"
   ],
   "required_language_proficiencies": [
     "English"
   ],
-  "required_education": "Currently enrolled in an Electrical Engineering program at a four-year ABET university or college with a preferred targeted graduation date within 1 year.",
-  "required_work_authorization": "Verification of US Citizenship required upon hire",
+  "required_education": "Currently enrolled in an Electrical Engineering program at a four-year ABET university or college",
+  "required_work_authorization": "US Citizenship",
   "job_location": "Merritt Island, FL",
   "certifications": []
 }

@@ -19,21 +19,23 @@
     "Creo",
     "Teamcenter",
     "XML",
+    "EDS",
+    "MCS",
     "Auto-Cad",
-    "Arc-Flash Studies",
     "meggers",
     "DLROs",
     "digital synchronized timers",
-    "high current and high voltage test sets"
+    "high current and high voltage test sets",
+    "Cutler-Hammer trip units"
   ],
   "soft_skills": [
-    "Excellent communication",
+    "communication",
     "interpersonal skills",
     "teamwork",
     "problem-solving",
     "leadership",
     "time management",
-    "adaptability"
+    "customer service"
   ],
   "languages": [
     "English"
@@ -42,23 +44,23 @@
     {
       "role": "Facilities Software Coordinator",
       "company": "Caterpillar",
-      "date_start": "2012-08-01T00:00:00Z",
+      "date_start": "2012-08-01T00:00:00",
       "date_end": null,
-      "role_description": "Responsible for managing software across all products in Decatur IL, Joliet IL, and North Little Rock AR. On-call 24 hours a day to provide support to field reps, assembly workers, and line supervisors around the world including India, Russia, China, and Brazil. Managed multiple software releases concerning CPI projects and controlled software effectivity for machines in the plant and outside of Caterpillar using SIS, SAP, and Legacy Systems."
+      "role_description": "Managed software across all products in Decatur IL, Joliet IL, and North Little Rock AR. Provided 24-hour support to field reps, assembly workers, and line supervisors worldwide. Traveled to various locations including Russia, Mossville IL, East Peoria IL, and North Little Rock AR. Managed multiple software releases concerning CPI projects and developed Tier IV Final standards and procedures for BOM processing, flashing software, and documenting engine with engine-aftertreatment information."
     },
     {
       "role": "Senior Circuit Breaker Engineer/Production Manager",
-      "company": "NA",
-      "date_start": "2009-12-01T00:00:00Z",
-      "date_end": "2011-11-01T00:00:00Z",
+      "company": null,
+      "date_start": "2009-12-01T00:00:00",
+      "date_end": "2011-11-01T00:00:00",
       "role_description": "Managed production and rebuild of LV and MV circuit breakers. Conducted projects on various job sites involving testing and installation of electrical switchgear. Established lockout/tag-out procedures and implemented Auto-Cad to design electrical and mechanical diagrams."
     },
     {
       "role": "Senior Circuit Breaker Technician",
       "company": "Electric Power Systems Intl",
-      "date_start": "2007-12-01T00:00:00Z",
-      "date_end": "2009-12-01T00:00:00Z",
-      "role_description": "Met customer demands with promised time of delivery of completed circuit breakers. Conducted training courses concerning safety awareness and use of test equipment. Reconditioned LV and MV circuit breakers to meet the latest standards of power conventional flow."
+      "date_start": "2007-12-01T00:00:00",
+      "date_end": "2009-12-01T00:00:00",
+      "role_description": "Conducted training courses concerning safety awareness, use of test equipment, and machinery. Reconditioned LV and MV circuit breakers to meet the latest standards of power conventional flow. Tested circuit breakers using various test equipment."
     }
   ],
   "education": [
@@ -66,15 +68,15 @@
       "degree": "Master of Science",
       "institution": null,
       "date_start": null,
-      "date_end": "2014-12-01T00:00:00Z",
+      "date_end": "2014-12-01T00:00:00",
       "grade": null,
-      "description": "Industrial Management"
+      "description": null
     },
     {
       "degree": "Bachelor of Science",
       "institution": "Northern Illinois University",
       "date_start": null,
-      "date_end": "2006-12-01T00:00:00Z",
+      "date_end": "2006-12-01T00:00:00",
       "grade": 3.3,
       "description": "Industrial Engineering Management, Electrical Engineering Technology"
     }

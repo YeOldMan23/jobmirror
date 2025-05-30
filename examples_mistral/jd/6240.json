@@ -8,11 +8,14 @@
     "Maintain high-quality code that is performant and DRY",
     "Design reusable and performant front-end web components",
     "Transform large and complex datasets into beautiful visualizations",
-    "Collaborate with technical leadership in order to design and implement secure and efficient APIs using RESTful design patterns",
+    "Collaborate with technical leadership to design and implement secure and efficient APIs using RESTful design patterns",
     "Manage Software Development Life Cycle (SDLC) including monitoring and troubleshooting deployments throughout multiple environments"
   ],
   "required_hard_skills": [
-    "PERN stack (PostgreSQL, Express, React, NodeJS)",
+    "PostgreSQL",
+    "Express",
+    "React",
+    "NodeJS",
     "Redux",
     "HTML",
     "CSS",
@@ -23,15 +26,13 @@
     "Firebase",
     "Material-UI",
     "D3js",
-    "Docker (Compose)",
+    "Docker",
     "AWS"
   ],
   "required_soft_skills": [
-    "Clear communication in English",
-    "Organized",
-    "Self-sufficient",
-    "Collaboration with cross-functional partners",
-    "Independently drive projects and decisions"
+    "Communication",
+    "Organization",
+    "Self-sufficiency"
   ],
   "required_language_proficiencies": [
     "English"
