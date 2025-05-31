@@ -12,10 +12,7 @@
     "Manage Software Development Life Cycle (SDLC) including monitoring and troubleshooting deployments throughout multiple environments"
   ],
   "required_hard_skills": [
-    "PostgreSQL",
-    "Express",
-    "React",
-    "NodeJS",
+    "PERN stack (PostgreSQL, Express, React, NodeJS)",
     "Redux",
     "HTML",
     "CSS",
@@ -30,7 +27,7 @@
     "AWS"
   ],
   "required_soft_skills": [
-    "Ability to communicate clearly in English on a day-to-day basis",
+    "Ability to communicate clearly",
     "Organized",
     "Self-sufficient"
   ],
@@ -38,5 +35,8 @@
     "English"
   ],
   "required_work_authorization": null,
-  "job_location": null
+  "required_education": null,
+  "job_location": null,
+  "date_posted": null,
+  "id": "JD_2RPwzELC"
 }

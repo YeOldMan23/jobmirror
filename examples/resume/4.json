@@ -1,7 +1,7 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
     "SDLC",
@@ -30,31 +30,41 @@
     "Remedy",
     "Help Desk",
     "Call Center",
-    "Unix",
+    "Unix SVR 4",
     "Visual Basic",
     "C",
     "DOS",
     "TSO",
     "Super Wilber 2001",
     "ACS",
-    "Windows",
+    "Windows 95",
+    "Windows 98",
+    "Windows 2000",
+    "Windows NT 4.0",
     "WordPerfect",
     "Microsoft Word",
     "Microsoft Project",
     "Microsoft Outlook",
     "Sharepoint",
+    "Remedy 7.5",
+    "Remedy 7.6",
     "Ghost utility",
     "PeopleSoft",
     "Visio",
-    "EDW-Business Objects",
+    "EDW-Business Objects 6.5",
+    "EDW-Business Objects XI",
     "NCR@service",
     "Microstrategy reporting",
     "Datewarhousing",
     "Oracle",
     "OBIEE",
-    "SQL Server",
-    "Aqua (SQL)",
+    "SQL Server 2005",
+    "SQL Server 2008",
+    "Aqua (SQL)5.1",
     "HP Quality Center",
+    "Business Objects 6.0",
+    "Business Objects XI",
+    "Datawarehousing",
     "PowerBuilder"
   ],
   "soft_skills": [
@@ -64,7 +74,6 @@
     "Reengineering",
     "Professional training development",
     "Communication",
-    "Training",
     "Reporting",
     "Data analysis",
     "Problem solving",
@@ -109,10 +118,11 @@
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": null
+      "description": "GPA:Status-Computer Electronics Applied Science & Technical Engineering"
     }
   ],
   "certifications": [
-    "PMP"
-  ]
+    "PMP certification (PMI George Washington University)"
+  ],
+  "id": "RES_JWSvWYY5"
 }

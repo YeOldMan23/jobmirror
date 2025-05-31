@@ -1,7 +1,7 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": "internship",
   "hard_skills": [
     "C",
@@ -22,7 +22,8 @@
     "Layout",
     "Virtuoso",
     "Spectre",
-    "Synopsys DC Compiler",
+    "Synopsys",
+    "DC Compiler",
     "Modelsim",
     "Questasim",
     "TFS",
@@ -32,8 +33,8 @@
     "ASIC",
     "controller",
     "database",
-    "Embedded Systems",
     "Electronics",
+    "Embedded Systems",
     "Functional",
     "logic",
     "Microprocessor",
@@ -45,13 +46,15 @@
     "System Design"
   ],
   "soft_skills": [
-    "communication",
-    "teamwork",
-    "leadership",
-    "customer support",
-    "managing",
-    "ergonomics",
-    "customer satisfaction"
+    "Learning",
+    "Communication",
+    "Teamwork",
+    "Customer Satisfaction",
+    "Customer Support",
+    "Managing",
+    "Analysis",
+    "Training",
+    "Problem Solving"
   ],
   "languages": [],
   "experience": [
@@ -84,17 +87,18 @@
       "institution": "Mumbai University",
       "date_start": null,
       "date_end": "2012-07-01T00:00:00",
-      "grade": 0.67,
-      "description": "Core Subjects: Digital logic design Digital communication Electronics devices and circuits I Analog digital IC design applications Electronics devices and circuits II Simulation of software workshop Microprocessor and micro-controllers I Microprocessor and micro-controllers II"
+      "grade": null,
+      "description": "Electronics & Telecommunications 67/100 Core Subjects: Digital logic design Digital communication Electronics devices and circuits I Analog digital IC design applications Electronics devices and circuits II Simulation of software workshop Microprocessor and micro-controllers I Microprocessor and micro-controllers II"
     },
     {
       "degree": "Diploma:Electronics & communications",
       "institution": "MAHARASHTRA STATE BOARD OF TECHNICAL EDUCATION",
       "date_start": null,
       "date_end": "2009-07-01T00:00:00",
-      "grade": 0.8412,
-      "description": "Core Subjects: Electronic components and devices Programming in C Digital techniques and microprocessor Micro-controllers Digital communication Embedded systems"
+      "grade": 84.12,
+      "description": "Electronics & communications Grade : 84.12/100 Core Subjects: Electronic components and devices Programming in C Digital techniques and microprocessor Micro-controllers Digital communication Embedded systems"
     }
   ],
-  "certifications": []
+  "certifications": [],
+  "id": "RES_DPqh0lVb"
 }

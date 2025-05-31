@@ -1,7 +1,7 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
     "JavaScript",
@@ -25,31 +25,38 @@
     "Postgres",
     "Cassandra",
     "Mongo",
-    "Selenium",
+    "IE",
+    "Firefox",
+    "Safari",
+    "Opera",
+    "Chrome",
     "Mocha",
     "Jasmine",
+    "Selenium",
     "TFS",
     "Bitbucket",
     "GitHub",
     "C",
     "Java",
     "Python",
+    "Windows",
     "MySQL",
     "Java Servlets",
     "Bootstrap",
     "VB Scripting",
     "CISA",
+    "PYTHON",
     "CISM",
     "Powershell",
-    "Perl"
+    "Perl",
+    "Database"
   ],
   "soft_skills": [
     "Team player",
-    "Research oriented",
+    "Research orientated",
     "Flexible",
-    "Highly motivated",
     "Hard worker",
-    "Self-starter",
+    "Highly motivated self-starter",
     "Get-it-done personality"
   ],
   "languages": [],
@@ -58,7 +65,7 @@
       "role": "Software Engineer Intern",
       "company": "Viasat Inc.",
       "date_start": "2016-10-01T00:00:00",
-      "date_end": null,
+      "date_end": "Current",
       "role_description": "Designed Frontend with in VB Scripting.\nDeveloped Single page application using the Router concept.\nUsed\u00a0 CISA, PYTHON,CISM.\nUsed Powershell,\u00a0 Perl for fast going application.\nImproved the performance of the application by replacing the existing process and controls with most suitable process flow, optimized queries and code snippets\nIntroduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
     }
   ],
@@ -67,34 +74,35 @@
       "degree": "Master Of Science:Information Technology",
       "institution": "Hyderabad",
       "date_start": null,
-      "date_end": null,
+      "date_end": "Expected in",
       "grade": null,
-      "description": "Status-Information Technology"
+      "description": "GPA:Status-Information Technology"
     },
     {
       "degree": "B.Tech:Electrical and Electronics Engineering",
       "institution": "Kakinada",
       "date_start": null,
-      "date_end": "2016-01-01T00:00:00",
+      "date_end": "2016",
       "grade": 70.4,
-      "description": "Status-Electrical and Electronics Engineering"
+      "description": "GPA:Status-Electrical and Electronics Engineering"
     },
     {
       "degree": "Diploma:Electrical and Electronics Engineering",
       "institution": "SBTET Andhra Pradesh",
       "date_start": null,
-      "date_end": "2013-01-01T00:00:00",
+      "date_end": "2013",
       "grade": 69.49,
-      "description": "Status-Electrical and Electronics Engineering"
+      "description": "GPA:Status-Electrical and Electronics Engineering"
     },
     {
       "degree": "S.S.C.",
       "institution": "State Board of Andhra Pradesh",
       "date_start": null,
-      "date_end": "2010-01-01T00:00:00",
+      "date_end": "2010",
       "grade": 74.0,
       "description": null
     }
   ],
-  "certifications": []
+  "certifications": [],
+  "id": "RES_1HWrRA5T"
 }

@@ -1,7 +1,7 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
     "Electrical Systems",
@@ -27,14 +27,18 @@
     "Blue Beam Software",
     "BIM Coordination",
     "BIM 360 Glue",
-    "Lutron Lighting Control",
-    "Medium Voltage Equipment"
+    "NEC codes"
   ],
   "soft_skills": [
     "Communication",
-    "Analytical Skills",
+    "Analytical skills",
     "Organizational Skills",
-    "Detail-Oriented"
+    "Detail-Oriented",
+    "Multitasking",
+    "Teamwork",
+    "Leadership",
+    "Record keeping",
+    "Problem-solving"
   ],
   "languages": [],
   "experience": [
@@ -49,13 +53,13 @@
       "role": "Quality Control Inspector/Testing",
       "company": "HillPhoenix Solar Power Solutions",
       "date_start": "2015-07-01T00:00:00",
-      "date_end": "2016-01-01T00:00:00",
+      "date_end": "2016",
       "role_description": "Inspected and Tested Commercial Solar Skids during manufacturing and pre-fabrication process.Successfully approved quality control on over 30 Power Solar Skids with a 100% approval ratingPerformed and Documented all 120V/480V testing on electrical equipment equipment, such as Medium Voltage Transformers, Disconnects, Panels, Next Trackers, and Inverters on solar skids.Performed Hi-Pot testing on all medium voltage cables and produced legal documentation for clients.Inspected all electrical equipment for proper wiring, clearance and raceways to insure compliance with NEC codesMaintained extensive testing records and inspection photos.Successfully worked with structural & electrical line supervisors on proper installation of equipment and compliance of single-line diagrams.Implemented quality control procedures to insure a high standard of craftsmanship within the labor force.Coordinated and resolved any issues with Electrical & Structural \u00a0Engineers on drawings."
     },
     {
       "role": "Commercial Electrical Foreman",
       "company": "Delta Diversified Enterprises Inc",
-      "date_start": "2004-01-01T00:00:00",
+      "date_start": "1970-01-01T00:33:24Z",
       "date_end": "2015-07-01T00:00:00",
       "role_description": "Successfully planned the layout and installation of electrical systems and components on over 25 commercial and industrial base build projects\u00a0by identifying, planning and supervising with robust strategiesLed a team of 25 workers for the daily execution of coordinated work activities in a manner that is consistent with OSHA Safety Standards.Collaborated with a diverse team of architects and electrical and mechanical engineers to resolve all issuesOn time and on budget project completion for five consecutive years.Fostered a safety conscious work environment where employees feel free to raise concerns.Conducted quality control inspections on electrical systems, equipment, or components to identify hazards, and defects.Start-up Testing on 480V SES, Transformers, Motor Control Centers, and Panels.Developed excellent multitasking and communication skills with sub-contractors and other tradesImplemented Rigorous hands on supervisor style to meet deadlines, cost and quality with emphasis on safe proceduresDiagnosed equipment malfunctions and completed repairs to restore equipment and maintain uptime.Repaired electrical equipment using hand and power tools and testing and diagnostic equipment."
     }
@@ -65,7 +69,7 @@
       "degree": "Associate of Applied Science:Electrical",
       "institution": "Gateway Community College",
       "date_start": null,
-      "date_end": "2010-01-01T00:00:00",
+      "date_end": "2010",
       "grade": 4.0,
       "description": "* Outstanding Academic Acheievment Award"
     },
@@ -73,7 +77,7 @@
       "degree": "Apprenticeship Program:Electrical",
       "institution": "Gateway Community College-ABA",
       "date_start": null,
-      "date_end": "2010-01-01T00:00:00",
+      "date_end": "2010",
       "grade": 4.0,
       "description": "4 year Apprenticeship Program Accredited thru the United States Department of Labor* \u00a0Outstanding Academic Achievement Award"
     },
@@ -81,21 +85,13 @@
       "degree": "Bachelor of Fine Arts:Film & TV Production",
       "institution": "Chapman University",
       "date_start": null,
-      "date_end": "2001-01-01T00:00:00",
+      "date_end": "2001",
       "grade": null,
       "description": "Emphasis in Cinematography4 years Accredited towards Degree"
-    },
-    {
-      "degree": null,
-      "institution": null,
-      "date_start": null,
-      "date_end": null,
-      "grade": null,
-      "description": null
     }
   ],
   "certifications": [
-    "OSHA-30 Certified",
-    "Confined Space Experience"
-  ]
+    "OSHA-30 Certified"
+  ],
+  "id": "RES_O5bebNRA"
 }
