@@ -1,19 +1,19 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, get_origin, get_args, Union
 import datetime
 
 class Experience(BaseModel):
     role: Optional[str] = Field(None, description="The job title or position held")
     company: Optional[str] = Field(None, description="The name of the company")
-    date_start: Optional[datetime.datetime] = Field(None, description="The start date of the job")
-    date_end: Optional[datetime.datetime] = Field(None, description="The end date of the job")
+    date_start: Optional[str] = Field(None, description="The start date of the job")
+    date_end: Optional[str] = Field(None, description="The end date of the job, or 'current'/'present'/'ongoing' if specified")
     role_description: Optional[str] = Field(None, description="A description of the responsibilities and achievements in the role")
 
 class Education(BaseModel):
     degree: Optional[str] = Field(None, description="The academic degree obtained")
     institution: Optional[str] = Field(None, description="The name of the educational institution")
-    date_start: Optional[datetime.datetime] = Field(None, description="The start date of the education program")
-    date_end: Optional[datetime.datetime] = Field(None, description="The end date of the education program")
+    date_start: Optional[str] = Field(None, description="The start date of the education program")
+    date_end: Optional[str] = Field(None, description="The end date of the education program, or 'current'/'present'/'ongoing' if specified")
     grade: Optional[float] = Field(None, description="The GPA or final grade, if available")
     description: Optional[str] = Field(None, description="Additional details about the education")
 
@@ -30,7 +30,7 @@ class Resume(BaseModel):
                                    "Avoid duplicates and use concise wording." \
                                    "Clean up tool names and merge variations.")
     soft_skills: List[str] = Field(..., description="A list of soft skills mentioned in the resume, such as communication, teamwork, and leadership. Avoid duplication.")
-    languages: List[str]= Field(..., description="A list of language proficiencies mentioned in the resume")
+    languages: List[str]= Field(..., description="A list of language proficiencies mentioned in the resume, excluding programming languages")
     experience: List[Experience] = Field(..., description="A list of past work experiences")
     education: List[Education] = Field(..., description="A list of educational qualifications")
     certifications: List[str] = Field(..., description="A list of certifications or licenses mentioned in the resume, such as AWS Certified Solutions Architect, PMP, etc.")

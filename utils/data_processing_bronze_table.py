@@ -1,12 +1,13 @@
 import pandas as pd
 import os
 import datetime
-import dateparser
+from dateutil.relativedelta import relativedelta
 import numpy as np
 from dotenv import load_dotenv
 import json
 from tqdm import tqdm
 import string
+import re
 
 from .resume_schema import Resume
 from .jd_schema import JD
@@ -31,8 +32,8 @@ def retrieve_data_from_source():
     def generate_random_snapshot_dates(df):
         rng = np.random.default_rng(seed=42)
         # Define start and end date
-        start_date = pd.to_datetime('2024-01-01')
-        end_date = pd.to_datetime('2025-01-01')
+        start_date = pd.to_datetime('2021-06-01')
+        end_date = pd.to_datetime('2021-12-1')
         # Generate random timestamps between start_date and end_date
         random_dates = pd.to_datetime(
             rng.uniform(start_date.value, end_date.value, size=len(df))
@@ -75,6 +76,15 @@ def retrieve_data_from_source():
 ###############
 # UTILITY FUNCTIONS
 ###############
+def clean_text(text):
+    # 1. Remove non-ASCII characters
+    text = text.encode('ascii', 'ignore').decode()
+
+    # 2. Keep only alphanumeric, punctuation, and whitespace
+    text = re.sub(r'[^a-zA-Z0-9\s!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~]', '', text)
+
+    return text
+
 def parse_with_llm(text, prompt_template, parser, llm):
     """
     Function to parse LLM into Pydantic schema
@@ -142,8 +152,10 @@ def process_bronze_table(spark):
     # Retrieve data from source
     ###############
     df = retrieve_data_from_source()
+    df['resume_text'] = df['resume_text'].apply(clean_text)
+    df['job_description_text'] = df['job_description_text'].apply(clean_text)
 
-    print("1. Retrieved data from source")
+    print("Retrieved data from source")
 
     ###############
     # Define LLM
@@ -183,54 +195,52 @@ def process_bronze_table(spark):
     parsed_resumes = []
     parsed_jds = []
 
-    for idx, row in tqdm(df.iterrows(), total=len(df)):
-        resume_text = row['resume_text']
-        jd_text = row['job_description_text']
-        try:
-            # Process resume
-            parsed_resume = parse_with_llm(resume_text, resume_prompt_template, resume_parser, llm)
-            parsed_resume_dict = parsed_resume.model_dump(mode="json")
-            parsed_resume_dict = {**parsed_resume_dict, 
-                                'snapshot_date': row['snapshot_date'], 
-                                'id': row['resume_id']}
-            parsed_resumes.append(parsed_resume_dict)
+    partitions = pd.date_range(start='2021-06-01', end='2021-12-01', freq='MS')
 
-            # Process JD
-            parsed_jd = parse_with_llm(jd_text, jd_prompt_template, jd_parser, llm)
-            parsed_jd_dict = parsed_jd.model_dump(mode="json")
-            parsed_jd_dict = {**parsed_jd_dict, 
-                            'snapshot_date': row['snapshot_date'],
-                            'id': row['job_id']}
-            parsed_jds.append(parsed_jd_dict)
-        
-        except Exception as e:
-            print(f"Error parsing row {idx}: {e}")
+    df['snapshot_date_str'] = df['snapshot_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
 
-    print("2. Extracted features")
+    for i in tqdm(range(len(partitions) - 1), desc="Processing monthly partitions"):
+        start_partition = partitions[i].strftime('%Y-%m-%d')
+        end_partition = partitions[i + 1].strftime('%Y-%m-%d')
 
-    ###############
-    # Convert to Spark df
-    ###############
-    resume_df = spark.createDataFrame(parsed_resumes, schema=pydantic_to_spark_schema(Resume)).repartition("snapshot_date")
-    jd_df = spark.createDataFrame(parsed_jds, schema=pydantic_to_spark_schema(JD)).repartition("snapshot_date")
+        # Filter rows between start and end of the month
+        df_parted = df[(df['snapshot_date_str'] >= start_partition) & (df['snapshot_date_str'] < end_partition)]
 
-    print("3. Converted into Spark df")
+        for idx, row in df_parted.iterrows():
+            resume_text = row['resume_text']
+            jd_text = row['job_description_text']
+            try:
+                # Process resume
+                parsed_resume = parse_with_llm(resume_text, resume_prompt_template, resume_parser, llm)
+                parsed_resume_dict = parsed_resume.model_dump(mode="json")
+                parsed_resume_dict = {**parsed_resume_dict, 
+                                    'snapshot_date': row['snapshot_date'], 
+                                    'id': row['resume_id']}
+                parsed_resumes.append(parsed_resume_dict)
 
-    ###############
-    # Save into MongoDB
-    ###############
-    resume_df.write.format("mongodb") \
-               .mode("overwrite") \
-               .option("database", "jobmirror") \
-               .option("collection", "resume_gemini") \
-               .partitionBy("snapshot_date") \
-               .save()
-    
-    jd_df.write.format("mongodb") \
-               .mode("overwrite") \
-               .option("database", "jobmirror") \
-               .option("collection", "jd_gemini") \
-               .partitionBy("snapshot_date") \
-               .save()
-    
-    print("4. Saved into MongoDB")
+                # Process JD
+                parsed_jd = parse_with_llm(jd_text, jd_prompt_template, jd_parser, llm)
+                parsed_jd_dict = parsed_jd.model_dump(mode="json")
+                parsed_jd_dict = {**parsed_jd_dict, 
+                                'snapshot_date': row['snapshot_date'],
+                                'id': row['job_id']}
+                parsed_jds.append(parsed_jd_dict)
+
+                resume_df = spark.createDataFrame(parsed_resumes, schema=pydantic_to_spark_schema(Resume))
+                jd_df = spark.createDataFrame(parsed_jds, schema=pydantic_to_spark_schema(JD))
+
+                resume_df.write.format("mongodb") \
+                    .mode("append") \
+                    .option("database", "jobmirror") \
+                    .option("collection", "resume_gemini") \
+                    .save()
+                
+                jd_df.write.format("mongodb") \
+                    .mode("append") \
+                    .option("database", "jobmirror") \
+                    .option("collection", "jd_gemini") \
+                    .save()
+            
+            except Exception as e:
+                print(f"Error parsing row {idx}: {e}")
+        print(f"Processed {start_partition}-{end_partition}")

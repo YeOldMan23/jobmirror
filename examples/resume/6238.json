@@ -25,11 +25,6 @@
     "Postgres",
     "Cassandra",
     "Mongo",
-    "IE",
-    "Firefox",
-    "Safari",
-    "Opera",
-    "Chrome",
     "Mocha",
     "Jasmine",
     "Selenium",
@@ -39,7 +34,6 @@
     "C",
     "Java",
     "Python",
-    "Windows",
     "MySQL",
     "Java Servlets",
     "Bootstrap",
@@ -48,15 +42,15 @@
     "PYTHON",
     "CISM",
     "Powershell",
-    "Perl",
-    "Database"
+    "Perl"
   ],
   "soft_skills": [
     "Team player",
-    "Research orientated",
+    "Research oriented",
     "Flexible",
+    "Highly motivated",
+    "Self-starter",
     "Hard worker",
-    "Highly motivated self-starter",
     "Get-it-done personality"
   ],
   "languages": [],
@@ -64,7 +58,7 @@
     {
       "role": "Software Engineer Intern",
       "company": "Viasat Inc.",
-      "date_start": "2016-10-01T00:00:00",
+      "date_start": "10/2016",
       "date_end": "Current",
       "role_description": "Designed Frontend with in VB Scripting.\nDeveloped Single page application using the Router concept.\nUsed\u00a0 CISA, PYTHON,CISM.\nUsed Powershell,\u00a0 Perl for fast going application.\nImproved the performance of the application by replacing the existing process and controls with most suitable process flow, optimized queries and code snippets\nIntroduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
     }
@@ -74,7 +68,7 @@
       "degree": "Master Of Science:Information Technology",
       "institution": "Hyderabad",
       "date_start": null,
-      "date_end": "Expected in",
+      "date_end": null,
       "grade": null,
       "description": "GPA:Status-Information Technology"
     },
