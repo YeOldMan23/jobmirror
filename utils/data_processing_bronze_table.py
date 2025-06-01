@@ -213,14 +213,14 @@ def process_bronze_table(spark):
                 # Process resume
                 parsed_resume = parse_with_llm(resume_text, resume_prompt_template, resume_parser, llm)
                 parsed_resume_dict = parsed_resume.model_dump(mode="json")
-                parsed_resume_dict['snapshot_date'] = row['snapshot_date']
+                parsed_resume_dict['snapshot_date'] = row['snapshot_date_str']
                 parsed_resume_dict['id'] = row['resume_id']
                 parsed_resumes.append(parsed_resume_dict)
 
                 # Process JD
                 parsed_jd = parse_with_llm(jd_text, jd_prompt_template, jd_parser, llm)
                 parsed_jd_dict = parsed_jd.model_dump(mode="json")
-                parsed_jd_dict['snapshot_date'] = row['snapshot_date']
+                parsed_jd_dict['snapshot_date'] = row['snapshot_date_str']
                 parsed_jd_dict['id'] = row['job_id']
                 parsed_jds.append(parsed_jd_dict)
 
