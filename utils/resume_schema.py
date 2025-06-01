@@ -5,15 +5,15 @@ import datetime
 class Experience(BaseModel):
     role: Optional[str] = Field(None, description="The job title or position held")
     company: Optional[str] = Field(None, description="The name of the company")
-    date_start: Optional[str] = Field(None, description="The start date of the job")
-    date_end: Optional[str] = Field(None, description="The end date of the job, or 'current'/'present'/'ongoing' if specified")
+    date_start: Optional[str] = Field(None, description="The start date of the job in ISO 8601 format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)")
+    date_end: Optional[str] = Field(None, description="The end date of the job in ISO 8601 format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS), or 'current'/'present'/'ongoing' if specified")
     role_description: Optional[str] = Field(None, description="A description of the responsibilities and achievements in the role")
 
 class Education(BaseModel):
     degree: Optional[str] = Field(None, description="The academic degree obtained")
     institution: Optional[str] = Field(None, description="The name of the educational institution")
-    date_start: Optional[str] = Field(None, description="The start date of the education program")
-    date_end: Optional[str] = Field(None, description="The end date of the education program, or 'current'/'present'/'ongoing' if specified")
+    date_start: Optional[str] = Field(None, description="The start date of the education program in ISO 8601 format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)")
+    date_end: Optional[str] = Field(None, description="The end date of the education program in ISO 8601 format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS), or 'current'/'present'/'ongoing' if specified")
     grade: Optional[float] = Field(None, description="The GPA or final grade, if available")
     description: Optional[str] = Field(None, description="Additional details about the education")
 
