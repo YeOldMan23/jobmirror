@@ -1,0 +1,74 @@
+{
+  "name": null,
+  "location_preference": null,
+  "work_authorizaton": null,
+  "employment_type_preference": "Full-time",
+  "hard_skills": [
+    "Diagnostics and troubleshooting",
+    "OSHA requirements",
+    "Electrical codes familiarity",
+    "Safety awareness",
+    "Power and hand tool operation",
+    "Schematics and blueprints",
+    "Electrical diagnostics",
+    "Finish work",
+    "System installations",
+    "Wiring diagrams and plans",
+    "High voltage termination",
+    "Project planning"
+  ],
+  "soft_skills": [
+    "Leadership",
+    "Reliability",
+    "Accuracy",
+    "Team-oriented",
+    "Proactive",
+    "Punctual",
+    "Organized"
+  ],
+  "languages": [
+    "English"
+  ],
+  "experience": [
+    {
+      "role": "Electrical Apprentice",
+      "company": "Milestone",
+      "date_start": "2017-06-01T00:00:00",
+      "date_end": "current",
+      "role_description": "Review projects to have a six-week look ahead, manage multiple crews, work in team-based environments to accomplish projects, put in new electrical components, fixtures, and motors, operate hand and power tools and diagnostic equipment, follow all relevant electrical and building codes, keep work areas clean and organized, measure and prepare supplies for electrical tasks, adhere to company standards and OSHA regulations, dig trenches and create holes to pull conduit and install supports, demonstrate strong foundation of safety knowledge, resolve issues with existing systems, utilize knowledge and equipment to test wiring and other system parts, verify measurements, inspect existing wiring, collaborate with professionals, assist with electrical installation tasks, listen to directives of senior electrical professionals, set up equipment and configure settings."
+    },
+    {
+      "role": "Dog Handler",
+      "company": "Trugreen",
+      "date_start": "2014-08-01T00:00:00",
+      "date_end": "2017-06-01T00:00:00",
+      "role_description": "Developed long-term relationships with clients and bonded with animals, cared for pets during owners' absences, walked animals, monitored animals during group play sessions, juggled multiple projects and tasks, prioritized and organized tasks, worked closely with team members, acclimated new animals to training team, evaluated animals, monitored and documented animal health."
+    },
+    {
+      "role": "Lifeguard/Snack Bar Attendant",
+      "company": "Hampton Golf",
+      "date_start": "2013-07-01T00:00:00",
+      "date_end": "2016-12-01T00:00:00",
+      "role_description": "Took orders from customers, restocked condiments and supplies, delivered food and beverage items, minimized spoilage risk, operated cash registers, opened and closed stand, stocked and restocked food and equipment, cleaned and polished counters, greeted customers, prepared bills, reviewed food preparation, maintained high standards of customer service, served drinks, stored food following safety procedures, wiped down tables."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Journeyman Wireman",
+      "institution": "Electrical Training Alliance of Jacksonville",
+      "date_start": "2022-04-01T00:00:00",
+      "date_end": null,
+      "grade": null,
+      "description": null
+    },
+    {
+      "degree": "High School Diploma",
+      "institution": "Fleming Island High School",
+      "date_start": null,
+      "date_end": "2016-06-01T00:00:00",
+      "grade": null,
+      "description": null
+    }
+  ],
+  "certifications": []
+}

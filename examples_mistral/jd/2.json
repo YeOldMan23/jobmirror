@@ -1,0 +1,49 @@
+{
+  "company_name": "Schweitzer Engineering Laboratories (SEL)",
+  "role_title": "Lead Software Engineer",
+  "application_deadline": null,
+  "date_posted": null,
+  "employment_type": "Full-time",
+  "about_the_company": "Schweitzer Engineering Laboratories (SEL) Infrastructure Defense Division focuses on cybersecurity in the power engineering community. SEL is 100% employee-owned and offers competitive pay, superior benefits, and a strong emphasis on work-life balance.",
+  "job_responsibilities": [
+    "Lead a team conducting white and black box testing of devices and software for security flaws and vulnerabilities.",
+    "Identify areas of concern and provide recommendations for improved cybersecurity.",
+    "Stay up to date and train others about current security vulnerabilities and mitigation processes.",
+    "Lead the specification, design, implementation, and testing of firmware/software systems.",
+    "Understand hardware and software interactions and collaborate with Hardware Engineers.",
+    "Lead the development of designs and test documentation.",
+    "Mentor Engineers, Associate Engineers, and Technicians."
+  ],
+  "required_hard_skills": [
+    "Object-Oriented Programming",
+    "Embedded Programming",
+    "C",
+    "C++",
+    "C#",
+    "Python",
+    "Network Communications",
+    "IS Protocols",
+    "ICS Protocols",
+    "Digital Forensics",
+    "Reverse Engineering",
+    "Industrial Control Systems",
+    "Information Security",
+    "Cyber Analysis"
+  ],
+  "required_soft_skills": [
+    "Leadership",
+    "Teamwork",
+    "Communication",
+    "Mentoring"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": "B.S. in Electrical Engineering, Computer Science, Cybersecurity, Information Technology, Software Engineering, Information Systems, Computer Engineering, or equivalent.",
+  "required_work_authorization": "United States Citizenship",
+  "job_location": "Pullman, WA",
+  "certifications": [
+    "NICCS Work Role ID: PR-VAM-001",
+    "NICCS Work Role ID: AN-EXP-001"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "company_name": "Capgemini",
+  "role_title": "Software Engineer",
+  "application_deadline": null,
+  "date_posted": null,
+  "employment_type": "Full-time",
+  "about_the_company": "Capgemini Engineering is a world leader in engineering and R&D services, combining broad industry knowledge and cutting-edge technologies in digital and software. It supports the convergence of the physical and digital worlds and helps clients accelerate their journey towards Intelligent Industry. Capgemini Engineering has over 55,000 engineers and scientists across 30 countries in various sectors. Capgemini is a global leader in partnering with companies to transform and manage their business by harnessing the power of technology, with over 360,000 team members in more than 50 countries.",
+  "job_responsibilities": [
+    "Proactively create and review team contributions",
+    "Participate as a 'code owner' and partner with collaborators in code-reviews",
+    "Automate unit, integration, and end-to-end testing solutions and incorporate them with the testing lifecycle",
+    "Run code in pre-production and ensure quality",
+    "Deploy solutions across environments and platforms, including production releases",
+    "Provide operational support of code and all code within the domain",
+    "Teardown old solutions, products, and resources when no longer needed",
+    "Resolve issues within the team and prevent problems from occurring",
+    "Be proactive and identify, resolve, mitigate, and prevent technical issues, risks, and provide solutions"
+  ],
+  "required_hard_skills": [
+    "C#",
+    ".NET Core",
+    ".NET",
+    "CICD tools",
+    "Source Control",
+    "Build",
+    "Deploy",
+    "GitHub",
+    "Jenkins",
+    "Spinnaker",
+    "DevOps deployments"
+  ],
+  "required_soft_skills": [
+    "Proactive",
+    "Teamwork",
+    "Problem-solving",
+    "Communication"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": "Computer Science degree or equivalent experience",
+  "required_work_authorization": null,
+  "job_location": null,
+  "certifications": []
+}

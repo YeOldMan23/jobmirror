@@ -1,0 +1,35 @@
+{
+  "company_name": "Net2Source Inc.",
+  "role_title": "Basel Business Analyst",
+  "application_deadline": null,
+  "date_posted": null,
+  "employment_type": "Contract",
+  "about_the_company": "Net2Source Inc. is an award-winning total workforce solutions company recognized by Staffing Industry Analysts for accelerated growth of 300% in the last 3 years with over 5500+ employees globally, with over 30+ locations in the US and global operations in 32 countries. They provide staffing solutions to address the current talent gap and act as a Career Coach to their consultants.",
+  "job_responsibilities": [
+    "Gathering business requirements and developing functional specifications",
+    "Defining use cases and test cases",
+    "Providing user training and support",
+    "Defining and implementing technology solutions for major financial institutions",
+    "Analyzing datasets using SQL"
+  ],
+  "required_hard_skills": [
+    "MS Excel",
+    "SQL",
+    "Relational Databases (RDMS)",
+    "Basel regulations",
+    "Credit risk analysis"
+  ],
+  "required_soft_skills": [
+    "Analytical skills",
+    "Organizational skills",
+    "Solution-oriented mindset",
+    "Detail-focused"
+  ],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": null,
+  "required_work_authorization": null,
+  "job_location": "Washington, D.C.",
+  "certifications": []
+}

@@ -1,0 +1,91 @@
+{
+  "name": null,
+  "location_preference": null,
+  "work_authorizaton": null,
+  "employment_type_preference": null,
+  "hard_skills": [
+    "SDLC",
+    "Project Management",
+    "Programming",
+    "Systems Analysis",
+    "Systems Development",
+    "Business Analysis",
+    "People Management",
+    "Process Improvement",
+    "Technical Training Development",
+    "HP Quality Center",
+    "Business Intelligence 6.5",
+    "BOXI",
+    "Crystal Reports",
+    "Microsoft Excel",
+    "SQL",
+    "SAS",
+    "PowerPoint",
+    "Remedy",
+    "PeopleSoft",
+    "Visio",
+    "Business Objects 6.5",
+    "Business Objects XI",
+    "Microstrategy",
+    "Oracle",
+    "OBIEE",
+    "SQL Server",
+    "PowerBuilder",
+    "Unix",
+    "Visual Basic",
+    "C",
+    "DOS",
+    "TSO",
+    "Windows 95",
+    "Windows 98",
+    "Windows 2000",
+    "Windows NT 4.0",
+    "WordPerfect",
+    "Microsoft Word",
+    "Microsoft Outlook",
+    "Microsoft Project",
+    "SharePoint"
+  ],
+  "soft_skills": [
+    "Communication",
+    "Teamwork",
+    "Leadership",
+    "Problem Solving",
+    "Analytical Skills"
+  ],
+  "languages": [
+    "English"
+  ],
+  "experience": [
+    {
+      "role": "Business Analyst/Data Analyst",
+      "company": "Tyler Technologies",
+      "date_start": "2014-10-01T00:00:00",
+      "date_end": "2015-04-01T00:00:00",
+      "role_description": "SDLC for USPS Postal stores software CD installation development, procedures & support. Wrote SQL Scripts for reporting documents, SQL scripting for multiple data joins for reporting, updated SQL Scripts for schedule monthly reports, wrote SQL scripts to pull multiple data, created test plans in HP Quality Center, updated test plans in HP Quality Center, created defects in HP Quality Center, created Business Object Queries for the DeCA account for TIER I analysis, created Business Object Queries for the USPS CE dispatches for TIER II to improve SLA, tested and created EDW queries for the GEMS Universe for all accounts in the ACCC in Columbia, SC, created Reports in Business Object for the DeCA account on SLA, created Deep dive Analysis reports for the DeCA account for the ESM, set-up customer and internal reports for the Columbia ACCC helpdesk accounts, used Business Object using business objects 6.0 and the client applications, used Business Objects XI for multiple reports, created Dashboard reports through Business Objects, created ATM Financial daily, weekly and monthly reports, created financial reporting through BI for helpdesk accounts, created financial reports through BI and Excel for renewal contracts accounts, created design specification for Data table for new Business Objects universes, tested new corporate Business objects universes (helpdesk, human resource, ATM Financial), created multiple ad-hoc reports on a daily basis, created daily, weekly and monthly reports through datawarehouse, collaborated with customer outside and internal customers on reporting requirements, ensured that the data collected through remedy system or business objects was correct, consistent and complete by monitoring, analyzing and reporting on information across the organization, delivered accurate and trusted data to your information users-standardize, correct, enhance, and unify data from any source, created Deep Dive DeCA report broken down by software, hardware and procedural that were data was checked for data quality prior to uploading into business objects, ensured the integrity of your data, maximize developer productivity, and ensure complete data for all operational and analytic initiatives, created Business requirement documents for outside insurance company's run through internal insurance processing for claim processing, created algorithms through SAS for cost saving through medicare and medicaid claims processing, updated SDD's documents and RTMS for requirements for claims processing, worked with data analyst on new requirements documentation for claims processing, worked with Data analyst on new production algorithms through SAS for claims processing, created algorithm for monthly and yearly cost across company's platform, worked with other BA's assisting in algorithms through SAS."
+    },
+    {
+      "role": "Deployment Engineer",
+      "company": "A Place For Mom",
+      "date_start": "2010-01-01T00:00:00",
+      "date_end": "2014-01-01T00:00:00",
+      "role_description": "For CMS (Certified Medicare Services), wrote SQL Scripts for reporting documents, SQL scripting for multiple data joins for reporting, updated SQL Scripts for schedule monthly reports, wrote SQL scripts to pull multiple data, created test plans in HP Quality Center, updated test plans in HP Quality Center, created UAT testing in HP Quality Center, created defects in HP Quality Center, scheduled deployment for Hospital reporting contract, scheduled production fixes for Hospital reporting, triage defect in V&V testing cycle, triage defect in production, was deployment Engineer as well as Business Process Analyst for deployments, worked with release manager on development and defect, monitored all remedy ticket for Hospital reporting contract, created new and updating current legacy PowerBuilder reports, updated new SQL packages for requirements for current legacy reports, inserted data into tables to update and test new or legacy reports, defect lead for all defects for the CMS account, created reports for management on status for all defects by third party testing company and own QA testers, fixed production reports upon request, worked with BA's on new requirements documentation, updated SDD's documents and RTMS for requirements and RCR's."
+    },
+    {
+      "role": "Business Analyst",
+      "company": "A Place For Mom",
+      "date_start": "2010-01-01T00:00:00",
+      "date_end": "2010-01-01T00:00:00",
+      "role_description": "Business Analyst for DOL ICERT system application modules. Analyzed business or scientific problems for resolution through electronic data processing, gathered information from users, defined work problems, and, if feasible, designed a system of computer programs and procedures to resolve the problems. Developed complete specifications or enabled other Computer Programmers to prepare required programs and analyzed subject-matter operations to be automated; specified number and types of records, files, and documents to be used and outputs to be produced; prepared work diagrams and data flow charts; coordinated tests of the system and participated in trial runs of new and revised systems; and recommended computer equipment changes to obtain more effective operations. Applied systems analysis and design skills in an area such as a record keeping or scientific operation. The Computer Systems Analyst II reviewed proposals which consist of objectives, scope, and user expectations; gathered facts, analyzed data, and prepared a project synopsis which compared alternatives in terms of cost, time, availability of equipment and personnel, and recommended a course of action; upon approval of synopsis, prepared specifications for development of computer programs. Duties also included the ability to determine and resolve data processing problems and coordinate the work with program, users."
+    },
+    {
+      "role": "Business Analyst",
+      "company": "NCR",
+      "date_start": "1996-01-01T00:00:00",
+      "date_end": "2009-01-01T00:00:00",
+      "role_description": "Moved all customer and internal reporting over to Business Objects and client tools, developing time zone reporting worldwide for global reporting. Developed Helpdesk standard reports through Business Object using the client applications. Used Business Object XI applications by developing multiple reports. Helped in running EDW reports, Crystal reports and deep dive analysis for the DECA helpdesk in Columbia to help identify software and hardware issues to drop their call rate down per month. Ran all reporting for hardware from Sparks plus EDW reports for CE dispatches, helping in developing new processes that contributed to dropping OBF's (Out of Box Failures) by over 35% and NFF's (No Fault Found) by over 25%. Assisted in setting up a database that TIER II analyst and DEPO maintenance personnel could view for repeat offenders that helped determine the cause of the equipment, dropping both OBF's and NFF's. Created multiple reporting for Helpdesk and Standard Helpdesk reports to transfer all accounts to organize Columbia Helpdesk for DeCA, improving helpdesk reporting processes. Converted all reporting from the GEMS Remedy to EDW-Business Object for all accounts at the ACCC helpdesk to EDW and created reports for other accounts across NCR worldwide. Created Crystal reports for helpdesk accounts on companies Remedy and customer Remedy systems. Initiated a project plan for tracking all products on the account that dropped OBF's (Out of Box Failures) and NFF's (No Fault Founds) by over 25%. Acted as USPS Postal Stores Project manager, Software developer, Senior System Support Analysis (TIER III & IV) for 670 USPS Postal Stores. Developed and Tested 3rd party applications on a Windows NT operating system and built CD install and recovery program. Wrote support procedures for TIER I and II help desk, providing Level II, III, & IV support for AAFES Burger King"
+    }
+  ],
+  "education": [],
+  "certifications": []
+}

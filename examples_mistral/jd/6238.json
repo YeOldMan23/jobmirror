@@ -1,8 +1,10 @@
 {
   "company_name": "LHH Recruitment Solutions",
   "role_title": "Software Engineer V",
-  "employment_type": "Full Time",
-  "about_the_company": "a global people analytics and consulting firm focused on improving employee work experiences and driving better business results",
+  "application_deadline": null,
+  "date_posted": null,
+  "employment_type": "Full-time",
+  "about_the_company": "A global people analytics and consulting firm focused on improving employee work experiences and driving better business results.",
   "job_responsibilities": [
     "Support requirements definition, software development, and testing for key applications.",
     "Collaborate with business and IT teams to meet emerging needs and resolve application issues.",
@@ -12,8 +14,11 @@
   "required_hard_skills": [
     "Relational and unstructured data",
     "Front-end and back-end web development",
-    "Data architectures, flows, and ETL processes",
-    "Designing and managing distributed systems",
+    "Data architectures",
+    "Data flows",
+    "ETL processes",
+    "Distributed systems",
+    "DevOps practices",
     "Windows Server",
     ".NET framework",
     "Visual Studio",
@@ -39,22 +44,20 @@
     "Entity Framework",
     "WebAPI",
     "Azure Service Bus",
-    "Azure App Services",
-    "Websites",
-    "Virtual Machines",
-    "Full-Stack development",
-    "Architecting",
-    "Agile development"
+    "Azure App Services"
   ],
   "required_soft_skills": [
-    "Strong technical and problem-solving skills",
-    "Ability to work effectively in a small team",
-    "Excellent written and oral communication skills"
+    "Communication",
+    "Teamwork",
+    "Problem-solving",
+    "Leadership",
+    "Mentoring"
   ],
-  "required_language_proficiencies": [],
+  "required_language_proficiencies": [
+    "English"
+  ],
+  "required_education": "Bachelor's degree in computing, information technology, or a related field, or significant software engineering experience.",
   "required_work_authorization": null,
-  "required_education": "Bachelors degree in computing, information technology, or a related field, or significant software engineering experience.",
   "job_location": "Remote",
-  "date_posted": null,
-  "id": "JD_1HWrRA5T"
+  "certifications": []
 }
