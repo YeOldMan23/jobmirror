@@ -1,7 +1,7 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": "internship",
   "hard_skills": [
     "C",
@@ -22,8 +22,7 @@
     "Layout",
     "Virtuoso",
     "Spectre",
-    "Synopsys",
-    "DC Compiler",
+    "Synopsys DC Compiler",
     "Modelsim",
     "Questasim",
     "TFS",
@@ -33,69 +32,70 @@
     "ASIC",
     "controller",
     "database",
-    "Electronics",
     "Embedded Systems",
+    "Electronics",
     "Functional",
     "logic",
     "Microprocessor",
     "Operating Systems",
     "Programming",
+    "SDLC",
     "Scripting",
     "Simulation",
     "System Design"
   ],
   "soft_skills": [
-    "clients",
+    "managing",
+    "requirement",
+    "Safety",
+    "ergonomics",
     "Customer Satisfaction",
     "customer support",
-    "delivery",
-    "ergonomics",
-    "managing",
-    "office",
-    "Safety",
-    "SDLC"
+    "delivery"
   ],
   "languages": [],
   "experience": [
     {
       "role": "Software Engineer",
       "company": "Torch Technologies, Inc.",
-      "date_start": "2015-12-01T00:00:00",
-      "date_end": "2016-08-01T00:00:00",
+      "date_start": "12/2015",
+      "date_end": "08/2016",
       "role_description": "Analyze internal processes and recommend and implement procedural changes to improve operations in database.\nAnalyze the requirement and make the necessary changes in the existing modules.\nSupport and maintenance of the specific module."
     },
     {
       "role": "System Engineer",
       "company": "Apex Systems",
-      "date_start": "2013-04-01T00:00:00",
-      "date_end": "2015-12-01T00:00:00",
-      "role_description": "Worked in SDLC and Agile framework made me flexible in working as and when required Consistent performance and ownership of the task while maintaining of the module in Data ware house project.\nInteracting with clients (UK United Biscuits, Canada TD bank, ING bank Singapore) during analysis, development & implementation phase gave me a global exposure of interacting with the people across different regions of world.\nUnderstanding the requirement of the customers while providing customer support and testing of functional and technical queries, request, requirements and modifications.\nConducted training sessions to train juniors for the same technology.\nAchievements Customer Satisfaction Index for the project increased from 82.7% to 97.8% in the duration of 6 months for the consistent performance and various suggestions and effective solutions being provided for the improvement of the system.\nReceived an appreciation from VP of TD bank Mr.Barkla for a successful delivery of the compliance project within the Time lines.\nOn the spot award\" for leading and managing event for the account (TCS).\nSafety Champion of Women safety initiative in the organization for 2015.\nI was leading a team of 10-15 people for a year in which I was interacting with various employees in the office, explaining them the significance of ergonomics, suggested exercises and also encouraging them to practice the same.\nReceived All India Mahindra talent scholarship in the year of Aug-2006 for securing 85.73% JRD TATA scholarship in the year of Sept-2009 of for the accomplishment of 84.12% in the diploma."
+      "date_start": "04/2013",
+      "date_end": "12/2015",
+      "role_description": "Worked in SDLC and Agile framework made me flexible in working as and when required Consistent performance and ownership of the task while maintaining of the module in Data ware house project.\nInteracting with clients (UK United Biscuits, Canada TD bank, ING bank Singapore) during analysis, development & implementation phase gave me a global exposure of interacting with the people across different regions of world.\nUnderstanding the requirement of the customers while providing customer support and testing of functional and technical queries, request, requirements and modifications.\nConducted training sessions to train juniors for the same technology."
     }
   ],
   "education": [
     {
       "degree": "Masters:Electrical & Computer Engineering",
       "institution": "PORTLAND STATE UNIVERSITY",
-      "date_start": null,
-      "date_end": "2016-10-01T00:00:00",
+      "date_start": "Fall 2016",
+      "date_end": null,
       "grade": 4.0,
-      "description": "Digital IC and Design(ECE 525) Ahsan\n*ASIC Design Modelling & Synthesis (ECE581) Xiaoyu Song \n*Verilog Workshop (ECE 510 )Roy Kravitz.:,Expected in--,GPA:Status-Microprocessor System Design (ECE585) Mark Faust \n*Embedded Systems Design with FPGAs (ECE544) Hammerstrom\n*Pre-silicon Functional Verification by Prof. Schubert:"
+      "description": "Digital IC and Design(ECE 525) Ahsan\n*ASIC Design Modelling & Synthesis (ECE581) Xiaoyu Song \n*Verilog Workshop (ECE 510 )Roy Kravitz.:\nMicroprocessor System Design (ECE585) Mark Faust \n*Embedded Systems Design with FPGAs (ECE544) Hammerstrom\n*Pre-silicon Functional Verification by Prof. Schubert:"
     },
     {
       "degree": "Bachelor of Engineering:Electronics & Telecommunications",
       "institution": "Mumbai University",
-      "date_start": null,
-      "date_end": "2012-07-01T00:00:00",
-      "grade": 0.67,
+      "date_start": "July 2012",
+      "date_end": null,
+      "grade": 67.0,
       "description": "Core Subjects: Digital logic design Digital communication Electronics devices and circuits I Analog digital IC design applications Electronics devices and circuits II Simulation of software workshop Microprocessor and micro-controllers I Microprocessor and micro-controllers II"
     },
     {
       "degree": "Diploma:Electronics & communications",
       "institution": "MAHARASHTRA STATE BOARD OF TECHNICAL EDUCATION",
-      "date_start": null,
-      "date_end": "2009-07-01T00:00:00",
-      "grade": 0.8412,
+      "date_start": "July 2009",
+      "date_end": null,
+      "grade": 84.12,
       "description": "Core Subjects: Electronic components and devices Programming in C Digital techniques and microprocessor Micro-controllers Digital communication Embedded systems"
     }
-  ]
+  ],
+  "certifications": [],
+  "id": "RES_DPqh0lVb"
 }

@@ -12,30 +12,28 @@
   "required_hard_skills": [
     "Digital circuit design",
     "Schematics experience using microprocessors",
-    "DX DesignerAltium",
+    "DX DesignerAltium etc.",
     "Microprocessor C programming",
-    "XilinxAlteraLattice High speed FPGA and SOC",
-    "Microprocessor like MSP430TM4CNXP IMX family",
+    "XilinxAlteraLattice High speed FPGA and SOC and microprocessor like MSP430TM4CNXP IMX family",
     "High Speed design tools",
     "Layout or Layout guidance for PCB designer",
-    "Test tools for signal integrity, EMC",
+    "Test tools for signal integrity, EMC etc.",
     "PCB Design (preferably PAD) Schematic Capture and layout",
     "Circuit Design",
     "Microprocessors development",
     "Firmware",
-    "Embedded controllers via Microcontrollers(ARM)",
+    "PADs",
+    "Microcontrollers(ARM)",
     "FPGA (Xilinx)",
-    "High-end (32 bits) microcontrollers",
+    "high-end (32 bits) microcontrollers",
     "IDE tools (CCS from Ti)",
-    "Code Composer Studio",
-    "PCB layout",
-    "Routing",
-    "PADs"
+    "Code Composer Studio"
   ],
   "required_soft_skills": [],
-  "required_language_proficiencies": [
-    "C Programming"
-  ],
+  "required_language_proficiencies": [],
   "required_work_authorization": null,
-  "job_location": "Parsippany, NJ"
+  "required_education": "Bachelor's degree in Electrical or Electronics Engineering (or similar)",
+  "job_location": "Parsippany, NJ",
+  "date_posted": null,
+  "id": "JD_XdUNowSD"
 }

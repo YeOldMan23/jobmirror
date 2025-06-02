@@ -19,12 +19,13 @@
     "CICD tools (Source Control, Build, Deploy)",
     "GitHub",
     "Jenkins",
-    "Spinnaker",
-    "DevOps deployments",
-    "Microsoft"
+    "Spinnaker"
   ],
   "required_soft_skills": [],
   "required_language_proficiencies": [],
   "required_work_authorization": null,
-  "job_location": null
+  "required_education": "Computer Science degree or equivalent experience",
+  "job_location": null,
+  "date_posted": null,
+  "id": "JD_JWSvWYY5"
 }

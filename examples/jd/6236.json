@@ -5,7 +5,6 @@
   "about_the_company": null,
   "job_responsibilities": [
     "Data engineering experience",
-    "Expert level experience with SQL",
     "Experience with the cloud (AWS, Azure andor Google Cloud Platform)",
     "Experience in cloud-based data warehouses (Snowflake, Google BigQuery, Amazon Redshift, Azure Synapse Analytics)",
     "Experience with cloud-based ETLELT tools (Matillion, Glue, Data Factory) and data modelling",
@@ -21,20 +20,15 @@
     "AWS",
     "Matillion",
     "Snowflake",
-    "Git",
-    "SVN",
-    "Glue",
-    "Data Factory",
-    "Google BigQuery",
-    "Amazon Redshift",
-    "Azure Synapse Analytics",
-    "Azure",
-    "Google Cloud Platform"
+    "SQL"
   ],
   "required_soft_skills": [
     "Agile Principles"
   ],
   "required_language_proficiencies": [],
   "required_work_authorization": null,
-  "job_location": "Remote"
+  "required_education": null,
+  "job_location": "Remote",
+  "date_posted": null,
+  "id": "JD_vNEJ62Py"
 }

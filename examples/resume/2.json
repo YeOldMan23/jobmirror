@@ -1,22 +1,24 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
-    "Diagnostics and troubleshooting",
+    "Diagnostics",
+    "Troubleshooting",
     "OSHA requirements",
     "Electrical codes familiarity",
     "Safety awareness",
-    "Power and hand tool operation",
-    "Schematics and blueprints",
-    "Lift up to 20,000 pounds",
+    "Power tool operation",
+    "Hand tool operation",
+    "Schematics",
+    "Blueprints",
     "Electrical diagnostics",
     "Finish work",
     "System installations",
     "Standard power tool knowledge",
-    "Wiring diagrams and plans",
-    "Out of hours calls",
+    "Wiring diagrams",
+    "Wiring plans",
     "Safety protocols",
     "High voltage termination",
     "Mathematical ability",
@@ -37,48 +39,50 @@
     {
       "role": "Electrical Apprentice",
       "company": "Milestone",
-      "date_start": "2018-01-01T00:00:00",
-      "date_end": "2023-11-21T14:16:11",
-      "role_description": "review projects to have a six week look aheadmanage multiple crewsWorked in team-based environment to accomplish projects.Put in new new electrical components, fixtures and motors.Operated hand and power tools and diagnostic equipment to complete various aspects of jobs.Followed all relevant electrical and building codes for each job.Kept work areas clean, neat and free of hazards.Measured and prepared supplies for electrical tasks.Maintained organization, cleanliness and safety in work areas.Reviewed blueprints and electrical schematics to perform tasks to specifications.Adhered to company standards and OSHA regulations for work site safety.Dug trenches and created holes to pull conduit and install supports.Demonstrated strong foundation of safety knowledge and implemented industry best practices.Resolved issues with existing systems and replaced malfunctioning parts.Utilized knowledge and equipment to test wiring and other system parts for electrical flow and function.Verified measurements and made accurate cuts to avoid wasting materials on job sites.Kept work areas clean, neat and organized for efficient operations.Inspected existing wiring to identify short circuits.Collaborated with more knowledgeable professionals to grow understanding of principles and construction standards.Examined and tested electrical systems to locate loose connections or other faults and make proactive repairs.Assisted with electrical installation tasks, added new wiring and adjusted breaker boxes.Completed semi-skilled and skilled work under supervision of fully qualified supervisors.Listened to directives of senior electrical professionals to complete efficient tasks.Set up equipment and configured settings for optimal performance."
+      "date_start": "01/2018",
+      "date_end": "Current",
+      "role_description": "review projects to have a six week look ahead\nmanage multiple crews\nWorked in team-based environment to accomplish projects.\nPut in new new electrical components, fixtures and motors.\nOperated hand and power tools and diagnostic equipment to complete various aspects of jobs.\nFollowed all relevant electrical and building codes for each job.\nKept work areas clean, neat and free of hazards.\nMeasured and prepared supplies for electrical tasks.\nMaintained organization, cleanliness and safety in work areas.\nReviewed blueprints and electrical schematics to perform tasks to specifications.\nAdhered to company standards and OSHA regulations for work site safety.\nDug trenches and created holes to pull conduit and install supports.\nDemonstrated strong foundation of safety knowledge and implemented industry best practices.\nResolved issues with existing systems and replaced malfunctioning parts.\nUtilized knowledge and equipment to test wiring and other system parts for electrical flow and function.\nVerified measurements and made accurate cuts to avoid wasting materials on job sites.\nKept work areas clean, neat and organized for efficient operations.\nInspected existing wiring to identify short circuits.\nCollaborated with more knowledgeable professionals to grow understanding of principles and construction standards.\nExamined and tested electrical systems to locate loose connections or other faults and make proactive repairs.\nAssisted with electrical installation tasks, added new wiring and adjusted breaker boxes.\nCompleted semi-skilled and skilled work under supervision of fully qualified supervisors.\nListened to directives of senior electrical professionals to complete efficient tasks.\nSet up equipment and configured settings for optimal performance."
     },
     {
       "role": "Electrical Apprentice",
       "company": "Milestone",
-      "date_start": "2017-06-01T00:00:00",
-      "date_end": "2017-12-01T00:00:00",
-      "role_description": "Put in new new electrical components, fixtures and motors.Operated hand and power tools and diagnostic equipment to complete various aspects of jobs.Worked in team-based environment to accomplish projects.Followed all relevant electrical and building codes for each job.Kept work areas clean, neat and free of hazards.Maintained organization, cleanliness and safety in work areas.Measured and prepared supplies for electrical tasks.Listened to directives of senior electrical professionals to complete efficient tasks.Adhered to company standards and OSHA regulations for work site safety.Completed semi-skilled and skilled work under supervision of fully qualified supervisors.Assisted with electrical installation tasks, added new wiring and adjusted breaker boxes.Examined and tested electrical systems to locate loose connections or other faults and make proactive repairs.Collaborated with more knowledgeable professionals to grow understanding of principles and construction standards.Inspected existing wiring to identify short circuits.Kept work areas clean, neat and organized for efficient operations.Utilized knowledge and equipment to test wiring and other system parts for electrical flow and function.Resolved issues with existing systems and replaced malfunctioning parts."
+      "date_start": "06/2017",
+      "date_end": "12/2017",
+      "role_description": "Put in new new electrical components, fixtures and motors.\nOperated hand and power tools and diagnostic equipment to complete various aspects of jobs.\nWorked in team-based environment to accomplish projects.\nFollowed all relevant electrical and building codes for each job.\nKept work areas clean, neat and free of hazards.\nMaintained organization, cleanliness and safety in work areas.\nMeasured and prepared supplies for electrical tasks.\nListened to directives of senior electrical professionals to complete efficient tasks.\nAdhered to company standards and OSHA regulations for work site safety.\nCompleted semi-skilled and skilled work under supervision of fully qualified supervisors.\nAssisted with electrical installation tasks, added new wiring and adjusted breaker boxes.\nExamined and tested electrical systems to locate loose connections or other faults and make proactive repairs.\nCollaborated with more knowledgeable professionals to grow understanding of principles and construction standards.\nInspected existing wiring to identify short circuits.\nKept work areas clean, neat and organized for efficient operations.\nUtilized knowledge and equipment to test wiring and other system parts for electrical flow and function.\nResolved issues with existing systems and replaced malfunctioning parts."
     },
     {
       "role": "Dog Handler",
       "company": "Trugreen",
-      "date_start": "2014-08-01T00:00:00",
-      "date_end": "2017-06-01T00:00:00",
-      "role_description": "Developed long-term relationships with clients and bonded with animals through regular contact.Cared for pets during owners' absences.Walked animals outside to avoid accidents in play areas or bedding.Monitored animals during group play sessions for signs of aggressive or fearful behavior.Juggled multiple projects and tasks to ensure high quality and timely delivery.Prioritized and organized tasks to efficiently accomplish service goals.Worked closely with team members to deliver project requirements, develop solutions and meet deadlines.Worked successfully with diverse group of coworkers to accomplish goals and address issues related to our products and services.Acclimated new animals to training team and processes with frequent contact and[Type]tones.Evaluated animals and discussed suitability with owners based on factors such as temperament and age.Monitored and documented animal health, diet and behaviors to identify and address trends."
+      "date_start": "08/2014",
+      "date_end": "06/2017",
+      "role_description": "Developed long-term relationships with clients and bonded with animals through regular contact.\nCared for pets during owners' absences.\nWalked animals outside to avoid accidents in play areas or bedding.\nMonitored animals during group play sessions for signs of aggressive or fearful behavior.\nJuggled multiple projects and tasks to ensure high quality and timely delivery.\nPrioritized and organized tasks to efficiently accomplish service goals.\nWorked closely with team members to deliver project requirements, develop solutions and meet deadlines.\nWorked successfully with diverse group of coworkers to accomplish goals and address issues related to our products and services.\nAcclimated new animals to training team and processes with frequent contact and[Type]tones.\nEvaluated animals and discussed suitability with owners based on factors such as temperament and age.\nMonitored and documented animal health, diet and behaviors to identify and address trends."
     },
     {
       "role": "Lifeguard/Snack Bar Attendant",
       "company": "Hampton Golf",
-      "date_start": "2013-07-01T00:00:00",
-      "date_end": "2016-12-01T00:00:00",
-      "role_description": "Took orders from customers cheerfully to maintain professional and welcoming appeal of snack area.Restocked condiments, service supplies and snack bar foods throughout shifts to stay ahead of customer demands.Delivered prepared food and beverage items promptly to customers' tables and bar area.Minimized spoilage risk by handling and storing snack bar foods according to health code standards.Assessed inventory and prepared product orders.Operated cash registers, counted money and logged daily sales and expenditures.Opened and closed stand properly by turning on or shutting down machines and warming and storing food properly.Stocked and restocked food and equipment items as necessary.Cleaned and polished counters, equipment and tables.Greeted customers, answered questions and provided food and drink recommendations.Prepared bills, handled cash and credit card transactions and distributed change.Reviewed food preparation to monitor cooking procedures and creation of special orders.Maintained high standards of customer service during high-volume work shifts and fast-paced operations.Talked pleasantly with customers while taking orders and promoted positive image for business.Served drinks and prepared specialty beverages.Stored food in designated areas following wrapping, dating, food safety and rotation procedures.Wiped down tables and removed trash and dirty plates to provide clean, welcoming dining environment.Warmly greeted visitors to promote great customer service and positive ordering experience."
+      "date_start": "07/2013",
+      "date_end": "12/2016",
+      "role_description": "Took orders from customers cheerfully to maintain professional and welcoming appeal of snack area.\nRestocked condiments, service supplies and snack bar foods throughout shifts to stay ahead of customer demands.\nDelivered prepared food and beverage items promptly to customers' tables and bar area.\nMinimized spoilage risk by handling and storing snack bar foods according to health code standards.\nAssessed inventory and prepared product orders.\nOperated cash registers, counted money and logged daily sales and expenditures.\nOpened and closed stand properly by turning on or shutting down machines and warming and storing food properly.\nStocked and restocked food and equipment items as necessary.\nCleaned and polished counters, equipment and tables.\nGreeted customers, answered questions and provided food and drink recommendations.\nPrepared bills, handled cash and credit card transactions and distributed change.\nReviewed food preparation to monitor cooking procedures and creation of special orders.\nMaintained high standards of customer service during high-volume work shifts and fast-paced operations.\nTalked pleasantly with customers while taking orders and promoted positive image for business.\nServed drinks and prepared specialty beverages.\nStored food in designated areas following wrapping, dating, food safety and rotation procedures.\nWiped down tables and removed trash and dirty plates to provide clean, welcoming dining environment.\nWarmly greeted visitors to promote great customer service and positive ordering experience."
     }
   ],
   "education": [
     {
-      "degree": "Journeyman Wireman",
-      "institution": "Electrical Training Alliance of Jacksonville",
-      "date_start": null,
-      "date_end": "2022-04-01T00:00:00",
+      "degree": null,
+      "institution": "Journeyman Wireman:Electrical Training Alliance of Jacksonville-4951 Richard St, Jacksonville, FL 32207",
+      "date_start": "04/2022",
+      "date_end": "to",
       "grade": null,
       "description": null
     },
     {
       "degree": "High School Diploma",
       "institution": "Fleming Island High School",
-      "date_start": null,
-      "date_end": "2016-06-01T00:00:00",
+      "date_start": "06/2016",
+      "date_end": "to",
       "grade": null,
       "description": null
     }
-  ]
+  ],
+  "certifications": [],
+  "id": "RES_Pg6ipOr5"
 }

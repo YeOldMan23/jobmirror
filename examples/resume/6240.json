@@ -1,7 +1,7 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
     "C#",
@@ -9,7 +9,7 @@
     "ASP.NET",
     "ASP.NET MVC",
     "ASP.NET Web API",
-    "EF",
+    "Entity Framework",
     "ADO.NET",
     "T-SQL",
     ".NET Framework",
@@ -63,19 +63,18 @@
     "DIRKS",
     "ISAD (G)",
     "ISO 15489",
-    "ADO",
-    "API",
-    "Drupal"
+    "Drupal",
+    "Lucene",
+    "LESS CSS",
+    "OpenOffice.org",
+    "JasperReports"
   ],
   "soft_skills": [
-    "Professional",
-    "creative",
-    "responsible",
-    "analytical skills",
-    "Fast learner",
-    "focused",
-    "problem solver",
-    "Team Player"
+    "Analytical Skills",
+    "Problem Solving",
+    "Team Player",
+    "Fast Learner",
+    "SDLC"
   ],
   "languages": [
     "English",
@@ -85,30 +84,30 @@
     {
       "role": "Software Developer",
       "company": "Peoria",
-      "date_start": "2016-04-01T00:00:00",
-      "date_end": "2016-09-01T00:00:00",
-      "role_description": "Modeled process using BPM, workflows for a Help Desk Module in Alfresco Activiti BPM.\nDesigned and created de Alfresco Content Model for the Help Desk Module.\nDeveloped using XML, Javascript, Alfresco REST Web Services, jQuery, Bootstrap and Freemarker the workflows modeled.\nIntegrated Alfresco ECM with Microsoft Office and WebDav protocol."
+      "date_start": "04/2016",
+      "date_end": "09/2016",
+      "role_description": "Modeled process using BPM, workflows for a Help Desk Module in Alfresco Activiti BPM. Designed and created de Alfresco Content Model for the Help Desk Module. Developed using XML, Javascript, Alfresco REST Web Services, jQuery, Bootstrap and Freemarker the workflows modeled. Integrated Alfresco ECM with Microsoft Office and WebDav protocol."
     },
     {
       "role": "Software .Net Developer",
       "company": "City",
-      "date_start": "2015-01-01T00:00:00",
-      "date_end": "2016-04-01T00:00:00",
-      "role_description": "Developed using C#, ASP.NET MVC, ASP.NET Web API, ADO.NET .NET Framework, EF, LINQ, SQL Server, Hangfire, SignalR, MS SQL Server, T-SQL, AngularJS, jQuery, HTML5, CSS3, and MySQL a large-scale parking system from scratch.\nRewrote and redesigned a poorly parking system implemented in Node.js.\nRewrote the entire backend in C# and the frontend in ASP.NET MVC, ASP.NET Web API, AngularJS, jQuery, JavaScript, and Bootstrap to be more user friendly.\nDeveloped using Hangfire to perform with .NET job scheduling, and SignalR to create a real-time application which allowed bi-directional communication between server and client.\nCreated a sync job which listened to the records of a sensor in a MySQL database and synchronized them in a MS SQL Server database and showed real-time results in a dashboard.\nDeveloped using PHP, JasperReports for PHP REST Web Service API, MySQL, AngularJS, jQuery, HTML5, CSS3 and, Bootstrap a Report Module to integrate it into a police management system.\nCoded using PL/pgSQL several queries to compare and recover millions of damaged records."
+      "date_start": "01/2015",
+      "date_end": "04/2016",
+      "role_description": "Developed using C#, ASP.NET MVC, ASP.NET Web API, ADO.NET .NET Framework, EF, LINQ, SQL Server, Hangfire, SignalR, MS SQL Server, T-SQL, AngularJS, jQuery, HTML5, CSS3, and MySQL a large-scale parking system from scratch. Rewrote and redesigned a poorly parking system implemented in Node.js. Rewrote the entire backend in C# and the frontend in ASP.NET MVC, ASP.NET Web API, AngularJS, jQuery, JavaScript, and Bootstrap to be more user friendly. Developed using Hangfire to perform with .NET job scheduling, and SignalR to create a real-time application which allowed bi-directional communication between server and client. Created a sync job which listened to the records of a sensor in a MySQL database and synchronized them in a MS SQL Server database and showed real-time results in a dashboard. Developed using PHP, JasperReports for PHP REST Web Service API, MySQL, AngularJS, jQuery, HTML5, CSS3 and, Bootstrap a Report Module to integrate it into a police management system. Coded using PL/pgSQL several queries to compare and recover millions of damaged records."
     },
     {
       "role": "Software Engineer and Professor",
       "company": "Newport Group",
-      "date_start": "2008-09-01T00:00:00",
-      "date_end": "2014-11-01T00:00:00",
-      "role_description": "Developed using PHP5, HTML, CSS, JavaScript, Drupal, jQuery, AJAX, JSON, MySQL and, XML-RPC an Intranet.\nDeveloped using Alfresco ECM, Alfresco REST API, PHP, XML, HTML, CSS, JavaScript, CodeIgniter, jQuery, PostgreSQL and, Lucene the modules File Sharing and Audit Log for a Document Management System.\nIntegrated Alfresco ECM with OpenOffice.org.\nDeveloped using PHP, HTML5, CSS3, JavaScript, jQuery, AJAX, JSON, and, PostgreSQL the Dashboard and Report Management modules.\nDeveloped using Alfresco ECM, Activiti, REST Web Services, Freemarker, HTML, CSS3, LESS CSS, JavaScript, jQuery, AJAX, JSON PostgreSQL and, Lucene the modules Records Management, Classification Table Management, Task Management, Data List, Dashboard and, Project Files Management for different versions of a Document Management System.\nPerformed Requirements Specification, Analysis and Design, and Test Case Design.\nCustomized using Freemarker, Bootstrap, LESS CSS, XML and, JavaScript a Theme for Alfresco Share.\nCoded using XML, Content Models for Alfresco ECM.\nInteracted with clients to identify Business Requirements.\nProvided training courses for clients."
+      "date_start": "09/2008",
+      "date_end": "11/2014",
+      "role_description": "Developed using PHP5, HTML, CSS, JavaScript, Drupal, jQuery, AJAX, JSON, MySQL and, XML-RPC an Intranet. Developed using Alfresco ECM, Alfresco REST API, PHP, XML, HTML, CSS, JavaScript, CodeIgniter, jQuery, PostgreSQL and, Lucene the modules File Sharing and Audit Log for a Document Management System. Integrated Alfresco ECM with OpenOffice.org. Developed using PHP, HTML5, CSS3, JavaScript, jQuery, AJAX, JSON, and, PostgreSQL the Dashboard and Report Management modules. Developed using Alfresco ECM, Activiti, REST Web Services, Freemarker, HTML, CSS3, LESS CSS, JavaScript, jQuery, AJAX, JSON PostgreSQL and, Lucene the modules Records Management, Classification Table Management, Task Management, Data List, Dashboard and, Project Files Management for different versions of a Document Management System. Performed Requirements Specification, Analysis and Design, and Test Case Design. Customized using Freemarker, Bootstrap, LESS CSS, XML and, JavaScript a Theme for Alfresco Share. Coded using XML, Content Models for Alfresco ECM. Interacted with clients to identify Business Requirements. Provided training courses for clients."
     }
   ],
   "education": [
     {
       "degree": "Computer Science",
       "institution": "University of Informatics Sciences-Havana",
-      "date_start": "2008-01-01T00:00:00",
+      "date_start": "2008",
       "date_end": null,
       "grade": null,
       "description": null
@@ -116,10 +115,12 @@
     {
       "degree": "Accounting",
       "institution": "Higher Pedagogical Institute-",
-      "date_start": "2003-01-01T00:00:00",
+      "date_start": "2003",
       "date_end": null,
       "grade": null,
       "description": null
     }
-  ]
+  ],
+  "certifications": [],
+  "id": "RES_2RPwzELC"
 }

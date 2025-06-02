@@ -7,17 +7,20 @@
     "Gathering business requirements",
     "Developing functional specifications with special emphasis on use cases",
     "Defining test cases",
-    "Providing user training and support",
-    "Defining and implementing technology solutions for a major financial institution"
+    "Providing user training and support"
   ],
   "required_hard_skills": [
-    "MS Excel",
-    "SQL",
-    "Relational databases",
+    "Basel related projects in Credit risks",
     "Banking & Financial domain experience",
-    "Risk management",
-    "Knowledge of finance and accounting",
-    "Experience with various system development lifecycle methodologies"
+    "Knowledge of risk management",
+    "Familiarity with concepts of finance and accounting",
+    "MS Excel",
+    "Experience in defining and implementing technology solutions for a major financial institution",
+    "Experience as a Business Analyst for a large financial institution",
+    "System development lifecycle methodologies",
+    "Relational databases",
+    "RDMS",
+    "SQL"
   ],
   "required_soft_skills": [
     "Solution-oriented",
@@ -27,5 +30,8 @@
   ],
   "required_language_proficiencies": [],
   "required_work_authorization": null,
-  "job_location": "Washington, D.C."
+  "required_education": null,
+  "job_location": "Washington, D.C.",
+  "date_posted": null,
+  "id": "JD_QDvgj241"
 }

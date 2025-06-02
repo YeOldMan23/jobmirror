@@ -14,8 +14,6 @@
     "Interact and engage with customers, users, Product Managers and Technical Architects to understand needs and increase the positive impact on users experience."
   ],
   "required_hard_skills": [
-    "Frontend development",
-    "Cloud applications",
     "Angular",
     "React",
     "StencilJS",
@@ -24,13 +22,11 @@
     "Progressive Web Apps (PWAs)",
     "Unity development (or C#)"
   ],
-  "required_soft_skills": [
-    "Technical leadership",
-    "Communication",
-    "Collaboration",
-    "Usability"
-  ],
+  "required_soft_skills": [],
   "required_language_proficiencies": [],
   "required_work_authorization": null,
-  "job_location": "Menlo Park CA 94025"
+  "required_education": "Bachelor, Masters or PhD in Computer Science, Web Design, User Experience, Interaction Design, Visual Design",
+  "job_location": "Menlo Park CA 94025",
+  "date_posted": null,
+  "id": "JD_DPqh0lVb"
 }

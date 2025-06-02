@@ -1,20 +1,19 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
     "Accounting",
     "Sales",
     "Inventory",
     "Payroll",
-    "The Accounting",
     "Reconciliations",
     "Bookkeeper",
     "Audits",
     "Operations",
-    "Ap",
-    "Ar",
+    "AR",
+    "AP",
     "Assembly",
     "Closings",
     "Contracts",
@@ -25,13 +24,10 @@
     "Government Contracts",
     "Logistics",
     "Maintenance",
-    "Million",
     "Quality Assurance",
-    "Receptionist",
     "Retail Sales",
-    "Sales And",
     "Shipping",
-    "Usda",
+    "USDA",
     "Accounts Payable",
     "Solutions",
     "Staffing",
@@ -42,21 +38,18 @@
     "Automated Payroll",
     "Payroll Processing",
     "Software Training",
-    "Training",
     "Accountant",
-    "The Accounts",
     "Accounts Receivable",
     "Credit",
     "Billing",
-    "Csi",
+    "CSI",
     "Excel",
-    "Ms Excel",
+    "MS Excel",
     "Networking",
-    "All Sales",
     "Basis",
     "Cash Management",
     "Forecasting",
-    "Gl",
+    "GL",
     "Telephone",
     "Adjustments",
     "Audit",
@@ -65,11 +58,13 @@
     "Monthly Sales",
     "Sales Tax",
     "Annuities",
-    "Cpa",
-    "Life Insurance",
+    "CPA",
     "Microsoft Office",
-    "Ms Office",
-    "Purchase Orders"
+    "MS Office",
+    "Purchase Orders",
+    "On-Base",
+    "AX",
+    "Avantis"
   ],
   "soft_skills": [
     "Public Speaking",
@@ -77,7 +72,8 @@
     "Team Building",
     "Project Management",
     "Procedure writing",
-    "Staff Supervision and Management",
+    "Staff Supervision",
+    "Management",
     "Ability to interface with professionals on all levels"
   ],
   "languages": [],
@@ -85,57 +81,57 @@
     {
       "role": "Accountant",
       "company": "Aspirus",
-      "date_start": "2014-08-01T00:00:00",
-      "date_end": "2015-05-01T00:00:00",
+      "date_start": "08/2014",
+      "date_end": "05/2015",
       "role_description": "Perform daily and routine accounting functions for two main companies and five small royalty companies. Responsibilities include but are not limited to the following: Accounts Payable, Accounts Receivable, Manage and reconcile funds for multiple banks accounts, Payroll, Perform detail audits and adjustments of Balance sheet and Income Statement accounts, Audit and pay monthly Sales Tax, Inventory Reconciliations, and Budgeting."
     },
     {
       "role": "District Administrative Manager",
       "company": "Tradeweb Markets Inc.",
-      "date_start": "2014-02-01T00:00:00",
-      "date_end": "2014-06-01T00:00:00",
+      "date_start": "02/2014",
+      "date_end": "06/2014",
       "role_description": "Managed and assisted the Accounts Receivable, Accounts Payable, and HR/Payroll staff for our district, with daily entrees, follow-up, and reporting as needed. Prepared and presented daily reports to various departments for more accurate management of the financial areas of their operations, such as inventory, Purchase Orders, and Bill of Lading. Performed accounting functions in On-Base, AX, Avantis, and Microsoft Office software."
     },
     {
       "role": "Business Manager",
       "company": "Leidos",
-      "date_start": "2005-01-01T00:00:00",
-      "date_end": "2014-02-01T00:00:00",
+      "date_start": "01/2005",
+      "date_end": "02/2014",
       "role_description": "Managed the operations for a $1.2 million dollar partnership. Duties included planning, overseeing and directing accounting, logistics, and production functions, direct sales and customer service. Accounting functions:Managed over $500K of Fixed Assets, and inventories also valued over $500K.Administered Government contracts for USDA Food Aid with gross revenue up to $1.5 million annually (net income $500K).Upgraded company's software to integrate bill of assembly to interface with accounting software.Performed month end reconciliations, audits, closings, and financial statement reporting.Performed regular physical inventory audits.Supervised bookkeeper all aspects of the accounting cycle including Payroll, AR, and AP. Operations functions:Oversaw and directed the warehouse supervisor, warehouse maintenance supervisor and up to 20 employees to assure optimum production of personnel and facility.Communicated with logistics suppliers such as the Railroads and various trucking companies, governmental agencies (such as the USDA), customers and vendors to assure on time receiving, production, and shipping of goods.Created, implemented and managed our company's Food Safety and Quality Assurance Programs, including a fifty page Food Safety Guide."
     },
     {
       "role": "Staffing Manager",
       "company": "Advantage Solutions",
-      "date_start": "2003-01-01T00:00:00",
-      "date_end": "2004-01-01T00:00:00",
+      "date_start": "01/2003",
+      "date_end": "01/2004",
       "role_description": "Provided personnel solutions to various organizations for their Accounting and Administrative needs. Interviewed and advised employees in various aspects of their professional career process. Earned sales bonuses within my first three months with the company."
     },
     {
       "role": "Accounting Manager",
       "company": "Kroger",
-      "date_start": "2002-01-01T00:00:00",
-      "date_end": "2002-01-01T00:00:00",
+      "date_start": "01/2002",
+      "date_end": "01/2002",
       "role_description": "Assisted Controller in various aspects of the accounting cycle. Supervised new member billing clerk and cash receipts clerk. Helped with computer and networking issues in a Windows NT/XP environment. Implemented changes and procedures through two software upgrades in CSI software. Trained various staff in effective use of MS Excel. Audited Corporate-billing accounts."
     },
     {
       "role": "General Merchandise Department Manager",
       "company": "Cargas Systems Inc",
-      "date_start": "2000-01-01T00:00:00",
-      "date_end": "2002-01-01T00:00:00",
+      "date_start": "01/2000",
+      "date_end": "01/2002",
       "role_description": "Supervised and trained employees for strategic ordering and merchandising product for optimal sales, and in standard operating procedures. Created weekly schedule and departmental reports. Prepared for physical inventory every 6 months."
     },
     {
       "role": "Accounting Software Consultant",
       "company": "Aspirus",
-      "date_start": "1998-01-01T00:00:00",
-      "date_end": "2000-01-01T00:00:00",
+      "date_start": "01/1998",
+      "date_end": "01/2000",
       "role_description": "Consulted users of DacEasy accounting applications in Software training, troubleshooting, setting up their entire automated accounting system, and establishing accounting procedures for their business. Trained other departments in proper accounting procedures, worked closely with CPA's for all tax related issues and coordinated payroll processing with an automated payroll system."
     },
     {
       "role": "Accountant",
       "company": "CentreCom, Incorporated",
-      "date_start": "1999-01-01T00:00:00",
-      "date_end": "2000-01-01T00:00:00",
+      "date_start": "01/1999",
+      "date_end": "01/2000",
       "role_description": "Full Charge Bookkeeper/Accountant for a start-up Internet Telephone Company. Entered daily GL transactions. Supervised the Accounts Payable clerk. Worked with the Assistant Controller to establish and manage the Accounting functions related to all Sales aspects of the business. Assisted with month end reconciliations. Reconciled cash balance reports for five bank accounts on a daily basis and assisted in the managing of these accounts. Other duties included writing Accounting procedures for Accounts Payable and Cash Management."
     }
   ],
@@ -164,5 +160,9 @@
       "grade": null,
       "description": "Status-Associates of Applied Science in Accounting - Hocking Technical College, Nelsonville, OH Maintained a 4.0 GPA while completing 12 hours of upper level accounting courses."
     }
-  ]
+  ],
+  "certifications": [
+    "Life Insurance License"
+  ],
+  "id": "RES_QDvgj241"
 }

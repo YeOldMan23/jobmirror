@@ -10,11 +10,10 @@
     "Assist with application installation and testing."
   ],
   "required_hard_skills": [
-    "relational and unstructured data",
-    "front-end and back-end web development",
-    "data architectures, flows, and ETL processes",
-    "designing and managing distributed systems",
-    "DevOps practices",
+    "Relational and unstructured data",
+    "Front-end and back-end web development",
+    "Data architectures, flows, and ETL processes",
+    "Designing and managing distributed systems",
     "Windows Server",
     ".NET framework",
     "Visual Studio",
@@ -41,15 +40,21 @@
     "WebAPI",
     "Azure Service Bus",
     "Azure App Services",
-    "WebsitesVirtual Machines"
+    "Websites",
+    "Virtual Machines",
+    "Full-Stack development",
+    "Architecting",
+    "Agile development"
   ],
   "required_soft_skills": [
-    "Strong technical and problem-solving skills.",
-    "Ability to work effectively in a small team.",
-    "Excellent written and oral communication skills.",
-    "Agile development experience."
+    "Strong technical and problem-solving skills",
+    "Ability to work effectively in a small team",
+    "Excellent written and oral communication skills"
   ],
   "required_language_proficiencies": [],
   "required_work_authorization": null,
-  "job_location": "Remote"
+  "required_education": "Bachelors degree in computing, information technology, or a related field, or significant software engineering experience.",
+  "job_location": "Remote",
+  "date_posted": null,
+  "id": "JD_1HWrRA5T"
 }

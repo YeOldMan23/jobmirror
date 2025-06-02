@@ -1,59 +1,61 @@
 {
   "name": null,
   "location_preference": null,
-  "work_authorizaton": null,
+  "work_authorization": null,
   "employment_type_preference": null,
   "hard_skills": [
-    "Data Management",
     "Database Management",
-    "Data Compilation",
-    "Attention to Detail",
-    "Data Review",
-    "Microsoft Office Suite",
-    "Document Management and Storage",
-    "Multitasking and Prioritization",
-    "Time Management",
-    "Data Verification",
-    "Administrative Support",
-    "Microsoft Access",
     "Microsoft Excel",
-    "Adobe Software"
+    "Microsoft Office Suite",
+    "Microsoft Access",
+    "Adobe Software",
+    "Data Compilation",
+    "Data Review",
+    "Data Verification",
+    "Document Management",
+    "Data Entry"
   ],
   "soft_skills": [
     "Decision Making",
     "Service-Oriented",
     "Self-Starter",
     "Workflow Management",
-    "Team player"
+    "Data Management",
+    "Attention to Detail",
+    "Multitasking",
+    "Prioritization",
+    "Time Management",
+    "Administrative Support",
+    "Team Player"
   ],
   "languages": [],
   "experience": [
     {
       "role": "Data Entry Specialist",
       "company": "Sonic Healthcare Usa",
-      "date_start": "2020-09-01T00:00:00",
-      "date_end": "2023-11-21T15:16:19",
+      "date_start": "09/2020",
+      "date_end": "Current",
       "role_description": "Input client information into spreadsheets and company database to provide leaders with quick access to essential client data.\nIdentified, corrected and reported data entry errors.\nCompleted accurate and efficient data entry and database updates to support business operations.\nIdentified and corrected data entry errors to prevent duplication across systems.\nCompiled data from source documents prior to data entry.\nReviewed and updated account information in company computer system.\nIdentified errors in data entry and related issues by mentioning to supervisors for resolution.\nSorted source documents and organized to be filed.\nAdhered to sClairect data confidentiality policies to prevent information leakage.\nCommunicated with coworkers regarding deadlines and project milestones.\nProofread and edited documents to correct errors.\nDocumented data entry completions in corresponding logbooks.\nExecuted data verification to ensure expedient error detection.\nExceeded quality goals to support team productivity.\nMonitored updates to company databases and corrected identified errors.\nTransferred completed work to Title Officers for review and approval.\nReviewed source documents to locate required data for entry.\nProduced new orders in Streamline Management Services and Greenfolders to manage samples and associated data."
     },
     {
       "role": "Manager",
       "company": "Community Health System",
-      "date_start": "2018-11-01T00:00:00",
-      "date_end": "2020-09-01T00:00:00",
-      "role_description": "Trained employees on additional job positions to maintain coverage of roles.\nAssigned tasks to associates to fit skill levels and maximize team performance.\nGreeted and encouraged feedback from customers to implement in-store operational changesCompleted thorough opening, closing and shift change functions to maintain operational standards each day.\nEnforced customer service standards and resolved customer problems to uphold quality service.\nExercised good judgment and decision-making in escalating concerns and resolving issues.\nOversaw daily workloads and workflow for smooth operations.\nManaged shifts in absence of store manager to deliver excellent customer service while promoting sales."
+      "date_start": "11/2018",
+      "date_end": "09/2020",
+      "role_description": "Trained employees on additional job positions to maintain coverage of roles.\nAssigned tasks to associates to fit skill levels and maximize team performance.\nGreeted and encouraged feedback from customers to implement in-store operational changes\nCompleted thorough opening, closing and shift change functions to maintain operational standards each day.\nEnforced customer service standards and resolved customer problems to uphold quality service.\nExercised good judgment and decision-making in escalating concerns and resolving issues.\nOversaw daily workloads and workflow for smooth operations.\nManaged shifts in absence of store manager to deliver excellent customer service while promoting sales."
     },
     {
       "role": "Crew Member",
       "company": "Marcus Corporation",
-      "date_start": "2016-06-01T00:00:00",
-      "date_end": "2018-08-01T00:00:00",
+      "date_start": "06/2016",
+      "date_end": "08/2018",
       "role_description": "Wiped down tables and equipment, swept and refilled stock.\nKept restaurant lobby, front counter and restrooms neat and clean throughout shift.\nPacked fast food products in approved containers, cups and bags.\nEntered orders into computer system to send order details to kitchen, mentioning customers' special requests and food allergies in person.\nPrepared quality products while maintaining portion control and presentation within service goal times.\nDrove team success by quickly completing assigned tasks.\nDemonstrated proper food safety practices by accurately completing quality control checklist.\nOrganized and restocked supplies to support operations and team productivity.\nServed food quickly for positive guest experiences.\nPackaged menu items into bags or trays and placed drink orders into carriers.\nExplained current promotional information and items to patrons.\nAssisted management with inventory control and stock ordering.\nPresented orders to guests within anticipated service times.\nRestocked supplies, removed trash and cleaned areas.\nAnswered customer questions and took orders.\nPrepared products by adding tags and readying pallets for restocking.\nOperated fryers and grills, assisted with putting orders together and bagged items for customers.\nTotaled bills, accepted payments and returned change."
     },
     {
       "role": "Cashier",
       "company": "Kohler",
-      "date_start": "2017-06-01T00:00:00",
-      "date_end": "2018-04-01T00:00:00",
+      "date_start": "06/2017",
+      "date_end": "04/2018",
       "role_description": "Collected payments and provided accurate change.\nCompleted daily recovery tasks to keep areas clean and neat for maximum productivity.\nWorked closely with front-end staff to assist customers.\nAccepted cash and credit card payments, issued receipts and provided change.\nTrained new team members in cash register operation, stock procedures and customer services.\nLearned roles of other departments to provide coverage and keep store operational.\nOperated cash register or POS system to receive payment by cash, check and credit card.\nReported pricing discrepancies to supervisor.\nAnswered customer questions and provided store information.\nDelivered high level of customer service to patrons using active listening and engagement skills.\nPreserved appearance of store by arranging and replenishing displays and merchandise racks."
     }
   ],
@@ -62,9 +64,11 @@
       "degree": "High School Diploma",
       "institution": "Idea Homeschool",
       "date_start": null,
-      "date_end": null,
+      "date_end": "Expected in\u2013\u2013",
       "grade": null,
       "description": null
     }
-  ]
+  ],
+  "certifications": [],
+  "id": "RES_vNEJ62Py"
 }
