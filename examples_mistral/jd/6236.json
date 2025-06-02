@@ -10,7 +10,7 @@
     "Expert level experience with SQL",
     "Experience with the cloud (AWS, Azure, and/or Google Cloud Platform)",
     "Experience in cloud-based data warehouses (Snowflake, Google BigQuery, Amazon Redshift, Azure Synapse Analytics)",
-    "Experience with cloud-based ETL/ELT tools (Matillion, Glue, Data Factory) and data modeling",
+    "Experience with cloud-based ETL/ELT tools (Matillion, Glue, Data Factory) and data modelling",
     "Experience with version control systems (Git, SVN)",
     "Understanding of and willingness to embrace Agile Principles"
   ],
@@ -23,6 +23,8 @@
     "AWS",
     "Matillion",
     "Snowflake",
+    "Google Cloud Platform",
+    "Azure",
     "Google BigQuery",
     "Amazon Redshift",
     "Azure Synapse Analytics",

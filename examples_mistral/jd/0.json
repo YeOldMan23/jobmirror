@@ -4,20 +4,20 @@
   "application_deadline": null,
   "date_posted": null,
   "employment_type": "Contract",
-  "about_the_company": "Net2Source Inc. is an award-winning total workforce solutions company recognized for its accelerated growth with over 5500+ employees globally and operations in 32 countries. They provide staffing solutions and act as career coaches to their consultants.",
+  "about_the_company": "Net2Source Inc. is an award-winning total workforce solutions company recognized by Staffing Industry Analysts for accelerated growth of 300% in the last 3 years with over 5500+ employees globally, with over 30+ locations in the US and global operations in 32 countries. They provide staffing solutions to address the current talent gap and act as a Career Coach to their consultants.",
   "job_responsibilities": [
     "Gathering business requirements and developing functional specifications",
-    "Defining test cases and providing user training and support",
-    "Implementing technology solutions for major financial institutions",
-    "Analyzing datasets using SQL and relational databases",
-    "Working on Basel-related projects in credit risks"
+    "Defining use cases and test cases",
+    "Providing user training and support",
+    "Defining and implementing technology solutions for major financial institutions",
+    "Analyzing datasets using SQL"
   ],
   "required_hard_skills": [
     "MS Excel",
     "SQL",
-    "Relational Databases (RDBMS)",
-    "Business Analysis",
-    "System Development Lifecycle Methodologies"
+    "Relational Databases (RDMS)",
+    "Basel regulations",
+    "Credit risk analysis"
   ],
   "required_soft_skills": [
     "Analytical skills",

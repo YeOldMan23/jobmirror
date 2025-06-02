@@ -10,17 +10,11 @@
     "Safety awareness",
     "Power and hand tool operation",
     "Schematics and blueprints",
-    "Lift up to 20,000 pounds",
     "Electrical diagnostics",
     "Finish work",
     "System installations",
-    "Standard power tool knowledge",
     "Wiring diagrams and plans",
-    "Out of hours calls",
-    "Safety protocols",
     "High voltage termination",
-    "Mathematical ability",
-    "Computer savvy",
     "Project planning"
   ],
   "soft_skills": [
@@ -30,8 +24,7 @@
     "Team-oriented",
     "Proactive",
     "Punctual",
-    "Communication",
-    "Collaboration"
+    "Organized"
   ],
   "languages": [
     "English"
@@ -40,38 +33,31 @@
     {
       "role": "Electrical Apprentice",
       "company": "Milestone",
-      "date_start": "2018-01-01T00:00:00",
-      "date_end": null,
-      "role_description": "Review projects to have a six-week look ahead, manage multiple crews, work in team-based environments, install new electrical components, fixtures, and motors, operate hand and power tools, follow electrical and building codes, maintain clean and safe work areas, review blueprints and electrical schematics, adhere to OSHA regulations, dig trenches, resolve issues with existing systems, test wiring and system parts, verify measurements, collaborate with professionals, and assist with electrical installation tasks."
-    },
-    {
-      "role": "Electrical Apprentice",
-      "company": "Milestone",
       "date_start": "2017-06-01T00:00:00",
-      "date_end": "2017-12-01T00:00:00",
-      "role_description": "Put in new electrical components, fixtures, and motors, operated hand and power tools, worked in team-based environments, followed electrical and building codes, maintained clean and safe work areas, listened to directives of senior electrical professionals, adhered to OSHA regulations, completed semi-skilled and skilled work, assisted with electrical installation tasks, examined and tested electrical systems, inspected wiring, collaborated with professionals, and resolved issues with existing systems."
+      "date_end": "current",
+      "role_description": "Review projects to have a six-week look ahead, manage multiple crews, work in team-based environments to accomplish projects, put in new electrical components, fixtures, and motors, operate hand and power tools and diagnostic equipment, follow all relevant electrical and building codes, keep work areas clean and organized, measure and prepare supplies for electrical tasks, adhere to company standards and OSHA regulations, dig trenches and create holes to pull conduit and install supports, demonstrate strong foundation of safety knowledge, resolve issues with existing systems, utilize knowledge and equipment to test wiring and other system parts, verify measurements, inspect existing wiring, collaborate with professionals, assist with electrical installation tasks, listen to directives of senior electrical professionals, set up equipment and configure settings."
     },
     {
       "role": "Dog Handler",
       "company": "Trugreen",
       "date_start": "2014-08-01T00:00:00",
       "date_end": "2017-06-01T00:00:00",
-      "role_description": "Developed long-term relationships with clients, cared for pets, walked animals, monitored animals during group play sessions, juggled multiple projects, prioritized and organized tasks, worked closely with team members, acclimated new animals to training team, evaluated animals, monitored and documented animal health, diet, and behaviors."
+      "role_description": "Developed long-term relationships with clients and bonded with animals, cared for pets during owners' absences, walked animals, monitored animals during group play sessions, juggled multiple projects and tasks, prioritized and organized tasks, worked closely with team members, acclimated new animals to training team, evaluated animals, monitored and documented animal health."
     },
     {
       "role": "Lifeguard/Snack Bar Attendant",
       "company": "Hampton Golf",
       "date_start": "2013-07-01T00:00:00",
       "date_end": "2016-12-01T00:00:00",
-      "role_description": "Took orders from customers, restocked supplies, delivered food and beverages, minimized spoilage risk, operated cash registers, opened and closed stand, stocked and restocked food and equipment, cleaned and polished counters, greeted customers, prepared bills, handled cash and credit card transactions, reviewed food preparation, maintained high standards of customer service, served drinks, stored food, wiped down tables, and provided a clean dining environment."
+      "role_description": "Took orders from customers, restocked condiments and supplies, delivered food and beverage items, minimized spoilage risk, operated cash registers, opened and closed stand, stocked and restocked food and equipment, cleaned and polished counters, greeted customers, prepared bills, reviewed food preparation, maintained high standards of customer service, served drinks, stored food following safety procedures, wiped down tables."
     }
   ],
   "education": [
     {
       "degree": "Journeyman Wireman",
       "institution": "Electrical Training Alliance of Jacksonville",
-      "date_start": null,
-      "date_end": "2022-04-01T00:00:00",
+      "date_start": "2022-04-01T00:00:00",
+      "date_end": null,
       "grade": null,
       "description": null
     },

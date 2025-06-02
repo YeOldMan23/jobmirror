@@ -8,7 +8,7 @@
     "C++",
     "C#",
     "SQL",
-    "pl/sql",
+    "PL/SQL",
     "Windows",
     "Linux",
     "Unix",
@@ -23,26 +23,19 @@
     "Spectre",
     "DC Compiler",
     "Modelsim",
-    "QuestaSim",
+    "Questasim",
     "TFS",
     "Microsoft SQL Server",
-    "Visual Studio",
-    "ASIC",
-    "Embedded Systems",
-    "Microprocessor",
-    "Agile",
-    "SDLC",
-    "FPGA"
+    "Visual Studio"
   ],
   "soft_skills": [
-    "teamwork",
-    "leadership",
-    "communication",
-    "customer support",
-    "training",
-    "managing",
-    "ergonomics",
-    "safety"
+    "Communication",
+    "Teamwork",
+    "Leadership",
+    "Customer Satisfaction",
+    "Training",
+    "Managing",
+    "Ergonomics"
   ],
   "languages": [
     "English"
@@ -60,17 +53,17 @@
       "company": "Apex Systems",
       "date_start": "2013-04-01T00:00:00",
       "date_end": "2015-12-01T00:00:00",
-      "role_description": "Worked in SDLC and Agile framework. Consistent performance and ownership of the task while maintaining the module in Data warehouse project. Interacting with clients during analysis, development & implementation phase. Conducted training sessions to train juniors for the same technology."
+      "role_description": "Worked in SDLC and Agile framework made me flexible in working as and when required. Consistent performance and ownership of the task while maintaining of the module in Data warehouse project. Interacting with clients (UK United Biscuits, Canada TD bank, ING bank Singapore) during analysis, development & implementation phase gave me a global exposure of interacting with the people across different regions of world. Understanding the requirement of the customers while providing customer support and testing of functional and technical queries, request, requirements and modifications. Conducted training sessions to train juniors for the same technology. Achievements: Customer Satisfaction Index for the project increased from 82.7% to 97.8% in the duration of 6 months for the consistent performance and various suggestions and effective solutions being provided for the improvement of the system. Received an appreciation from VP of TD bank Mr. Barkla for a successful delivery of the compliance project within the timelines. On the spot award for leading and managing event for the account (TCS). Safety Champion of Women safety initiative in the organization for 2015. I was leading a team of 10-15 people for a year in which I was interacting with various employees in the office, explaining them the significance of ergonomics, suggested exercises and also encouraging them to practice the same."
     }
   ],
   "education": [
     {
       "degree": "Master of Science",
       "institution": "Portland State University",
-      "date_start": null,
+      "date_start": "2016-09-01T00:00:00",
       "date_end": null,
       "grade": 4.0,
-      "description": "Electrical & Computer Engineering"
+      "description": "Electrical & Computer Engineering. Courses: Digital IC and Design (ECE 525), ASIC Design Modelling & Synthesis (ECE 581), Verilog Workshop (ECE 510), Microprocessor System Design (ECE 585), Embedded Systems Design with FPGAs (ECE 544), Pre-silicon Functional Verification."
     },
     {
       "degree": "Bachelor of Engineering",
@@ -78,7 +71,7 @@
       "date_start": null,
       "date_end": "2012-07-01T00:00:00",
       "grade": 67.0,
-      "description": "Electronics & Telecommunications"
+      "description": "Electronics & Telecommunications. Core Subjects: Digital logic design, Digital communication, Electronics devices and circuits, Analog digital IC design applications, Simulation of software workshop, Microprocessor and micro-controllers."
     },
     {
       "degree": "Diploma",
@@ -86,7 +79,7 @@
       "date_start": null,
       "date_end": "2009-07-01T00:00:00",
       "grade": 84.12,
-      "description": "Electronics & Communications"
+      "description": "Electronics & Communications. Core Subjects: Electronic components and devices, Programming in C, Digital techniques and microprocessor, Micro-controllers, Digital communication, Embedded systems."
     }
   ],
   "certifications": []

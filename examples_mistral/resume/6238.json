@@ -26,8 +26,8 @@
     "Cassandra",
     "Mongo",
     "Mocha",
-    "Jasmine",
     "Selenium",
+    "Jasmine",
     "TFS",
     "Bitbucket",
     "GitHub",
@@ -37,16 +37,14 @@
     "Windows",
     "MySQL",
     "Bootstrap",
-    "Java Servlets",
     "VB Scripting",
-    "PowerShell",
+    "Powershell",
     "Perl"
   ],
   "soft_skills": [
     "team player",
     "hard worker",
     "self-starter",
-    "motivated",
     "research orientated",
     "flexible",
     "get-it-done personality"
@@ -59,40 +57,40 @@
       "role": "Software Engineer Intern",
       "company": "Viasat Inc.",
       "date_start": "2016-10-01T00:00:00",
-      "date_end": null,
-      "role_description": "Designed Frontend with VB Scripting. Developed Single page application using the Router concept. Used CISA, PYTHON, CISM. Used PowerShell, Perl for fast going application. Improved the performance of the application by replacing the existing process and controls with most suitable process flow, optimized queries and code snippets. Introduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
+      "date_end": "current",
+      "role_description": "Designed Frontend with VB Scripting. Developed Single page application using the Router concept. Used CISA, PYTHON, CISM. Used Powershell, Perl for fast going application. Improved the performance of the application by replacing the existing process and controls with most suitable process flow, optimized queries and code snippets. Introduced methodologies and best practices that enhanced product definition, release processes and customization of applications to user needs."
     }
   ],
   "education": [
     {
       "degree": "Master Of Science",
-      "institution": null,
+      "institution": "Information Technology, Hyderabad",
       "date_start": null,
       "date_end": null,
       "grade": null,
-      "description": "Information Technology, Expected in Hyderabad"
+      "description": "GPA: Status-Information Technology"
     },
     {
       "degree": "B.Tech",
-      "institution": null,
+      "institution": "Electrical and Electronics Engineering",
       "date_start": null,
-      "date_end": "2016-01-01T00:00:00",
+      "date_end": "2016",
       "grade": 70.4,
-      "description": "Electrical and Electronics Engineering from Kakinada"
+      "description": "Kakinada with 70.40% marks"
     },
     {
       "degree": "Diploma",
-      "institution": "SBTET Andhra Pradesh",
+      "institution": "Electrical and Electronics Engineering",
       "date_start": null,
-      "date_end": "2013-01-01T00:00:00",
+      "date_end": "2013",
       "grade": 69.49,
-      "description": "Electrical and Electronics Engineering"
+      "description": "from SBTET Andhra Pradesh with 69.49% marks"
     },
     {
       "degree": "S.S.C.",
       "institution": "State Board of Andhra Pradesh",
       "date_start": null,
-      "date_end": "2010-01-01T00:00:00",
+      "date_end": "2010",
       "grade": 74.0,
       "description": null
     }

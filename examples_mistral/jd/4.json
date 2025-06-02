@@ -4,7 +4,7 @@
   "application_deadline": null,
   "date_posted": null,
   "employment_type": "Full-time",
-  "about_the_company": "Capgemini is a global leader in engineering and R&D services, combining broad industry knowledge and cutting-edge technologies to support the convergence of the physical and digital worlds. It is part of the Capgemini Group, which has over 360,000 team members in more than 50 countries.",
+  "about_the_company": "Capgemini Engineering is a world leader in engineering and R&D services, combining broad industry knowledge and cutting-edge technologies in digital and software. It supports the convergence of the physical and digital worlds and helps clients accelerate their journey towards Intelligent Industry. Capgemini Engineering has over 55,000 engineers and scientists across 30 countries in various sectors. Capgemini is a global leader in partnering with companies to transform and manage their business by harnessing the power of technology, with over 360,000 team members in more than 50 countries.",
   "job_responsibilities": [
     "Proactively create and review team contributions",
     "Participate as a 'code owner' and partner with collaborators in code-reviews",
@@ -20,7 +20,7 @@
     "C#",
     ".NET Core",
     ".NET",
-    "CI/CD tools",
+    "CICD tools",
     "Source Control",
     "Build",
     "Deploy",
@@ -30,9 +30,9 @@
     "DevOps deployments"
   ],
   "required_soft_skills": [
+    "Proactive",
     "Teamwork",
     "Problem-solving",
-    "Proactiveness",
     "Communication"
   ],
   "required_language_proficiencies": [
