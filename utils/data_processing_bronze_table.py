@@ -15,11 +15,8 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, get_origin, get_args, Union
 
 from langchain.output_parsers import PydanticOutputParser
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-from langchain.prompts import ChatPromptTemplate
-from langchain.output_parsers import ResponseSchema, StructuredOutputParser
+from mistralai import Mistral
 
-from pyspark.sql import SparkSession
 from pyspark.sql.types import ArrayType, StringType, IntegerType, FloatType, BooleanType, TimestampType, StructField, StructType
 
 ###############
@@ -40,6 +37,7 @@ def retrieve_data_from_source():
         )
         # Ensure it's treated as a pandas Series and convert to date
         df['snapshot_date'] = pd.Series(random_dates).dt.date  # This will convert to date format
+        df['snapshot_date_str'] = df['snapshot_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
         return df
 
     def generate_random_id(prefix, seed, length=8, use_digits=True, use_letters=True):
@@ -85,17 +83,25 @@ def clean_text(text):
 
     return text
 
-def parse_with_llm(text, prompt_template, parser, llm):
+def parse_with_llm(text, parser, label, mistral):
     """
     Function to parse LLM into Pydantic schema
     """
-    prompt = prompt_template.format_messages(
-        text=text,
-        format_instructions=parser.get_format_instructions()
+    prompt = (
+        f"Parse the following text into a structured format according to the provided schema."
+        f"If the same role at the same company appears more than once, merge the role descriptions and preserve the earliest start and latest end dates."
+        f"{parser.get_format_instructions()}\n\n"
+        f"{label}:\n{text}"
     )
-    
-    response = llm.invoke(prompt)
-    return parser.parse(response.content)
+
+    response = mistral.chat.complete(
+        model="mistral-medium-latest",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,
+        max_tokens=2048
+    )
+    raw = response.choices[0].message.content
+    return parser.parse(raw)
 
 def python_type_to_spark_type(annotation):
     """
@@ -146,7 +152,7 @@ def pydantic_to_spark_schema(model: type) -> StructType:
 ###############
 # MAIN FUNCTION
 ###############
-def process_bronze_table(spark):
+def process_bronze_table(spark, partition_start, partition_end, batch_size):
     print("============ PROCESS BRONZE TABLE =============")
     ###############
     # Retrieve data from source
@@ -160,13 +166,7 @@ def process_bronze_table(spark):
     ###############
     # Define LLM
     ###############
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
-        temperature=0,
-        max_tokens=None,
-        timeout=None,
-        max_retries=2
-    )
+    llm = Mistral(api_key=os.environ.get("MISTRAL_API_KEY"))
 
     ###############
     # Define output parsers
@@ -175,70 +175,56 @@ def process_bronze_table(spark):
     jd_parser = PydanticOutputParser(pydantic_object=JD)
 
     ###############
-    # Define prompts
-    ###############
-    resume_prompt_template = ChatPromptTemplate.from_messages([
-        ("system", "You are a helpful assistant that extracts structured information from resumes."),
-        ("human", "Extract the following information from the resume:\n\n{text}\n\n{format_instructions}")
-    ])
-
-    # Create the prompt
-    jd_prompt_template = ChatPromptTemplate.from_messages([
-        ("system", "You are a helpful assistant that extracts structured information from job descriptions."),
-        ("human", "Extract the following information from the job description:\n\n{text}\n\n{format_instructions}")
-    ])
-
-    ###############
     # Parse every row in df
     ###############
 
     parsed_resumes = []
     parsed_jds = []
 
-    partitions = pd.date_range(start='2021-06-01', end='2021-12-01', freq='MS')
+    df_parted = df.iloc[partition_start:partition_end]
 
-    df['snapshot_date_str'] = df['snapshot_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
+    batch_idx = 0
+    
+    for idx, row in tqdm(df_parted.iterrows(), total=len(df_parted), desc=f"Processing indexes {partition_start}-{partition_end - 1}"):
+        resume_text = row['resume_text']
+        jd_text = row['job_description_text']
+        try:
+            # Process resume
+            parsed_resume = parse_with_llm(resume_text, resume_parser, "Resume", llm)
+            parsed_resume_dict = parsed_resume.model_dump(mode="json")
+            parsed_resume_dict['snapshot_date'] = row['snapshot_date_str']
+            parsed_resume_dict['id'] = row['resume_id']
+            parsed_resumes.append(parsed_resume_dict)
 
-    for i in tqdm(range(len(partitions) - 1), desc="Processing monthly partitions"):
-        start_partition = partitions[i].strftime('%Y-%m-%d')
-        end_partition = partitions[i + 1].strftime('%Y-%m-%d')
+            # Process JD
+            parsed_jd = parse_with_llm(jd_text, jd_parser, "Job Description", llm)
+            parsed_jd_dict = parsed_jd.model_dump(mode="json")
+            parsed_jd_dict['snapshot_date'] = row['snapshot_date_str']
+            parsed_jd_dict['id'] = row['job_id']
+            parsed_jds.append(parsed_jd_dict)
+            
+            batch_idx += 1
 
-        # Filter rows between start and end of the month
-        df_parted = df[(df['snapshot_date_str'] >= start_partition) & (df['snapshot_date_str'] < end_partition)]
-
-        for idx, row in df_parted.iterrows():
-            resume_text = row['resume_text']
-            jd_text = row['job_description_text']
-            try:
-                # Process resume
-                parsed_resume = parse_with_llm(resume_text, resume_prompt_template, resume_parser, llm)
-                parsed_resume_dict = parsed_resume.model_dump(mode="json")
-                parsed_resume_dict['snapshot_date'] = row['snapshot_date_str']
-                parsed_resume_dict['id'] = row['resume_id']
-                parsed_resumes.append(parsed_resume_dict)
-
-                # Process JD
-                parsed_jd = parse_with_llm(jd_text, jd_prompt_template, jd_parser, llm)
-                parsed_jd_dict = parsed_jd.model_dump(mode="json")
-                parsed_jd_dict['snapshot_date'] = row['snapshot_date_str']
-                parsed_jd_dict['id'] = row['job_id']
-                parsed_jds.append(parsed_jd_dict)
-
+            if batch_idx == batch_size:
                 resume_df = spark.createDataFrame(parsed_resumes, schema=pydantic_to_spark_schema(Resume))
                 jd_df = spark.createDataFrame(parsed_jds, schema=pydantic_to_spark_schema(JD))
 
                 resume_df.write.format("mongodb") \
                     .mode("append") \
-                    .option("database", "jobmirror") \
-                    .option("collection", "resume_gemini") \
+                    .option("database", "jobmirror_db") \
+                    .option("collection", "bronze_resumes") \
                     .save()
                 
                 jd_df.write.format("mongodb") \
                     .mode("append") \
-                    .option("database", "jobmirror") \
-                    .option("collection", "jd_gemini") \
+                    .option("database", "jobmirror_db") \
+                    .option("collection", "bronze_job_descriptions") \
                     .save()
-            
-            except Exception as e:
-                print(f"Error parsing row {idx}: {e}")
-        print(f"Processed {start_partition}-{end_partition}")
+                
+                parsed_resumes.clear()
+                parsed_jds.clear()
+                batch_idx = 0
+        
+        except Exception as e:
+            print(f"Error parsing row {idx}: {e}")
+    print(f"============ END PROCESS BRONZE TABLE =============")
