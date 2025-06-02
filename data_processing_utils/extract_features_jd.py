@@ -31,6 +31,14 @@ def extract_hard_skills_jd(jd_json : dict) -> list:
 
     return hard_skills
 
+def extract_job_title_jd(jd_json : dict) -> list:
+    """
+    Get the job title from the description
+    """
+    job_title = jd_json["role_title"].lower()
+
+    return [job_title]
+
 def extract_required_education(jd_json : dict):
     """
     Extract the required education from the from the JD

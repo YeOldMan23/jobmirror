@@ -47,6 +47,26 @@ def get_hard_skill_match_score(jd_json : dict, resume_json : dict) -> float:
 
     return average_score
 
+def get_job_title_match_score(jd_json : dict, resume_json : dict) -> float:
+    """
+    Get the match between the job titles
+    """
+    jd_job_title_list = extract_job_title_jd(jd_json)
+    resume_title_list = extract_job_titles_resume(resume_json)
+
+    resume_embeddings = embedding_model.encode(jd_job_title_list, 
+                                               convert_to_tensor=True,
+                                               normalize_embeddings=True)
+    job_embeddings    = embedding_model.encode(resume_title_list, 
+                                               convert_to_tensor=True,
+                                               normalize_embeddings=True)
+
+    # Get the 
+    similarity_matrix = util.cos_sim(job_embeddings, resume_embeddings)
+    average_score     = torch.mean(similarity_matrix).item()
+
+    return average_score
+
 def get_date_of_applcation(jd_json : dict, resume_json : dict) -> datetime:
     """
     Get the date of applicaton from the either the JD or the resume

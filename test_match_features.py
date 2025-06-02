@@ -21,5 +21,6 @@ for JD in all_JDs:
         jd_data = json.load(jd_file)
 
     # parse the data, pass through resume
-    match_score = get_hard_skill_match_score(jd_data, resume_data)
-    print(f"JD Name : {JD} Match Score : {match_score}")
+    hs_match_score = get_hard_skill_match_score(jd_data, resume_data)
+    jd_match_score = get_job_title_match_score(jd_data, resume_data)
+    print(f"JD Name : {JD} Hard Skill Match Score : {hs_match_score} Job Title Match Score : {jd_match_score}")

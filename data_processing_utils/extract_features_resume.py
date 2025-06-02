@@ -54,3 +54,15 @@ def extract_hard_skills_resume(resume_json : dict) -> list:
         hard_skills[idx] = hard_skills[idx].lower()
 
     return hard_skills
+
+def extract_job_titles_resume(resume_json : dict) -> list:
+    """
+    Get all the job titles from the resume
+    """
+    job_experiences = resume_json["experience"]
+
+    prev_jobs = []
+    for job_exp in job_experiences:
+        prev_jobs.append(job_exp["role"].lower())
+
+    return prev_jobs
