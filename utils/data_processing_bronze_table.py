@@ -18,6 +18,7 @@ from langchain.output_parsers import PydanticOutputParser
 from mistralai import Mistral
 
 from pyspark.sql.types import ArrayType, StringType, IntegerType, FloatType, BooleanType, TimestampType, StructField, StructType
+from utils.mongodb_utils import get_resume_collection, get_jd_collection, exists_in_collection
 
 ###############
 # SOURCE
@@ -180,6 +181,8 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
 
     parsed_resumes = []
     parsed_jds = []
+    resume_collection = get_resume_collection()
+    jd_collection = get_jd_collection()
 
     df_parted = df.iloc[partition_start:partition_end]
 
@@ -190,18 +193,25 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
         jd_text = row['job_description_text']
         try:
             # Process resume
-            parsed_resume = parse_with_llm(resume_text, resume_parser, "Resume", llm)
-            parsed_resume_dict = parsed_resume.model_dump(mode="json")
-            parsed_resume_dict['snapshot_date'] = row['snapshot_date_str']
-            parsed_resume_dict['id'] = row['resume_id']
-            parsed_resumes.append(parsed_resume_dict)
+            if exists_in_collection(resume_collection, row['resume_id']):
+                print(f"Resume with id {row['resume_id']} already exists. Skipping.")
+            else:
+                parsed_resume = parse_with_llm(resume_text, resume_parser, "Resume", llm)
+                parsed_resume_dict = parsed_resume.model_dump(mode="json")
+                parsed_resume_dict['snapshot_date'] = row['snapshot_date_str']
+                parsed_resume_dict['id'] = row['resume_id']
+                parsed_resumes.append(parsed_resume_dict)
 
             # Process JD
-            parsed_jd = parse_with_llm(jd_text, jd_parser, "Job Description", llm)
-            parsed_jd_dict = parsed_jd.model_dump(mode="json")
-            parsed_jd_dict['snapshot_date'] = row['snapshot_date_str']
-            parsed_jd_dict['id'] = row['job_id']
-            parsed_jds.append(parsed_jd_dict)
+            if exists_in_collection(jd_collection, row['job_id']):
+                print(f"JD with id {row['job_id']} already exists. Skipping.")
+            else:
+                parsed_jd = parse_with_llm(jd_text, jd_parser, "Job Description", llm)
+                parsed_jd_dict = parsed_jd.model_dump(mode="json")
+                parsed_jd_dict['snapshot_date'] = row['snapshot_date_str']
+                parsed_jd_dict['id'] = row['job_id']
+                parsed_jds.append(parsed_jd_dict)
+
             
             batch_idx += 1
 
