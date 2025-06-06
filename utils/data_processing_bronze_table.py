@@ -8,6 +8,7 @@ import json
 from tqdm import tqdm
 import string
 import re
+import time
 
 from .resume_schema import Resume
 from .jd_schema import JD
@@ -234,6 +235,9 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
                 parsed_resumes.clear()
                 parsed_jds.clear()
                 batch_idx = 0
+
+            if idx % 100 == 0:
+                time.sleep(1.5)
         
         except Exception as e:
             print(f"Error parsing row {idx}: {e}")
