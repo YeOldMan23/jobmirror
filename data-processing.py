@@ -8,7 +8,6 @@ from utils.data_processing_bronze_table import process_bronze_table
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Process data.")
     parser.add_argument('--start', type=int, required=True, help='Start index')
     parser.add_argument('--end', type=int, required=True, help='End index')
@@ -18,7 +17,7 @@ if __name__ == "__main__":
     load_dotenv()
     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
-    mongodb_uri =  os.getenv("MONGO_DB_URL")
+    mongodb_uri = os.getenv("MONGO_DB_URL")
 
     spark = SparkSession.builder \
         .appName("SaveJSONtoMongoDB") \
