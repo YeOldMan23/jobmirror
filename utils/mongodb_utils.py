@@ -29,11 +29,7 @@ def test_mongo_connection(client: MongoClient):
     except Exception as e:
         print(f"MongoDB connection failed: {e}")
 
-def get_resume_collection(db_name="jobmirror_db", collection_name="bronze_resumes"):
-    client = get_mongo_client()
-    return client[db_name][collection_name]
-
-def get_jd_collection(db_name="jobmirror_db", collection_name="bronze_job_descriptions"):
+def get_collection(db_name, collection_name):
     client = get_mongo_client()
     return client[db_name][collection_name]
 
