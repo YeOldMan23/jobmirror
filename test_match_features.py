@@ -1,6 +1,6 @@
 import os
 import json
-from data_processing_utils.match_features import *
+from utils.feature_extraction.match_features import *
 
 examples_dir = os.path.join(os.getcwd(), "examples")
 JD_dir = os.path.join(examples_dir, "jd")
