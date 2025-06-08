@@ -120,7 +120,7 @@ def create_label_dicts(df):
     return label_dicts
 
 label_schema = StructType([
-    StructField("label_id", StringType(), True),
+    StructField("id", StringType(), True),
     StructField("resume_id", StringType(), True),
     StructField("job_id", StringType(), True),
     StructField("fit", StringType(), True), # 
@@ -245,7 +245,7 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
                 print(f"Label with id {row['label_id']} already exists. Skipping.")
             else:
                 parsed_labels.append({
-                    "label_id": row['label_id'],
+                    "id": row['label_id'],
                     "resume_id": row['resume_id'],
                     "job_id": row['job_id'],
                     "fit": row['label'],  
