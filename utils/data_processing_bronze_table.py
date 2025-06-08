@@ -19,7 +19,7 @@ from langchain.output_parsers import PydanticOutputParser
 from mistralai import Mistral
 
 from pyspark.sql.types import ArrayType, StringType, IntegerType, FloatType, BooleanType, TimestampType, StructField, StructType
-from utils.mongodb_utils import get_resume_collection, get_jd_collection, exists_in_collection
+from utils.mongodb_utils import get_collection, exists_in_collection
 
 ###############
 # SOURCE
@@ -70,6 +70,7 @@ def retrieve_data_from_source():
     # Generate random ids
     df['resume_id'] = df.apply(lambda row: generate_random_id('RES_', seed=row.name), axis=1)
     df['job_id'] = df.apply(lambda row: generate_random_id('JD_', seed=row.name), axis=1)
+    df['label_id'] = df.apply(lambda row: generate_random_id('LABEL_', seed=row.name), axis=1)
     
     return df
 
@@ -104,6 +105,27 @@ def parse_with_llm(text, parser, label, mistral):
     )
     raw = response.choices[0].message.content
     return parser.parse(raw)
+
+# create label structure and schema 
+def create_label_dicts(df):
+    label_dicts = []
+    for _, row in df.iterrows():
+        label_dicts.append({
+            "label_id": row['label_id'],
+            "resume_id": row['resume_id'],
+            "job_id": row['job_id'],
+            "fit": row['label'],
+            "snapshot_date": str(row['snapshot_date'])
+        })
+    return label_dicts
+
+label_schema = StructType([
+    StructField("id", StringType(), True),
+    StructField("resume_id", StringType(), True),
+    StructField("job_id", StringType(), True),
+    StructField("fit", StringType(), True), # 
+    StructField("snapshot_date", StringType(), True),
+])
 
 def python_type_to_spark_type(annotation):
     """
@@ -176,22 +198,27 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
     resume_parser = PydanticOutputParser(pydantic_object=Resume)
     jd_parser = PydanticOutputParser(pydantic_object=JD)
 
+
     ###############
     # Parse every row in df
     ###############
 
     parsed_resumes = []
     parsed_jds = []
-    resume_collection = get_resume_collection()
-    jd_collection = get_jd_collection()
+    parsed_labels = []
+
+    resume_collection = get_collection("jobmirror_db", "bronze_resumes")
+    label_collection = get_collection("jobmirror_db", "bronze_labels")
+    jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
 
     df_parted = df.iloc[partition_start:partition_end]
 
     batch_idx = 0
-    
+
     for idx, row in tqdm(df_parted.iterrows(), total=len(df_parted), desc=f"Processing indexes {partition_start}-{partition_end - 1}"):
         resume_text = row['resume_text']
         jd_text = row['job_description_text']
+
         try:
             # Process resume
             if exists_in_collection(resume_collection, row['resume_id']):
@@ -213,27 +240,47 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
                 parsed_jd_dict['id'] = row['job_id']
                 parsed_jds.append(parsed_jd_dict)
 
-            
+            # Process label
+            if exists_in_collection(label_collection, row['label_id']):
+                print(f"Label with id {row['label_id']} already exists. Skipping.")
+            else:
+                parsed_labels.append({
+                    "id": row['label_id'],
+                    "resume_id": row['resume_id'],
+                    "job_id": row['job_id'],
+                    "fit": row['label'],  
+                    "snapshot_date": str(row['snapshot_date'])
+                })
+
+
             batch_idx += 1
 
             if batch_idx == batch_size:
                 resume_df = spark.createDataFrame(parsed_resumes, schema=pydantic_to_spark_schema(Resume))
                 jd_df = spark.createDataFrame(parsed_jds, schema=pydantic_to_spark_schema(JD))
+                label_df = spark.createDataFrame(parsed_labels, schema=label_schema)
 
                 resume_df.write.format("mongodb") \
                     .mode("append") \
                     .option("database", "jobmirror_db") \
                     .option("collection", "bronze_resumes") \
                     .save()
-                
+
                 jd_df.write.format("mongodb") \
                     .mode("append") \
                     .option("database", "jobmirror_db") \
                     .option("collection", "bronze_job_descriptions") \
                     .save()
-                
+
+                label_df.write.format("mongodb") \
+                    .mode("append") \
+                    .option("database", "jobmirror_db") \
+                    .option("collection", "bronze_labels") \
+                    .save()
+
                 parsed_resumes.clear()
                 parsed_jds.clear()
+                parsed_labels.clear()
                 batch_idx = 0
 
             if idx % 100 == 0:
@@ -241,4 +288,5 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
         
         except Exception as e:
             print(f"Error parsing row {idx}: {e}")
+
     print(f"============ END PROCESS BRONZE TABLE =============")
