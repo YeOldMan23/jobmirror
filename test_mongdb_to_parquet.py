@@ -30,7 +30,7 @@ if __name__ == "__main__":
     datamart_dir = os.path.join(os.getcwd(), "datamart")
 
     # Get all dates from the start of 2024 to the end
-    snapshot_dates = get_snapshot_dates(datetime(2024, 1, 1), datetime(2024, 12, 1))
+    snapshot_dates = get_snapshot_dates(datetime(2021, 1, 1), datetime(2021, 12, 1))
     print("Number of Dates : ", len(snapshot_dates))
 
     # For each of the snapshot dates, get the corresponding data

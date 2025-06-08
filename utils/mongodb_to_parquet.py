@@ -8,7 +8,7 @@ from .feature_extraction.extract_features_resume import *
 import pyspark
 from pyspark.sql.functions import to_date, col, expr, when, struct, transform
 import os
-import pandas as pd
+import json
 
 def read_silver_labels(spark : SparkSession, datamart_dir : str, snapshot_date : datetime) -> None:
     """
@@ -19,23 +19,15 @@ def read_silver_labels(spark : SparkSession, datamart_dir : str, snapshot_date :
     # so need to use regex
 
     # Get the year-month from the snapshot date
-    regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 
     # Use double curly braces to escape for formatting strings
     df = spark.read.format("mongodb") \
         .option("database", "jobmirror_db") \
         .option("collection", "bronze_labels") \
-        .option("pipeline", f'''
-        [
-            {{
-                "$match": {{
-                    "snapshot_date": {{ "$regex" : "{regex_string}" }}
-                }}
-            }}
-        ]
-        ''') \
         .load()
-    print("Number of label rows read : {}".format(df.count()))
+    df = df.filter(col("snapshot_date").rlike(regex_string))
+    print("Number of label rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
     
     df2 = df.select(
         col("_id"),
@@ -59,22 +51,14 @@ def read_silver_jd(spark : SparkSession, datamart_dir : str, snapshot_date : dat
     """
 
     # Get the year-month from the snapshot date
-    regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 
     df = spark.read.format("mongodb") \
         .option("database", "jobmirror_db") \
         .option("collection", "bronze_job_descriptions") \
-        .option("pipeline", f'''
-        [
-            {{
-                "$match": {{
-                    "snapshot_date": {{ "$regex" : "{regex_string}" }}
-                }}
-            }}
-        ]
-        ''') \
         .load()
-    print("Number of JD rows read : {}".format(df.count()))
+    df = df.filter(col("snapshot_date").rlike(regex_string))
+    print("Number of JD rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
     
     df_cleaned = df.withColumn("_id", expr("string(_id)")) \
     .withColumn("snapshot_date", to_date(col("snapshot_date"), "yyyy-MM-dd"))
@@ -99,22 +83,14 @@ def read_silver_resume(spark : SparkSession, datamart_dir : str, snapshot_date :
     """
 
     # Get the year-month from the snapshot date
-    regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 
     df = spark.read.format("mongodb") \
         .option("database", "jobmirror_db") \
         .option("collection", "bronze_resumes") \
-        .option("pipeline", f'''
-        [
-            {{
-                "$match": {{
-                    "snapshot_date": {{ "$regex" : "{regex_string}" }}
-                }}
-            }}
-        ]
-        ''') \
         .load()
-    print("Number of resume rows read : {}".format(df.count()))
+    df = df.filter(col("snapshot_date").rlike(regex_string))
+    print("Number of Resume rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
 
     # Need to deal with void values
     df_fixed = df.withColumn(
