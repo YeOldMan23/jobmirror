@@ -14,7 +14,7 @@ class Education(BaseModel):
     institution: Optional[str] = Field(None, description="The name of the educational institution")
     date_start: Optional[str] = Field(None, description="The start date of the education program. Dates must be in ISO 8601 format (YYYY-MM-DDTHH:MM:SS) or use the keywords 'present', 'current', or 'ongoing'")
     date_end: Optional[str] = Field(None, description="The end date of the education program. Dates must be in ISO 8601 format (YYYY-MM-DDTHH:MM:SS) or use the keywords 'present', 'current', or 'ongoing'")
-    grade: Optional[float] = Field(None, description="The GPA or final grade, if available")
+    grade: Optional[float] = Field(None, description="The GPA or final grade, if available. If the grade is an honor (e.g., Cum Laude, Magna Cum Laude, Summa Cum Laude), convert it to an approximate GPA: Honors oe Merit oe Distinction: 3.3 to 3.5 , Cum Laude: starting from 3.5 to 3.6, Magna Cum Laude: 3.7 to 3.8, Summa Cum Laude: 3.95 to 4.0 ")
     description: Optional[str] = Field(None, description="Additional details about the education")
 
 class Resume(BaseModel):
