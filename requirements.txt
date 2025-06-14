@@ -151,4 +151,7 @@ zstandard==0.23.0
 mistralai==1.8.1
 datasets==2.19.1
 pymongo==4.7.2
-
+google-auth 
+google-auth-oauthlib 
+google-auth-httplib2 
+google-api-python-client
