@@ -184,3 +184,4 @@ cython_debug/
 data/
 datamart/
 .trunk
+credentials.json
