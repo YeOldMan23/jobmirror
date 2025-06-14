@@ -20,7 +20,7 @@ class Education(BaseModel):
 class Resume(BaseModel):
     name: Optional[str] = Field(None, description="Full name of the person")
     location_preference: Optional[str] = Field(None, description="Preference for their work location / remote, if stated")
-    work_authorizaton: Optional[str] = Field(None, description="Work authorization that the person holds, such as citizenship, if stated")
+    work_authorization: Optional[str] = Field(None, description="Work authorization that the person holds, such as citizenship, if stated")
     employment_type_preference: Optional[str] = Field(
         None,
         description="Type of employment the resume is looking for such as Full-time, Part-time, Contract, Freelance, or Internship, if stated. It can also be a preference for remote work or on-site work"
