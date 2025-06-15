@@ -136,4 +136,4 @@ def read_silver_resume(spark : SparkSession, datamart_dir : str, snapshot_date :
     filename = "resume_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
     output_path = os.path.join(datamart_dir, filename)
     df_selected.write.mode("overwrite").parquet(output_path)
-    
+        

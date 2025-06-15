@@ -5,7 +5,7 @@ Test the MongoDB features to extract
 from utils.mongodb_to_parquet import *
 
 from datetime import datetime
-from .utils.date_utils import *
+from utils.date_utils import *
 
 if __name__ == "__main__":
     # Initialize spark session
