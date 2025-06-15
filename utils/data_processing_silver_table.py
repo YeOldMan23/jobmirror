@@ -22,11 +22,8 @@ import os
 """
 Global Variables
 """
-device = None
-if torch.cuda.is_available():
-    print("Using GPU")
-    device = torch.cuda.get_device_name(0)
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Device Chosen : {}".format(device))
 embedding_model = SentenceTransformer("BAAI/bge-large-en-v1.5", device = device)
 
 """
@@ -159,7 +156,7 @@ def data_processing_silver_table(datamart_dir : str, selected_date : str, spark 
     DO UDFS HERE
     """
     # Get the experience similarity score 
-    # labels_jd_resume = labels_jd_resume.withColumn("exp_sim", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
+    labels_jd_resume = labels_jd_resume.withColumn("exp_sim", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
 
     # check
     print(f"Silver Table Snapshot : {selected_date} No. Rows : {labels_jd_resume.count()}")

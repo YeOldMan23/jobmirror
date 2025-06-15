@@ -8,9 +8,11 @@ from pyspark.sql import SparkSession
 
 if __name__ == "__main__":
     # Get the pyspark session
-    spark = SparkSession.builder \
+    spark = pyspark.sql.SparkSession.builder \
             .appName("SilverParquet") \
-            .config("spark.driver.memory", "8g") \
+            .config("spark.ui.enabled", "true") \
+            .config("spark.hadoop.hadoop.native.lib", "false") \
+            .config("spark.driver.memory", "4g") \
             .getOrCreate()
     
     # Some people have many experiences, we need to increase the string fields amount
@@ -25,6 +27,8 @@ if __name__ == "__main__":
     # For each range, read the silver table and parse
     for cur_date in date_range:
         snapshot_date = f"{cur_date.year}-{cur_date.month}"
+
+        print("Processing silver {}".format(snapshot_date))
 
         # Process the date
         data_processing_silver_table(datamart_dir, snapshot_date, spark)
