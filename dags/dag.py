@@ -26,6 +26,7 @@ with DAG(
 
 ###### Bronze Table ######
 # Bronze tables processing includes label and features 
+# Retrieves data from huggingface, extract text using LLM and parse to MongoDB
     bronze_store = BashOperator(
         task_id='run_bronze_feature_and_label_store',
         bash_command=(
@@ -36,7 +37,7 @@ with DAG(
     )
     # ds stands for date. this is where to input the date based on the schedule provided above. 
 
-###### Silver Table ######   
+###### Silver Label Table ######   
  # Input dummy operator for testing purpose. Actual script commented below.
     silver_label_store = DummyOperator(task_id="silver_label_store")
     # silver_label_store = BashOperator(
@@ -65,31 +66,22 @@ with DAG(
     # Define task dependencies to run scripts sequentially
     bronze_store >> silver_label_store >> gold_label_store >> label_store_completed
   
-    # --- feature store --- chaining multiple bronze table to silver table
-    # dep_check_source_data_bronze_1 = DummyOperator(task_id="dep_check_source_data_bronze_1")
+ # --- feature store --- chaining multiple bronze table to silver table
+    # bronze_table_1 = DummyOperator(task_id="bronze_table_1")
 
-    # dep_check_source_data_bronze_2 = DummyOperator(task_id="dep_check_source_data_bronze_2")
-
-    # dep_check_source_data_bronze_3 = DummyOperator(task_id="dep_check_source_data_bronze_3")
-
-    bronze_table_1 = DummyOperator(task_id="bronze_table_1")
-    
-    # bronze_table_2 = DummyOperator(task_id="bronze_table_2")
-
-    # bronze_table_3 = DummyOperator(task_id="bronze_table_3")
-
+    # Should contain processing for silver resume and silver JD tables
     silver_table_1 = DummyOperator(task_id="silver_table_1")
+    # Merge silver resume and silver JD tables into a big silver table
+    big_silver_table = DummyOperator(task_id="silver_table_2")
 
-    # silver_table_2 = DummyOperator(task_id="silver_table_2")
-
+    # Create gold feature store
     gold_feature_store = DummyOperator(task_id="gold_feature_store")
 
     feature_store_completed = DummyOperator(task_id="feature_store_completed")
     
     # Define task dependencies to run scripts sequentially
-    dep_check_source_data_bronze_1 >> bronze_table_1 >> silver_table_1 >> gold_feature_store
-    # dep_check_source_data_bronze_2 >> bronze_table_2 >> silver_table_1 >> gold_feature_store
-    # dep_check_source_data_bronze_3 >> bronze_table_3 >> silver_table_2 >> gold_feature_store
+    # since bronze feature store is already created, we skip the task in this step
+    silver_table_1 >> big_silver_table >> gold_feature_store
     gold_feature_store >> feature_store_completed
 
 
@@ -105,7 +97,7 @@ with DAG(
     # Define task dependencies to run scripts sequentially
     feature_store_completed >> model_inference_start
     model_inference_start >> model_1_inference >> model_inference_completed
-    # model_inference_start >> model_2_inference >> model_inference_completed
+    model_inference_start >> model_2_inference >> model_inference_completed
 
 
     # --- model monitoring ---
@@ -113,14 +105,14 @@ with DAG(
 
     model_1_monitor = DummyOperator(task_id="model_1_monitor")
 
-    # model_2_monitor = DummyOperator(task_id="model_2_monitor")
+    model_2_monitor = DummyOperator(task_id="model_2_monitor")
 
     model_monitor_completed = DummyOperator(task_id="model_monitor_completed")
     
     # Define task dependencies to run scripts sequentially
     model_inference_completed >> model_monitor_start
     model_monitor_start >> model_1_monitor >> model_monitor_completed
-    # model_monitor_start >> model_2_monitor >> model_monitor_completed
+    model_monitor_start >> model_2_monitor >> model_monitor_completed
 
 
     # --- model auto training ---
@@ -129,7 +121,7 @@ with DAG(
     
     model_1_automl = DummyOperator(task_id="model_1_automl")
 
-    # model_2_automl = DummyOperator(task_id="model_2_automl")
+    model_2_automl = DummyOperator(task_id="model_2_automl")
 
     model_automl_completed = DummyOperator(task_id="model_automl_completed")
     
@@ -137,4 +129,4 @@ with DAG(
     feature_store_completed >> model_automl_start
     label_store_completed >> model_automl_start
     model_automl_start >> model_1_automl >> model_automl_completed
-    # model_automl_start >> model_2_automl >> model_automl_completed
+    model_automl_start >> model_2_automl >> model_automl_completed

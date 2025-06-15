@@ -15,7 +15,7 @@ services:
     build: .
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__CORE__FERNET_KEY=PAqBeGJLJTYFzVkOGHWIYXdLO7XdXz5yTdxAGJe9ezM=
+      - AIRFLOW__CORE__FERNET_KEY=ynwrGWdXVXTtM3vz_bQ9NpScZhL9s48yshCVmWh8qLo=
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - airflow_data:/opt/airflow
@@ -31,7 +31,7 @@ services:
       - airflow-init
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__CORE__FERNET_KEY=PAqBeGJLJTYFzVkOGHWIYXdLO7XdXz5yTdxAGJe9ezM=
+      - AIRFLOW__CORE__FERNET_KEY=ynwrGWdXVXTtM3vz_bQ9NpScZhL9s48yshCVmWh8qLo=
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - airflow_data:/opt/airflow
@@ -47,7 +47,7 @@ services:
       - airflow-init
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__CORE__FERNET_KEY=PAqBeGJLJTYFzVkOGHWIYXdLO7XdXz5yTdxAGJe9ezM=
+      - AIRFLOW__CORE__FERNET_KEY=ynwrGWdXVXTtM3vz_bQ9NpScZhL9s48yshCVmWh8qLo=
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - airflow_data:/opt/airflow
