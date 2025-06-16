@@ -11,13 +11,47 @@ from .feature_extraction.match_features import *
 import pyspark
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf
-from pyspark.sql.types import FloatType
+from pyspark.sql.functions import udf, col
+from pyspark.sql.types import FloatType, StructType, StructField, StringType
 
 # Using another language model to read the values
 from sentence_transformers import SentenceTransformer, util
 
 import os
+
+
+# education helpers
+from utils.edu_utils import (
+    level_from_text,
+    major_from_text,
+    gpa_from_text,
+)
+
+EDU_OUT_SCHEMA = StructType([
+    StructField("highest_level_education", StringType(), True),
+    StructField("major",                   StringType(), True),
+    StructField("gpa",                     FloatType(),  True),
+    StructField("institution",             StringType(), True),
+])
+def _parse_education(edu_arr):
+    if not edu_arr:
+        return (None, None, None, None)
+    ed0 = edu_arr[0]
+    text = f"{ed0.degree or ''} {ed0.description or ''}"
+    level, _ = level_from_text(text)
+    major, _ = major_from_text(text)
+    gpa_val = ed0.grade or gpa_from_text(text)
+    return (
+        level,
+        major,
+        float(gpa_val) if gpa_val is not None else None,
+        ed0.institution,
+    )
+parse_education_udf = udf(_parse_education, EDU_OUT_SCHEMA)
+
+
+
+
 
 """
 Global Variables
@@ -138,11 +172,20 @@ def data_processing_silver_table(datamart_dir : str, selected_date : str, spark 
 
     # We do the individual transforms to dfs first
     ## Resume Transforms
-    resume_df = resume_df.withColumn("YoE", get_resume_yoe(resume_df['experience']))
-    resume_df = resume_df.withColumnRenamed("certifications", "resume_certifications")
-    resume_df = resume_df.withColumnRenamed("id", "resume_id")
-    resume_df = resume_df.withColumnRenamed("snapshot_date", "resume_snapshot")
-
+    resume_df = (
+            resume_df
+                .withColumn("YoE", get_resume_yoe("experience"))
+                .withColumnRenamed("certifications", "resume_certifications")
+                .withColumnRenamed("id", "resume_id")
+                .withColumnRenamed("snapshot_date", "resume_snapshot")
+                .withColumn("edu_extracted", parse_education_udf("education"))
+                .withColumn("highest_level_education", col("edu_extracted.highest_level_education"))
+                .withColumn("major",                   col("edu_extracted.major"))
+                .withColumn("gpa",                     col("edu_extracted.gpa"))
+                .withColumn("institution",             col("edu_extracted.institution"))
+                .drop("edu_extracted")
+        )
+  
     ## JD Transforms
     jd_df = jd_df.withColumnRenamed("certifications", "jd_certifications")
     jd_df = jd_df.withColumnRenamed("id", "job_id")

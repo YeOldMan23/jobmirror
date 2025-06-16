@@ -3,6 +3,8 @@ Test the silver table stuff
 """
 from utils.data_processing_silver_table import *
 from utils.date_utils import *
+import os
+# from utils.edu_silver_transform import resume_edu_to_silver
 
 from pyspark.sql import SparkSession
 
@@ -32,4 +34,6 @@ if __name__ == "__main__":
 
         # Process the date
         data_processing_silver_table(datamart_dir, snapshot_date, spark)
+        # resume_edu_to_silver(datamart_dir, snapshot_date, spark)            # testing for education
+
 
