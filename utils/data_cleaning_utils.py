@@ -31,7 +31,8 @@ def clean_employment_type_column(df: DataFrame, employment_type: str) -> DataFra
         )
     )
 
-def location_lookup(city_df, target_country_code='US'):
+def location_lookup(target_country_code='US'):
+    city_df = pd.read_csv("datamart/bronze/location/cities.csv")
     # This function returns a Python dict, so you can use it in a UDF
     location_lookup = {}
     for idx, row in city_df.iterrows():
