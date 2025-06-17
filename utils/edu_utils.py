@@ -12,8 +12,10 @@ for brzone to silver transformation.
 
 
 
+from pyspark.sql import SparkSession
+from pyspark.sql import types as T
 
-
+from spark_utils import pyspark_df_info
 # utils/edu_utils.py  – regex + rapid-fuzz only
 import re, unicodedata
 from rapidfuzz import process, fuzz
@@ -54,6 +56,57 @@ LEVEL_SYNONYMS = {
     "ged":"secondary", "some college":"secondary"
 }
 _LEVEL_KEYS = list(LEVEL_SYNONYMS.keys())
+
+
+def define_level_synonyms(spark: SparkSession):
+    """
+    Creates a parquet file with education level synonyms as well as the corresponding scale.
+    """
+    df_education_levels = spark.createDataFrame(
+        data=[
+            ("High School", 1, "Completion of high school or equivalent", 
+                [
+                    "high school", "ged", "secondary", "college", "diploma"
+                ]
+            ),
+            ("Associate's Degree", 2, "Completion of a two-year degree program or certificate", 
+                [
+                    "associate's", "a.a", "a.s", "a.a.s", "certificate"
+                ]
+            ),
+            ("Bachelor's Degree", 3, "Completion of a undergraduate degree program", 
+                [
+                    "bachelor", "bachelor's degree", "bachelor's in", "undergraduate degree",
+                    "ba", "bs", "bsc", "bba", "beng"
+                    
+                ]
+            ),
+            ("Master's Degree", 4, "Completion of a postgraduate degree program", 
+                [
+                    "master", "master's degree", "master's in", "postgraduate degree",
+                    "ma", "ms", "msc", "mba", "m.eng"
+                ]
+            ),
+            ("Doctorate", 5, "Completion of a doctoral degree program", 
+                [
+                    "phd", "md", "jd", "doctor", "doctorate", "doctorate degree", "doctoral degree"
+                ]
+            )
+        ],
+        schema=T.StructType([
+            T.StructField('level_name', T.StringType(), False),
+            T.StructField('level_scale', T.IntegerType(), False),
+            T.StructField('level_description', T.StringType(), True),
+            T.StructField('level_references', T.ArrayType(T.StringType()), True)
+        ])
+    )
+
+    df_education_levels.show(5, truncate=False)
+    pyspark_df_info(df_education_levels)
+    # Save as Parquet (to preserve schema and array types)
+    df_education_levels.write.mode('overwrite').parquet('data/education_level_synonyms.parquet')
+    return
+
 
 # ─── MAJOR list  (≈120) ─────────────────────────────────
 MAJOR_LIST = list({
@@ -103,3 +156,4 @@ def major_from_text(txt:str):
 def gpa_from_text(txt:str):
     m = GPA_RE.search(txt or "")
     return float(m.group()) if m else None
+
