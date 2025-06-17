@@ -101,11 +101,11 @@ def parse_flexible_date(date_str) -> datetime:
     return datetime(2021, 12, 31)
 
 @udf(FloatType())
-def get_resume_yoe(experience_array) -> float:
+def get_resume_yoe(experience_array) -> list:
     """
     Get the YoE from resume experiences
     """
-    total_yoe = 0.0
+    experience_list = []
 
     for experience in experience_array:
         # Edge case - start_date is none / null, skip
@@ -118,22 +118,19 @@ def get_resume_yoe(experience_array) -> float:
         # Calculate the time difference between the start and end time 
         time_diff = get_time_difference(start, end)
 
-        total_yoe += time_diff
+        experience_list.append(time_diff)
 
-    # YoE cannot be less than 0
-    total_yoe = max(0, total_yoe)
-
-    return total_yoe
+    return experience_list
 
 @udf(FloatType())
-def get_title_similarity_score(jd_job_title, experience_array) -> float:
+def get_title_similarity_score(jd_job_title, experience_array) -> list:
     """
     Get the sim score match between the jd title and the experience array
     """
     # If JD job title is None, just return 0.0
     if not jd_job_title:
-        print(0.0)
-        return 0.0
+        print("No JD title")
+        return []
 
     jd_job_title_embedding = embedding_model.encode([jd_job_title],
                                                     convert_to_tensor=True,
@@ -144,19 +141,16 @@ def get_title_similarity_score(jd_job_title, experience_array) -> float:
 
     #If no exp_job titles, nothing to compare to, so just 0
     if len(exp_job_titles) == 0:
-        print(0.0)
-        return 0.0
+        print("No experience")
+        return []
 
     experience_embeddings = embedding_model.encode(exp_job_titles,
                                                     convert_to_tensor=True,
                                                     normalize_embeddings=True)
 
-    similarity_matrix = util.cos_sim(jd_job_title_embedding, experience_embeddings)
-    average_score     = torch.mean(similarity_matrix).item()
+    similarity_matrix = util.cos_sim(jd_job_title_embedding, experience_embeddings).flatten().tolist()
 
-    print(average_score)
-
-    return average_score
+    return similarity_matrix
 
 def data_processing_silver_table(datamart_dir : str, selected_date : str, spark : SparkSession) -> None:
     """
@@ -174,7 +168,7 @@ def data_processing_silver_table(datamart_dir : str, selected_date : str, spark 
     ## Resume Transforms
     resume_df = (
             resume_df
-                .withColumn("YoE", get_resume_yoe("experience"))
+                .withColumn("YoE_list", get_resume_yoe("experience"))
                 .withColumnRenamed("certifications", "resume_certifications")
                 .withColumnRenamed("id", "resume_id")
                 .withColumnRenamed("snapshot_date", "resume_snapshot")
@@ -199,7 +193,7 @@ def data_processing_silver_table(datamart_dir : str, selected_date : str, spark 
     DO UDFS HERE
     """
     # Get the experience similarity score 
-    labels_jd_resume = labels_jd_resume.withColumn("exp_sim", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
+    labels_jd_resume = labels_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
 
     # check
     print(f"Silver Table Snapshot : {selected_date} No. Rows : {labels_jd_resume.count()}")
