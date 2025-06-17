@@ -4,6 +4,7 @@ Converts the mongoDB to parquet file in datamart
 from .mongodb_utils import *
 from .feature_extraction.extract_features_jd import *
 from .feature_extraction.extract_features_resume import *
+from .feature_extraction.extract_skills import create_hard_skills_column, create_soft_skills_column
 
 import pyspark
 from pyspark.sql.functions import to_date, col, expr, when, struct, transform
@@ -42,7 +43,7 @@ def read_silver_labels(spark : SparkSession, datamart_dir : str, snapshot_date :
                          when(col("fit") == "No Fit", 0.0).when(col("fit") == "Potential Fit", 0.5).when(col("fit") == "Good Fit", 1.0))
 
     filename    = "labels_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
-    output_path = os.path.join(datamart_dir, filename)
+    output_path = os.path.join(datamart_dir, 'label', filename)
     df2.write.mode("overwrite").parquet(output_path)
 
 def read_silver_jd(spark : SparkSession, datamart_dir : str, snapshot_date : datetime) -> None:
@@ -71,10 +72,13 @@ def read_silver_jd(spark : SparkSession, datamart_dir : str, snapshot_date : dat
         "required_education", "required_work_authorization",
         "certifications", "snapshot_date"
     )
+
+    df_selected = create_hard_skills_column(df_selected, spark, og_column="required_hard_skills")
+    df_selected = create_soft_skills_column(df_selected, spark, og_column="required_soft_skills")
     
     # We need to process the required education using the embeddings model and check for similarity
     filename    = "jd_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
-    output_path = os.path.join(datamart_dir, filename)
+    output_path = os.path.join(datamart_dir, 'jd', filename)
     df_selected.write.mode("overwrite").parquet(output_path)
 
 def read_silver_resume(spark : SparkSession, datamart_dir : str, snapshot_date : datetime):
@@ -133,7 +137,10 @@ def read_silver_resume(spark : SparkSession, datamart_dir : str, snapshot_date :
         "certifications", "snapshot_date"
     )
 
+    df_selected = create_hard_skills_column(df_selected, spark, og_column="hard_skills")
+    df_selected = create_soft_skills_column(df_selected, spark, og_column="soft_skills")
+
     filename = "resume_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
-    output_path = os.path.join(datamart_dir, filename)
+    output_path = os.path.join(datamart_dir, 'resume', filename)
     df_selected.write.mode("overwrite").parquet(output_path)
     
