@@ -9,4 +9,12 @@ services:
       - .:/app
     environment:
       - JUPYTER_ENABLE_LAB=yes
+      - CUDA_LAUNCH_BLOCKING=1 # Keep this for debugging CUDA errors
+    deploy: # <--- ADD THIS SECTION
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all # Or specify a number, e.g., 1, or specific device_ids: ['0', '1']
+              capabilities: [gpu]
     command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--notebook-dir=/app", "--ServerApp.token=''", "--ServerApp.disable_check_xsrf=True"]
