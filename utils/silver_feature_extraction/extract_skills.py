@@ -14,6 +14,9 @@ from rapidfuzz import process, fuzz
 import spacy
 
 # GLOBAL VARIABLES
+# Check if we need to download the spacy package
+if not spacy.util.is_package("en_core_web_sm"):
+    spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
 
 def read_hard_skills_list(spark):
@@ -130,10 +133,6 @@ def lemmatize_soft_skills(rows):
         yield tuple(row_dict[col] for col in row_dict.keys())
 
 def create_soft_skills_column(df_spark, spark, og_column="soft_skills"):
-    # Check if we need to download the spacy package
-    if not spacy.util.is_package("en_core_web_sm"):
-        spacy.cli.download("en_core_web_sm")
-
     # Rename column to soft skills
     df_spark_cleaned = df_spark.withColumnRenamed(og_column, "soft_skills")
 
