@@ -12,7 +12,7 @@ import pyspark
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
-from pyspark.sql.types import FloatType, StructType, StructField, StringType
+from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType
 
 # Using another language model to read the values
 from sentence_transformers import SentenceTransformer, util
@@ -122,15 +122,15 @@ def get_resume_yoe(experience_array) -> list:
 
     return experience_list
 
-@udf(FloatType())
+@udf(ArrayType(FloatType()))
 def get_title_similarity_score(jd_job_title, experience_array) -> list:
     """
     Get the sim score match between the jd title and the experience array
     """
     # If JD job title is None, just return 0.0
     if not jd_job_title:
-        print("No JD title")
-        return []
+        # print("No JD title")
+        return [-1]
 
     jd_job_title_embedding = embedding_model.encode([jd_job_title],
                                                     convert_to_tensor=True,
@@ -141,7 +141,7 @@ def get_title_similarity_score(jd_job_title, experience_array) -> list:
 
     #If no exp_job titles, nothing to compare to, so just 0
     if len(exp_job_titles) == 0:
-        print("No experience")
+        # print("No experience")
         return []
 
     experience_embeddings = embedding_model.encode(exp_job_titles,
@@ -150,7 +150,61 @@ def get_title_similarity_score(jd_job_title, experience_array) -> list:
 
     similarity_matrix = util.cos_sim(jd_job_title_embedding, experience_embeddings).flatten().tolist()
 
+    # print(similarity_matrix)
+
     return similarity_matrix
+
+###################################################
+# Gold Table Aggregations for Experience
+###################################################
+
+@udf(FloatType())
+def get_relevant_yoe(sim_matrix, yoe_list, threshold : float):
+    """
+    Get the relevant YoE from the array
+    """
+    relevant_yoe = 0
+
+    for cur_yoe, cur_exp_sim in zip(yoe_list, sim_matrix):
+        if cur_exp_sim >= threshold:
+            relevant_yoe += cur_yoe
+
+    return max(0, relevant_yoe)
+
+@udf(FloatType())
+def get_total_yoe(yoe_list):
+    """
+    Get the total YoE from the array
+    """
+    return max(0, sum(yoe_list))
+
+@udf(FloatType())
+def get_avg_job_sim(sim_matrix):
+    """
+    Get Average Job Sim
+    """
+    if len(sim_matrix) > 0:
+        return sum(sim_matrix) / len(sim_matrix)
+    else:
+        return 0
+    
+@udf(FloatType())
+def get_max_job_sim(sim_matrix):
+    """
+    Get Max Job Sim
+    """
+    if len(sim_matrix) > 0:
+        return max(sim_matrix)
+    else:
+        return 0
+    
+@udf(BooleanType())
+def is_freshie(sim_matrix):
+    """
+    Boolean to determine if the person is new to the job market
+    """
+    return len(sim_matrix) == 0
+    
 
 def data_processing_silver_table(datamart_dir : str, selected_date : str, spark : SparkSession) -> None:
     """
