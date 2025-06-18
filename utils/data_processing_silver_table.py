@@ -3,6 +3,7 @@ Read the parquet files and extract new information out of them
 """
 
 from .mongodb_utils import read_bronze_resume_as_pyspark, read_bronze_jd_as_pyspark, read_bronze_labels_as_pyspark
+from .gdrive_utils import connect_to_gdrive, get_folder_id_by_path, upload_file_to_drive
 
 # Get the features to match
 from .silver_feature_extraction.extract_exp import get_resume_yoe, get_title_similarity_score
@@ -87,6 +88,15 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
     Processes resumes from bronze layer to silver layer
     Output: saves into parquet
     """
+
+    service = connect_to_gdrive()
+        
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+        
+    resume_path = ['datamart', 'silver', 'resume']
+    resume_id = get_folder_id_by_path(service, resume_path, parent_root)
+    print("\nResume folder ID:", resume_id)
+    
     # Read into pyspark dataframe
     df = read_bronze_resume_as_pyspark(snapshot_date, spark)
 
@@ -122,18 +132,28 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
         .withColumnRenamed("location_preference_cleaned", "location_preference")
 
     # Save table as parquet
-    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
-    filename = selected_date + ".parquet"
+    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
     output_path = os.path.join("datamart", "silver", "resumes", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    print(f"Saved Silver Resume : {selected_date} No. Rows : {df.count()}")
+    upload_file_to_drive(service, output_path, resume_id)
+
 
 def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     """
     Processes job descriptions from bronze layer to silver layer
     Output: saves into parquet
     """
+
+    service = connect_to_gdrive()
+        
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+        
+        
+    jd_path = ['datamart', 'silver',  'job_description']
+    jd_id = get_folder_id_by_path(service, jd_path, parent_root)
+    print("\nJob description folder ID:", jd_id)
+
     # Read into pyspark dataframe
     df = read_bronze_jd_as_pyspark(snapshot_date, spark)
     df = df.withColumnRenamed("certifications", "jd_certifications")
@@ -171,18 +191,27 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
         .withColumnRenamed("job_location_cleaned", "job_location")
 
     # Save table as parquet
-    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
-    filename = selected_date + ".parquet"
+    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
     output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    print(f"Saved Silver Job Descriptions : {selected_date} No. Rows : {df.count()}")
+    upload_file_to_drive(service, output_path, jd_id)
 
 def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
     """
     Processes labels from bronze layer to silver layer
     Output: saves into parquet
     """
+
+    service = connect_to_gdrive()
+        
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+        
+        
+    jd_path = ['datamart', 'silver',  'label']
+    label_id = get_folder_id_by_path(service, jd_path, parent_root)
+    print("\nLabel folder ID:", label_id)
+
     # Read into pyspark dataframe
     df = read_bronze_labels_as_pyspark(snapshot_date, spark)
 
@@ -198,12 +227,24 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
     df.write.mode("overwrite").parquet(output_path)
 
     print(f"Saved Silver Labels : {selected_date} No. Rows : {df.count()}")
+
+    upload_file_to_drive(service, output_path, label_id)
     
 
 def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSession) -> None:
     """
     Merge the parquets together, get the dataframe for further processing
     """
+
+    service = connect_to_gdrive()
+        
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+        
+        
+    combine_path = ['datamart', 'silver',  'combined_resume_jd']
+    combined_id = get_folder_id_by_path(service, combine_path, parent_root)
+    print("\nCombined folder ID:", combined_id)
+
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     jd_full_dir     = os.path.join("datamart", "silver", "job_descriptions", f"{selected_date}.parquet")
     resume_full_dir = os.path.join("datamart", "silver", "resumes", f"{selected_date}.parquet")
@@ -241,3 +282,5 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
     labels_jd_resume.write.mode("overwrite").parquet(output_path)
 
     print(f"Saved Silver Combined : {selected_date} No. Rows : {labels_jd_resume.count()}")
+
+    upload_file_to_drive(service, output_path, combined_id)
