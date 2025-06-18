@@ -21,7 +21,7 @@ import pyspark
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import udf, col
 from pyspark.sql.types import StructType, StructField, StringType, FloatType, IntegerType
-from utils.edu_utils import level_from_text, major_from_text, gpa_from_text, determine_edu_mapping
+from utils.silver_feature_extraction.extract_edu import level_from_text, major_from_text, gpa_from_text, determine_edu_mapping
 
 _EDU_SCHEMA = StructType([
     StructField("highest_level_education", StringType(), True),

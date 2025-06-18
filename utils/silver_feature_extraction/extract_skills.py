@@ -13,10 +13,13 @@ from pyspark.sql.types import StructType, StructField, ArrayType, StringType, Fl
 from rapidfuzz import process, fuzz
 import spacy
 
+# GLOBAL VARIABLES
+nlp = spacy.load("en_core_web_sm")
+
 def read_hard_skills_list(spark):
     # sync_gdrive_db_to_local()
     
-    df_hard_skills_keywords = spark.read.option("header", "true").parquet("datamart/silver/hardskill/Technology_Skills.parquet")
+    df_hard_skills_keywords = spark.read.option("header", "true").parquet("datamart/references/Technology_Skills.parquet")
     return df_hard_skills_keywords
 
 def hard_skills_fuzzy_match_udf_factory(mapping_dict):
@@ -100,8 +103,6 @@ def create_hard_skills_column(df_spark, spark, og_column="hard_skills"):
     return df_spark_cleaned
 
 def lemmatize_soft_skills(rows):
-    nlp = spacy.load("en_core_web_sm")
-
     GENERIC_NOUNS = {
         "skill", "skills", "ability", "abilities", "knowledge",
         "proficiency", "understanding", "capability", "competency"

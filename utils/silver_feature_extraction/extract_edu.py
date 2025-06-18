@@ -6,15 +6,11 @@ This is the main utils file for extracting resume education information.
 for brzone to silver transformation.
 """
 
-
-
-
-
-
-
 from pyspark.sql import SparkSession
 from pyspark.sql import types as T
 from pyspark.sql import Row
+from pyspark.sql.functions import udf, col
+from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType
 
 # utils/edu_utils.py  – regex + rapid-fuzz only
 import re, unicodedata
@@ -345,3 +341,29 @@ def determine_edu_mapping(education_input: str | list[str], mapping: list, thres
         if match_result and match_result[1] > best_score:
             best_score, best_match = match_result[1], row.group_name
     return best_match if best_score >= threshold else "Others"
+
+
+def parse_education_udf_factory():
+    EDU_OUT_SCHEMA = StructType([
+        StructField("highest_level_education", StringType(), True),
+        StructField("major",                   StringType(), True),
+        StructField("gpa",                     FloatType(),  True),
+        StructField("institution",             StringType(), True),
+    ])
+    def _parse_education(edu_arr):
+        if not edu_arr:
+            return (None, None, None, None)
+        ed0 = edu_arr[0]
+        text = f"{ed0.degree or ''} {ed0.description or ''}"
+        level, _ = level_from_text(text)
+        major, _ = major_from_text(text)
+        gpa_val = ed0.grade or gpa_from_text(text)
+        return (
+            level,
+            major,
+            float(gpa_val) if gpa_val is not None else None,
+            ed0.institution,
+        )
+    parse_education_udf = udf(_parse_education, EDU_OUT_SCHEMA)
+    return parse_education_udf
+

@@ -1,6 +1,6 @@
 """
 Test the MongoDB features to extract
-"""
+
 
 from utils.mongodb_to_parquet import *
 
@@ -23,3 +23,4 @@ if __name__ == "__main__":
         read_silver_labels(spark, datamart_dir, snapshot_date)
     
     pass
+"""

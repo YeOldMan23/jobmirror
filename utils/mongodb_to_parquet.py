@@ -1,17 +1,14 @@
 """
 Converts the mongoDB to parquet file in datamart
 """
-from .mongodb_utils import *
-from .feature_extraction.extract_features_jd import *
-from .feature_extraction.extract_features_resume import *
-from .feature_extraction.extract_skills import create_hard_skills_column, create_soft_skills_column
-from .data_cleaning_utils import clean_employment_type_column, clean_work_authorization_column, \
-    location_lookup, standardize_location_column, standardize_label
-
 import pyspark
 from pyspark.sql.functions import to_date, col, expr, when, struct, transform
 import os
 import json
+import datetime
+from pyspark.sql import SparkSession
+
+from .mongodb_utils import *
 
 def read_silver_labels(spark : SparkSession, datamart_dir : str, snapshot_date : datetime) -> None:
     """
@@ -40,12 +37,7 @@ def read_silver_labels(spark : SparkSession, datamart_dir : str, snapshot_date :
         to_date(col("snapshot_date"), "yyyy-MM-dd").alias("snapshot_date")
     )
 
-    # Regroup the fit labels
-    df2 = standardize_label(df2, "fit")
-
-    filename    = "labels_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
-    output_path = os.path.join(datamart_dir, 'label', filename)
-    df2.write.mode("overwrite").parquet(output_path)
+    return df2
 
 def read_silver_jd(spark : SparkSession, datamart_dir : str, snapshot_date : datetime) -> None:
     """
@@ -73,16 +65,6 @@ def read_silver_jd(spark : SparkSession, datamart_dir : str, snapshot_date : dat
         "required_education", "required_work_authorization",
         "certifications", "snapshot_date"
     )
-
-    df_selected = create_hard_skills_column(df_selected, spark, og_column="required_hard_skills")
-    df_selected = create_soft_skills_column(df_selected, spark, og_column="required_soft_skills")
-
-    df_selected = clean_employment_type_column(df_selected, "employment_type")
-
-    location_dict = location_lookup()
-    df_selected = standardize_location_column(df_selected, "job_location", location_dict)
-    
-    df_selected = clean_work_authorization_column(df_selected, "required_work_authorization")
     
     # We need to process the required education using the embeddings model and check for similarity
     filename    = "jd_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
@@ -144,16 +126,6 @@ def read_silver_resume(spark : SparkSession, datamart_dir : str, snapshot_date :
         "experience", "education",
         "certifications", "snapshot_date"
     )
-
-    df_selected = create_hard_skills_column(df_selected, spark, og_column="hard_skills")
-    df_selected = create_soft_skills_column(df_selected, spark, og_column="soft_skills")
-
-    df_selected = clean_employment_type_column(df_selected, "employment_type_preference")
-
-    location_dict = location_lookup()
-    df_selected = standardize_location_column(df_selected, "location_preference", location_dict)
-    
-    df_selected = clean_work_authorization_column(df_selected, "work_authorization")
 
     filename = "resume_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
     output_path = os.path.join(datamart_dir, 'resume', filename)

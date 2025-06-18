@@ -2,157 +2,28 @@
 Read the parquet files and extract new information out of them
 """
 
+from .mongodb_utils import read_bronze_resume_as_pyspark, read_bronze_jd_as_pyspark, read_bronze_labels_as_pyspark
+
 # Get the features to match
-from .feature_extraction.extract_features_jd import *
-from .feature_extraction.extract_features_resume import *
-from .feature_extraction.match_features import *
+from .silver_feature_extraction.extract_features_jd import *
+from .silver_feature_extraction.extract_features_resume import *
+from .silver_feature_extraction.match_features import *
+from .silver_feature_extraction.extract_exp import get_resume_yoe, get_title_similarity_score
+from .silver_feature_extraction.extract_edu import parse_education_udf_factory, determine_edu_mapping
+from .silver_feature_extraction.extract_skills import create_hard_skills_column, create_soft_skills_column
+from .silver_feature_extraction.extract_misc import clean_employment_type_column, location_lookup, standardize_location_column, clean_work_authorization_column, standardize_label
 
 # Get Spark Session
 import pyspark
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
-from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType
-
-# Using another language model to read the values
-from sentence_transformers import SentenceTransformer, util
+from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType, IntegerType
 
 import os
 
-
-# education helpers
-from utils.edu_utils import (
-    level_from_text,
-    major_from_text,
-    gpa_from_text,
-)
-
-EDU_OUT_SCHEMA = StructType([
-    StructField("highest_level_education", StringType(), True),
-    StructField("major",                   StringType(), True),
-    StructField("gpa",                     FloatType(),  True),
-    StructField("institution",             StringType(), True),
-])
-def _parse_education(edu_arr):
-    if not edu_arr:
-        return (None, None, None, None)
-    ed0 = edu_arr[0]
-    text = f"{ed0.degree or ''} {ed0.description or ''}"
-    level, _ = level_from_text(text)
-    major, _ = major_from_text(text)
-    gpa_val = ed0.grade or gpa_from_text(text)
-    return (
-        level,
-        major,
-        float(gpa_val) if gpa_val is not None else None,
-        ed0.institution,
-    )
-parse_education_udf = udf(_parse_education, EDU_OUT_SCHEMA)
-
-
-
-
-
-"""
-Global Variables
-"""
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print("Device Chosen : {}".format(device))
-embedding_model = SentenceTransformer("BAAI/bge-large-en-v1.5", device = device)
-
-"""
-Custom Functions for getting values
-"""
-
-def get_time_difference(start_time : datetime, end_time : datetime) -> float:
-    """
-    GGet the time difference between the start time and end time
-    return as a float of years
-    """
-    time_diff = (end_time - start_time).days / 365.25
-
-    return time_diff
-
-def parse_flexible_date(date_str) -> datetime:
-    try:
-        # Try full ISO first
-        return datetime.fromisoformat(date_str)
-    except (ValueError, TypeError):
-        pass
-
-    # If None, just return last date of 2021
-    if not date_str:
-        return datetime(2021, 12, 31)
-
-    # Match YYYY
-    if re.fullmatch(r"\d{4}", date_str):
-        return datetime(int(date_str), 12, 31)
-    
-    # Match YYYY-MM
-    if re.fullmatch(r"\d{4}-\d{2}", date_str):
-        year, month = map(int, date_str.split("-"))
-        return datetime(year, month, 28) # Safest day to take
-    
-    # Match YYYY-MM-DD
-    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_str):
-        return datetime.strptime(date_str, "%Y-%m-%d")
-    
-    # Else just return the last date of 2021 , date is either current/present
-    return datetime(2021, 12, 31)
-
-@udf(FloatType())
-def get_resume_yoe(experience_array) -> list:
-    """
-    Get the YoE from resume experiences
-    """
-    experience_list = []
-
-    for experience in experience_array:
-        # Edge case - start_date is none / null, skip
-        if not experience.date_start:
-            continue
-
-        start = parse_flexible_date(experience.date_start)
-        end   = parse_flexible_date(experience.date_end)
-
-        # Calculate the time difference between the start and end time 
-        time_diff = get_time_difference(start, end)
-
-        experience_list.append(time_diff)
-
-    return experience_list
-
-@udf(ArrayType(FloatType()))
-def get_title_similarity_score(jd_job_title, experience_array) -> list:
-    """
-    Get the sim score match between the jd title and the experience array
-    """
-    # If JD job title is None, just return 0.0
-    if not jd_job_title:
-        # print("No JD title")
-        return [-1]
-
-    jd_job_title_embedding = embedding_model.encode([jd_job_title],
-                                                    convert_to_tensor=True,
-                                                    normalize_embeddings=True)
-    
-    # Need to handle None values
-    exp_job_titles        = [exp.role for exp in experience_array if exp.role]
-
-    #If no exp_job titles, nothing to compare to, so just 0
-    if len(exp_job_titles) == 0:
-        # print("No experience")
-        return []
-
-    experience_embeddings = embedding_model.encode(exp_job_titles,
-                                                    convert_to_tensor=True,
-                                                    normalize_embeddings=True)
-
-    similarity_matrix = util.cos_sim(jd_job_title_embedding, experience_embeddings).flatten().tolist()
-
-    # print(similarity_matrix)
-
-    return similarity_matrix
+import torch
+from datetime import datetime
 
 ###################################################
 # Gold Table Aggregations for Experience
@@ -204,15 +75,136 @@ def is_freshie(sim_matrix):
     Boolean to determine if the person is new to the job market
     """
     return len(sim_matrix) == 0
+
+###################################################
+# Individual silver tables processing
+###################################################
+def data_processing_silver_skills_ref(spark: SparkSession):
+    pass
+
+def data_processing_silver_education_ref(spark: SparkSession):
+    pass
+
+def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession):
+    """
+    Processes resumes from bronze layer to silver layer
+    Output: saves into parquet
+    """
+    # Read into pyspark dataframe
+    df = read_bronze_resume_as_pyspark(snapshot_date, spark)
+
+    # Add education columns
+    _edu_udf = parse_education_udf_factory()
+    df = (
+        df
+        .withColumn("edu_tmp", _edu_udf("education"))
+        .withColumn("highest_level_education", col("edu_tmp.highest_level_education"))
+        .withColumn("major",                   col("edu_tmp.major"))
+        .withColumn("gpa",                     col("edu_tmp.gpa"))
+        .withColumn("institution",             col("edu_tmp.institution"))
+        .drop("edu_tmp")
+    )
+
+    # Add experience columns
+    df = df.withColumn("YoE_list", get_resume_yoe("experience"))
+
+    # Add skills columns
+    df = create_hard_skills_column(df, spark, og_column="hard_skills")
+    df = create_soft_skills_column(df, spark, og_column="soft_skills")
+
+    # Add miscellaneous columns
+    df = clean_employment_type_column(df, "employment_type_preference") \
+        .drop("employment_type_preference") \
+        .withColumnRenamed("employment_type_preference_cleaned", "employment_type_preference")
+    df = clean_work_authorization_column(df, "work_authorization") \
+        .drop("work_authorization") \
+        .withColumnRenamed("work_authorization_cleaned", "work_authorization")
+    location_lookup_dict = location_lookup()
+    df = standardize_location_column(df, "location_preference", location_lookup_dict) \
+        .drop("location_preference") \
+        .withColumnRenamed("location_preference_cleaned", "location_preference")
+
+    # Save table as parquet
+    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    output_path = os.path.join("datamart", "silver", "resumes", filename)
+    df.write.mode("overwrite").parquet(output_path)
+
+def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
+    """
+    Processes job descriptions from bronze layer to silver layer
+    Output: saves into parquet
+    """
+    # Read into pyspark dataframe
+    df = read_bronze_jd_as_pyspark(snapshot_date, spark)
+    df = df.withColumnRenamed("certifications", "jd_certifications")
+
+    # Add education columns
+    education_ref_dir = os.path.join("datamart", "references")
+    edu_levels = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_level_synonyms.parquet")).collect())
+    edu_fields = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_field_synonyms.parquet")).collect())
+    cert_categories = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "certification_categories.parquet")).collect())
+
+    df = (
+        df
+        .withColumn("required_edu_level", udf(lambda x: determine_edu_mapping(x, edu_levels.value), StringType())("required_education"))
+        .withColumn("required_edu_field", udf(lambda x: determine_edu_mapping(x, edu_fields.value), StringType())("required_education"))
+        .withColumn("required_cert_field", udf(lambda x: determine_edu_mapping(x, cert_categories.value), StringType())("jd_certifications"))
+        .withColumn("no_of_certs", udf(lambda x: len(x) if isinstance(x, list) else 0, IntegerType())("jd_certifications"))
+        .drop("required_education")
+        .drop("jd_certifications")
+    )
+
+    # Add skills columns
+    df = create_hard_skills_column(df, spark, og_column="required_hard_skills")
+    df = create_soft_skills_column(df, spark, og_column="required_soft_skills")
+
+    # Add miscellaneous columns
+    df = clean_employment_type_column(df, "employment_type") \
+        .drop("employment_type") \
+        .withColumnRenamed("employment_type_cleaned", "employment_type")
+    df = clean_work_authorization_column(df, "required_work_authorization") \
+        .drop("required_work_authorization") \
+        .withColumnRenamed("required_work_authorization_cleaned", "required_work_authorization")
+    location_lookup_dict = location_lookup()
+    df = standardize_location_column(df, "job_location", location_lookup_dict) \
+        .drop("job_location") \
+        .withColumnRenamed("job_location_cleaned", "job_location")
+
+    # Save table as parquet
+    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
+    df.write.mode("overwrite").parquet(output_path)
+
+def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
+    """
+    Processes labels from bronze layer to silver layer
+    Output: saves into parquet
+    """
+    # Read into pyspark dataframe
+    df = read_bronze_labels_as_pyspark(snapshot_date, spark)
+
+    # Group labels together
+    df = standardize_label(df, "fit") \
+        .select('resume_id', 'job_id', 'snapshot_date', 'fit_cleaned') \
+        .withColumnRenamed('fit_cleaned', 'fit')
+
+    # Save table as parquet
+    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    filename = selected_date + ".parquet"
+    output_path = os.path.join("datamart", "silver", "labels", filename)
+    df.write.mode("overwrite").parquet(output_path)
+
+    print(f"Saved Silver Labels : {selected_date} No. Rows : {df.count()}")
     
 
-def data_processing_silver_table(datamart_dir : str, selected_date : str, spark : SparkSession) -> None:
+def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSession) -> None:
     """
     Merge the parquets together, get the dataframe for further processing
     """
-    jd_full_dir     = os.path.join(datamart_dir, "bronze", f"jd_{selected_date}.parquet")
-    resume_full_dir = os.path.join(datamart_dir, "bronze", f"resume_{selected_date}.parquet")
-    labels_full_dir = os.path.join(datamart_dir, "bronze", f"labels_{selected_date}.parquet")
+    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    jd_full_dir     = os.path.join("datamart", "silver", "job_descriptions", f"{selected_date}.parquet")
+    resume_full_dir = os.path.join("datamart", "silver", "resumes", f"{selected_date}.parquet")
+    labels_full_dir = os.path.join("datamart", "silver", "labels", f"{selected_date}.parquet")
 
     jd_df     = spark.read.parquet(jd_full_dir)
     resume_df = spark.read.parquet(resume_full_dir)
@@ -220,24 +212,15 @@ def data_processing_silver_table(datamart_dir : str, selected_date : str, spark 
 
     # We do the individual transforms to dfs first
     ## Resume Transforms
-    resume_df = (
-            resume_df
-                .withColumn("YoE_list", get_resume_yoe("experience"))
-                .withColumnRenamed("certifications", "resume_certifications")
-                .withColumnRenamed("id", "resume_id")
-                .withColumnRenamed("snapshot_date", "resume_snapshot")
-                .withColumn("edu_extracted", parse_education_udf("education"))
-                .withColumn("highest_level_education", col("edu_extracted.highest_level_education"))
-                .withColumn("major",                   col("edu_extracted.major"))
-                .withColumn("gpa",                     col("edu_extracted.gpa"))
-                .withColumn("institution",             col("edu_extracted.institution"))
-                .drop("edu_extracted")
-        )
+    resume_df = resume_df.withColumnRenamed("id", "resume_id")
+    resume_df = resume_df.withColumnRenamed("snapshot_date", "resume_snapshot")
   
     ## JD Transforms
-    jd_df = jd_df.withColumnRenamed("certifications", "jd_certifications")
     jd_df = jd_df.withColumnRenamed("id", "job_id")
     jd_df = jd_df.withColumnRenamed("snapshot_date", "job_snapshot")
+    jd_df = jd_df.withColumnRenamed("hard_skills_general", "jd_hard_skills_general") \
+            .withColumnRenamed("hard_skills_specific", "jd_hard_skills_specific") \
+            .withColumnRenamed("soft_skills", "jd_soft_skills")
 
     # Combine the parquets together
     labels_jd = labels_df.join(jd_df, on="job_id", how="inner")
@@ -249,10 +232,9 @@ def data_processing_silver_table(datamart_dir : str, selected_date : str, spark 
     # Get the experience similarity score 
     labels_jd_resume = labels_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
 
-    # check
-    print(f"Silver Table Snapshot : {selected_date} No. Rows : {labels_jd_resume.count()}")
-
     # Save the parquet 
-    filename    = "labels_" + selected_date + ".parquet"
-    output_path = os.path.join(datamart_dir, "silver", filename)
+    filename    = selected_date + ".parquet"
+    output_path = os.path.join("datamart", "silver", "combined", filename)
     labels_jd_resume.write.mode("overwrite").parquet(output_path)
+
+    print(f"Saved Silver Combined : {selected_date} No. Rows : {labels_jd_resume.count()}")
