@@ -65,7 +65,7 @@ def parse_flexible_date(date_str) -> datetime:
     # Else just return the last date of 2021 , date is either current/present
     return datetime(2021, 12, 31)
 
-@udf(FloatType())
+@udf(ArrayType(FloatType()))
 def get_resume_yoe(experience_array) -> list:
     """
     Get the YoE from resume experiences

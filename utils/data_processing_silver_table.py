@@ -5,9 +5,6 @@ Read the parquet files and extract new information out of them
 from .mongodb_utils import read_bronze_resume_as_pyspark, read_bronze_jd_as_pyspark, read_bronze_labels_as_pyspark
 
 # Get the features to match
-from .silver_feature_extraction.extract_features_jd import *
-from .silver_feature_extraction.extract_features_resume import *
-from .silver_feature_extraction.match_features import *
 from .silver_feature_extraction.extract_exp import get_resume_yoe, get_title_similarity_score
 from .silver_feature_extraction.extract_edu import parse_education_udf_factory, determine_edu_mapping
 from .silver_feature_extraction.extract_skills import create_hard_skills_column, create_soft_skills_column
@@ -125,9 +122,12 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
         .withColumnRenamed("location_preference_cleaned", "location_preference")
 
     # Save table as parquet
-    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    filename = selected_date + ".parquet"
     output_path = os.path.join("datamart", "silver", "resumes", filename)
     df.write.mode("overwrite").parquet(output_path)
+
+    print(f"Saved Silver Resume : {selected_date} No. Rows : {df.count()}")
 
 def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     """
@@ -171,9 +171,12 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
         .withColumnRenamed("job_location_cleaned", "job_location")
 
     # Save table as parquet
-    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    filename = selected_date + ".parquet"
     output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
     df.write.mode("overwrite").parquet(output_path)
+
+    print(f"Saved Silver Job Descriptions : {selected_date} No. Rows : {df.count()}")
 
 def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
     """
