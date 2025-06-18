@@ -139,23 +139,30 @@ def create_or_get_folder(service, folder_name, parent_folder_id):
         folder = service.files().create(body=file_metadata, fields='id').execute()
         return folder.get('id')
     
-def overwrite_if_exists(service, folder_id, file_name):
-        query = (
-            f"'{folder_id}' in parents and name='{file_name}' and trashed=false"
-        )
-        results = service.files().list(q=query, fields="files(id, name)").execute()
-        files = results.get('files', [])
-        if files:
-            file_id = files[0]['id']
-            print(f"File '{file_name}' already exists in folder. Overwriting...")
-            service.files().delete(fileId=file_id).execute()
+# overwrite files if exists
+def clear_drive_folder(service, folder_id):
+    """Delete all files inside a Google Drive folder (non-recursive)."""
+
+    query = f"'{folder_id}' in parents and trashed=false"
+    results = service.files().list(q=query, fields="files(id, name)").execute()
+    files = results.get('files', [])
+    
+    for file in files:
+        try:
+            print(f"Deleting file '{file['name']}' (ID: {file['id']}) from Drive folder.")
+            service.files().delete(fileId=file['id']).execute()
+        except Exception as e:
+            print(f"Error deleting file {file['name']}: {e}")
 
 
 def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_name=None, mimetype=None):
     if os.path.isdir(local_file_path):
-        # If it's a directory, create a corresponding folder in GDrive
+        # Directory upload handling
         folder_name = os.path.basename(local_file_path.rstrip("/"))
         gdrive_subfolder_id = create_or_get_folder(service, folder_name, drive_folder_id)
+
+        # CLEAR the target folder before uploading to avoid file (1), file (2), etc.
+        clear_drive_folder(service, gdrive_subfolder_id)
 
         # Recursively upload files in this folder
         for root, _, files in os.walk(local_file_path):
@@ -164,9 +171,7 @@ def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_n
                 rel_path = os.path.relpath(file_path, local_file_path)
                 print(f"Uploading file: {rel_path} from folder: {local_file_path}")
 
-                # Overwrite if exists
-                overwrite_if_exists(service, gdrive_subfolder_id, filename)
-
+                # No need for overwrite_if_exists — folder was cleared
                 file_metadata = {
                     'name': filename,
                     'parents': [gdrive_subfolder_id]
@@ -188,14 +193,14 @@ def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_n
         return None  # For folders, no single file ID is returned
 
     else:
-        # If it's a single file
+        # Single file upload handling
         if drive_file_name is None:
             drive_file_name = os.path.basename(local_file_path)
         if mimetype is None:
             mimetype = mimetypes.guess_type(local_file_path)[0] or 'application/octet-stream'
 
-        # Overwrite if exists
-        overwrite_if_exists(service, drive_folder_id, drive_file_name)
+        # Overwrite existing single file if it exists
+        # overwrite_if_exists(service, drive_folder_id, drive_file_name)
 
         file_metadata = {
             'name': drive_file_name,
