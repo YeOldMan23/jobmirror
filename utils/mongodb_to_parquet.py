@@ -9,6 +9,8 @@ import pyspark
 from pyspark.sql.functions import to_date, col, expr, when, struct, transform
 import os
 import json
+import boto3
+
 
 def read_silver_labels(spark : SparkSession, datamart_dir : str, snapshot_date : datetime) -> None:
     """

@@ -11,6 +11,8 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
+
+
 with DAG(
     'dag',
     default_args=default_args,
@@ -28,7 +30,7 @@ with DAG(
 ###### Bronze Table ######
 # Bronze tables processing includes label and features 
 # Retrieves data from huggingface, extract text using LLM and parse to MongoDB
-    bronze_store = BashOperator(
+    bronze_store = PythonOperator(
         task_id='run_bronze_feature_and_label_store',
         bash_command=(
             'cd /opt/airflow/scripts && '

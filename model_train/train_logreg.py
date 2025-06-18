@@ -20,7 +20,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-import io 
+import io
+import boto3
 
 # Connect to the MLflow server (in this case, we are using our own computer)
 mlflow.set_tracking_uri(uri="http://localhost:8080")
@@ -39,6 +40,7 @@ def process_snapshot_data(**kwargs):
     start_date = exec_date
     end_date = start_date + timedelta(days=365)
     return start_date, end_date
+
 def get_files(spark: SparkSession ):
     # Process snapshot data
     start_date, end_date = process_snapshot_data(execution_date=datetime.now())
@@ -78,9 +80,6 @@ def get_files(spark: SparkSession ):
         df = spark.read.parquet(*valid_paths[i])
         dfs.append(df)
     return dfs
-
-
-
 
 def register_model_mlflow(run_name, params, model, X_train, X_test, y_train, y_test, model_name): # Ensure it's a DataFrame
     # Start an MLflow run

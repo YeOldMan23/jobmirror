@@ -23,6 +23,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import io
+from utils.config import AWSConfig
+from utils.s3_utils import get_s3_client
 
 # Connect to the MLflow server (in this case, we are using our own computer)
 mlflow.set_tracking_uri(uri="http://localhost:8080")
@@ -43,26 +45,30 @@ def process_snapshot_data(**kwargs):
     return start_date, end_date
 
 def list_s3_folders(bucket, prefix):
-    s3 = boto3.client('s3')
-    paginator = s3.get_paginator('list_objects_v2')
+    s3_client = get_s3_client()
+    # s3 = boto3.client('s3')
+    paginator = s3_client.get_paginator('list_objects_v2')
     result = paginator.paginate(Bucket=bucket, Prefix=prefix, Delimiter='/')
     return [f's3://{bucket}/{cp["Prefix"]}' for page in result for cp in page.get("CommonPrefixes", [])]
 
 def get_files(spark: SparkSession):
+
+    config = AWSConfig()
+    s3_client = get_s3_client()
     # Process snapshot data
     start_date, end_date = process_snapshot_data(execution_date=datetime.now())
 
-    feature_root_dir = "localhost://path/to/parquet_data"#dummy path, replace with actual S3 path
-    all_folders_feature = [f.path for f in os.scandir(feature_root_dir) if f.is_dir()]
+    # feature_root_dir = "localhost://path/to/parquet_data"#dummy path, replace with actual S3 path
+    # all_folders_feature = [f.path for f in os.scandir(feature_root_dir) if f.is_dir()]
 
-    label_root_dir = "localhost://path/to/parquet_data"#dummy path, replace with actual S3 path
-    all_folders_label = [f.path for f in os.scandir(label_root_dir) if f.is_dir()]
- 
-    # # if u are using s3
-    # feature_root_dir = "s3://your-bucket/path/to/parquet_data"#dummy path, replace with actual S3 path
-    # label_root_dir = "s3://your-bucket/path/to/parquet_data"#dummy path, replace with actual S3 path
-    # all_folders_feature = list_s3_folders("your-bucket", "path/to/parquet_data/")
-    # all_folders_label = list_s3_folders("your-bucket", "path/to/parquet_data/")
+    # label_root_dir = "localhost://path/to/parquet_data"#dummy path, replace with actual S3 path
+    # all_folders_label = [f.path for f in os.scandir(label_root_dir) if f.is_dir()]
+
+    feature_root_dir = f's3://{config.bucket_name}/features/parquet_data'#dummy path, replace with actual S3 path
+    label_root_dir = f's3://{config.bucket_name}/labels/parquet_data'#dummy path, replace with actual S3 path
+
+    all_folders_feature = list_s3_folders({config.bucket_name}, "features/parquet_data/")
+    all_folders_label = list_s3_folders({config.bucket_name}, "labels/parquet_data/")
     
     valid_paths_feature = []
     valid_paths_label = []
@@ -93,18 +99,15 @@ def register_model_mlflow(run_name, params, model, X_train, X_test, y_train, y_t
     # Start an MLflow run
     with mlflow.start_run(run_name=run_name):
 
-
         # Instantiate the Ridge model with parameters
         model = model(**params)
         model.fit(X_train, y_train)
         predictions = model.predict(X_test)
 
-        
         acc = accuracy_score(y_test, predictions)
         prec = precision_score(y_test, predictions, average="weighted") # depends on num classes 
         rec = recall_score(y_test, predictions, average="weighted")
         f1 = f1_score(y_test, predictions, average="weighted")
-
 
         # log table
         X_test_pred = X_test.reset_index(drop=True).copy()
