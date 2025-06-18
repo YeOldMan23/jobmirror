@@ -122,7 +122,6 @@ def get_folder_id_by_path(service, path_list, root_parent_id=None):
     return parent_id
 
 def create_or_get_folder(service, folder_name, parent_folder_id):
-    """Create or find folder in Google Drive."""
     query = (
         f"'{parent_folder_id}' in parents and name = '{folder_name}' "
         "and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
@@ -139,13 +138,20 @@ def create_or_get_folder(service, folder_name, parent_folder_id):
         }
         folder = service.files().create(body=file_metadata, fields='id').execute()
         return folder.get('id')
+    
+def overwrite_if_exists(service, folder_id, file_name):
+        query = (
+            f"'{folder_id}' in parents and name='{file_name}' and trashed=false"
+        )
+        results = service.files().list(q=query, fields="files(id, name)").execute()
+        files = results.get('files', [])
+        if files:
+            file_id = files[0]['id']
+            print(f"File '{file_name}' already exists in folder. Overwriting...")
+            service.files().delete(fileId=file_id).execute()
+
 
 def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_name=None, mimetype=None):
-    """
-    Uploads a file or all files in a folder to Google Drive.
-    If local_file_path is a folder, uploads each file into a created subfolder in Google Drive.
-    """
-
     if os.path.isdir(local_file_path):
         # If it's a directory, create a corresponding folder in GDrive
         folder_name = os.path.basename(local_file_path.rstrip("/"))
@@ -157,6 +163,9 @@ def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_n
                 file_path = os.path.join(root, filename)
                 rel_path = os.path.relpath(file_path, local_file_path)
                 print(f"Uploading file: {rel_path} from folder: {local_file_path}")
+
+                # Overwrite if exists
+                overwrite_if_exists(service, gdrive_subfolder_id, filename)
 
                 file_metadata = {
                     'name': filename,
@@ -184,6 +193,9 @@ def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_n
             drive_file_name = os.path.basename(local_file_path)
         if mimetype is None:
             mimetype = mimetypes.guess_type(local_file_path)[0] or 'application/octet-stream'
+
+        # Overwrite if exists
+        overwrite_if_exists(service, drive_folder_id, drive_file_name)
 
         file_metadata = {
             'name': drive_file_name,
