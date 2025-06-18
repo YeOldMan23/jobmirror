@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 default_args = {
@@ -83,6 +84,30 @@ with DAG(
     # Since bronze feature store is already created, we skip the task in this step
     silver_table_1 >> big_silver_table >> gold_feature_store
     gold_feature_store >> feature_store_completed
+    
+    
+    ## model training 
+    train_logreg = BashOperator(
+        task_id='train_logistic_regression',
+        bash_command='python /opt/model_train/train_logreg.py',
+    )
+
+    train_xgb = BashOperator(
+        task_id='train_xgboost_classifier',
+        bash_command='python /opt/model_train/train_xgb.py',
+    )
+
+    promote = BashOperator(
+        task_id='promote_best_model',
+        bash_command='python /opt/model_train/promote_best.py',
+    )
+    
+    deploy = BashOperator(
+        task_id='model_deploy',
+        bash_command='python /opt/model_deploy/model_deploy.py',
+    )
+
+    [train_logreg, train_xgb] >> promote>> deploy
 
 
     # --- model inference ---
