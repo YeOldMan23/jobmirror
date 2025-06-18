@@ -80,7 +80,7 @@ with DAG(
     feature_store_completed = DummyOperator(task_id="feature_store_completed")
     
     # Define task dependencies to run scripts sequentially
-    # since bronze feature store is already created, we skip the task in this step
+    # Since bronze feature store is already created, we skip the task in this step
     silver_table_1 >> big_silver_table >> gold_feature_store
     gold_feature_store >> feature_store_completed
 
