@@ -7,7 +7,7 @@ from .gdrive_utils import connect_to_gdrive, get_folder_id_by_path, upload_file_
 
 # Get the features to match
 from .silver_feature_extraction.extract_exp import get_resume_yoe, get_title_similarity_score
-from .silver_feature_extraction.extract_edu import parse_education_udf_factory, determine_edu_mapping
+from .silver_feature_extraction.extract_edu import parse_education_udf_factory, determine_edu_mapping, determine_certification_types
 from .silver_feature_extraction.extract_skills import create_hard_skills_column, create_soft_skills_column
 from .silver_feature_extraction.extract_misc import clean_employment_type_column, location_lookup, standardize_location_column, clean_work_authorization_column, standardize_label
 
@@ -100,24 +100,32 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
     # Read into pyspark dataframe
     df = read_bronze_resume_as_pyspark(snapshot_date, spark)
 
+    # Add skills columns
+    df = create_hard_skills_column(df, spark, og_column="hard_skills")
+    df = create_soft_skills_column(df, spark, og_column="soft_skills")
+
     # Add education columns
+    education_ref_dir = os.path.join("datamart", "references")
+    edu_levels = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_level_synonyms.parquet")).collect())
+    edu_fields = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_field_synonyms.parquet")).collect())
+    cert_categories = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "certification_categories.parquet")).collect())
+
     _edu_udf = parse_education_udf_factory()
     df = (
         df
-        .withColumn("edu_tmp", _edu_udf("education"))
-        .withColumn("highest_level_education", col("edu_tmp.highest_level_education"))
-        .withColumn("major",                   col("edu_tmp.major"))
-        .withColumn("gpa",                     col("edu_tmp.gpa"))
-        .withColumn("institution",             col("edu_tmp.institution"))
-        .drop("edu_tmp")
+        .withColumn("tmp_edu", _edu_udf("education"))
+        .withColumn("edu_highest_level", udf(lambda x: determine_edu_mapping(x, edu_levels.value, 30), StringType())("tmp_edu.edu_desc"))
+        .withColumn("edu_field", udf(lambda x: determine_edu_mapping(x, edu_fields.value, 70), StringType())("tmp_edu.edu_desc"))
+        .withColumn("edu_gpa", col("tmp_edu.edu_gpa"))
+        .withColumn("edu_institution", col("tmp_edu.edu_institution"))
+        .withColumn("cert_categories", udf(lambda x: determine_certification_types(x, cert_categories.value, 80), ArrayType(StringType()))("certifications"))
+        .drop("tmp_edu")
+        .drop("education")
+        .drop("certifications")
     )
 
     # Add experience columns
     df = df.withColumn("YoE_list", get_resume_yoe("experience"))
-
-    # Add skills columns
-    df = create_hard_skills_column(df, spark, og_column="hard_skills")
-    df = create_soft_skills_column(df, spark, og_column="soft_skills")
 
     # Add miscellaneous columns
     df = clean_employment_type_column(df, "employment_type_preference") \
@@ -136,7 +144,7 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
     output_path = os.path.join("datamart", "silver", "resumes", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    upload_file_to_drive(service, output_path, resume_id)
+    # upload_file_to_drive(service, output_path, resume_id)
 
 
 def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
@@ -158,6 +166,10 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     df = read_bronze_jd_as_pyspark(snapshot_date, spark)
     df = df.withColumnRenamed("certifications", "jd_certifications")
 
+    # Add skills columns
+    df = create_hard_skills_column(df, spark, og_column="required_hard_skills")
+    df = create_soft_skills_column(df, spark, og_column="required_soft_skills")
+
     # Add education columns
     education_ref_dir = os.path.join("datamart", "references")
     edu_levels = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_level_synonyms.parquet")).collect())
@@ -166,17 +178,12 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
 
     df = (
         df
-        .withColumn("required_edu_level", udf(lambda x: determine_edu_mapping(x, edu_levels.value), StringType())("required_education"))
-        .withColumn("required_edu_field", udf(lambda x: determine_edu_mapping(x, edu_fields.value), StringType())("required_education"))
-        .withColumn("required_cert_field", udf(lambda x: determine_edu_mapping(x, cert_categories.value), StringType())("jd_certifications"))
-        .withColumn("no_of_certs", udf(lambda x: len(x) if isinstance(x, list) else 0, IntegerType())("jd_certifications"))
+        .withColumn("required_edu_level", udf(lambda x: determine_edu_mapping(x, edu_levels.value, 30), StringType())("required_education"))
+        .withColumn("required_edu_field", udf(lambda x: determine_edu_mapping(x, edu_fields.value, 70), StringType())("required_education"))
+        .withColumn("required_cert_categories", udf(lambda x: determine_certification_types(x, cert_categories.value, 80), ArrayType(StringType()))("jd_certifications"))
         .drop("required_education")
         .drop("jd_certifications")
     )
-
-    # Add skills columns
-    df = create_hard_skills_column(df, spark, og_column="required_hard_skills")
-    df = create_soft_skills_column(df, spark, og_column="required_soft_skills")
 
     # Add miscellaneous columns
     df = clean_employment_type_column(df, "employment_type") \

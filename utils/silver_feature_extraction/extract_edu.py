@@ -23,36 +23,6 @@ def _norm(t):
     return t.lower().strip()
 
 # ─── DEGREE-LEVEL synonyms ──────────────────────────────
-LEVEL_SYNONYMS = {
-    # Doctorate
-    "doctor": "doctorate", "doctorate":"doctorate", "phd":"doctorate",
-    "ph.d":"doctorate", "dba":"doctorate", "phd of science":"doctorate",
-    "juris doctor":"doctorate", "jd":"doctorate",
-    # Master
-    "master": "master", "masters": "master", "master degree":"master",
-    "msc":"master", "m.sc":"master", "ms ":"master", "m.s":"master",
-    "meng":"master", "m.eng":"master", "mba":"master", "m.b.a":"master",
-    "macc":"master", "master of accountancy":"master",
-    # Bachelor
-    "bachelor":"bachelor", "bachelors":"bachelor", "bachelor's":"bachelor",
-    "bs ":"bachelor", "b.s":"bachelor", "bsc":"bachelor", "b.sc":"bachelor",
-    "ba ":"bachelor", "b.a":"bachelor", "beng":"bachelor", "b.eng":"bachelor",
-    "beng (hons)":"bachelor", "b.tech":"bachelor", "btech":"bachelor",
-    "be ":"bachelor", "b.e":"bachelor", "bba":"bachelor", "b.s.":"bachelor",
-    # Associate
-    "associate":"associate", "associates":"associate", "associate degree":"associate",
-    "aa ":"associate", "a.a":"associate", "aas":"associate", "a.a.s":"associate",
-    "as ":"associate", "a.s":"associate",
-    # Diploma / certificate / course / secondary
-    "post graduate diploma":"diploma", "pg diploma":"diploma", "diploma":"diploma",
-    "technical diploma":"diploma", "certificate":"certificate",
-    "certification":"certificate", "course on":"certificate",
-    "license":"certificate",
-    "high school":"secondary", "secondary school":"secondary",
-    "ged":"secondary", "some college":"secondary"
-}
-_LEVEL_KEYS = list(LEVEL_SYNONYMS.keys())
-
 education_levels = [
     Row(group_name="High School", 
         group_scale=1, 
@@ -70,13 +40,15 @@ education_levels = [
         group_scale=3, 
         group_description="Completion of an undergraduate degree program",
         group_references=[
-            "bachelor", "bachelor's degree", "bachelor's in", "undergraduate degree", "ba", "bs", "bsc", "bba", "beng"
+            "bachelor", "bachelor's degree", "bachelor's in", "undergraduate degree", 
+            "ba", "b.a", "bs", "b.s", "bsc", "b.sc", "bba", "b.b.a", "beng", "b.eng"
         ]),
     Row(group_name="Master's Degree", 
         group_scale=4, 
         group_description="Completion of a postgraduate degree program",
         group_references=[
-            "master", "master's degree", "master's in", "postgraduate degree", "ma", "ms", "msc", "mba", "m.eng"
+            "master", "master's degree", "master's in", "postgraduate degree", 
+            "ma", "m.a", "ms", "m.s", "msc", "m.sc", "mba", "m.eng"
         ]),
     Row(group_name="Doctorate", 
         group_scale=5, 
@@ -86,35 +58,7 @@ education_levels = [
         ])
 ]
 
-# ─── MAJOR list  (≈120) ─────────────────────────────────
-MAJOR_LIST = list({
-    # engineering / stem
-    "computer science","computer engineering","software engineering",
-    "information technology","information systems","data science",
-    "data analytics","business analytics","statistics","mathematics",
-    "applied mathematics","electronics engineering",
-    "electronics and communication engineering",
-    "electrical engineering","electrical and computer engineering",
-    "electrical electronics and communications engineering",
-    "electronics & telecommunication","telecommunications engineering",
-    "telecommunications","civil engineering","chemical engineering",
-    "mechanical engineering","mechatronics","biomedical engineering",
-    "biomedical diagnostics","biological sciences","biology",
-    "healthcare administration","public health","health administration",
-    "industrial engineering","industrial microbiology",
-    "resource economics","applied economics",
-    "environmental studies","environmental science",
-    # business / social / other
-    "business administration","business studies","finance",
-    "accounting","commerce","management information systems",
-    "management","marketing","economics","political science",
-    "sociology","psychology","liberal arts","criminal justice",
-    "law","human resource management","project management",
-    "hospitality and tourism management","education",
-    "electrical occupations","cosmetology","nursing","media arts"
-})
-
-
+# ─── MAJOR FIELD SYNONYMS ─────────────────────────────────
 education_fields = [
     Row(group_name="Computer Science & IT", 
         group_references=[
@@ -221,7 +165,7 @@ education_fields = [
     ]),
 ]
 
-# -------------- Certifications -------------------
+# ─── CERTIFICATION CATEGORIES ──────────────────────────
 certification_categories = [
     Row(group_name="Cloud Certifications", group_references=[
         "aws", "aws certifications", "aws certifications", "azure", "microsoft azure",
@@ -293,25 +237,7 @@ certification_categories = [
 
 GPA_RE = re.compile(r"(\\d+\\.\\d{1,2}|\\d)(?=\\s*/?\\s*10?\\.?0?)")
 
-# ─── extraction helpers ─────────────────────────────────
-def level_from_text(txt:str):
-    low = _norm(txt)
-    for k,v in LEVEL_SYNONYMS.items():
-        if k in low: return v, "regex"
-    m,score,_ = process.extractOne(low, _LEVEL_KEYS, scorer=fuzz.partial_ratio)
-    return (LEVEL_SYNONYMS[m],"fuzzy") if score>=88 else (None,None)
-
-def major_from_text(txt:str):
-    low = _norm(txt)
-    for m in MAJOR_LIST:
-        if m in low: return m, "regex"
-    m2,score,_ = process.extractOne(low, MAJOR_LIST, scorer=fuzz.partial_ratio)
-    return (m2,"fuzzy") if score>=85 else (None,None)
-
-def gpa_from_text(txt:str):
-    m = GPA_RE.search(txt or "")
-    return float(m.group()) if m else None
-
+# ─── reference saving ────────────────────
 def save_education_synonyms(spark: SparkSession, filepath:str, data:list[Row]) -> None:
     """
     Creates a parquet file with education level synonyms as well as the corresponding scale.
@@ -321,19 +247,26 @@ def save_education_synonyms(spark: SparkSession, filepath:str, data:list[Row]) -
     education.write.mode('overwrite').parquet(filepath)
     return
 
-def determine_edu_mapping(education_input: str | list[str], mapping: list, threshold: int=50, ) -> str | None:
+# ─── extraction helpers ─────────────────────────────────
+
+def gpa_from_text(txt:str):
+    m = GPA_RE.search(txt or "")
+    return float(m.group()) if m else None
+
+
+def determine_edu_mapping(education_input: str, mapping: list, threshold: int=50) -> str | None:
     """
     Determine the mapping for a given input string for possible education values (level/field).
     Uses fuzzy matching to find the best match from the provided mapping.
     Args:
         education_input (str): The input string to match against the mapping.
-        mapping (list): A li`st of Row objects containing level_references and level_scale.
+        mapping (list): A list of Row objects containing level_references and level_scale.
     Returns:
         str: The best matching value from the mapping, or None if no match is found.
     """
     if education_input is None or len(education_input) == 0:
         return None
-    education_input = _norm(", ".join(education_input)) if isinstance(education_input, list) else _norm(education_input)
+    education_input = _norm(education_input)
     best_score = 0
     best_match = None
     for row in mapping:
@@ -344,26 +277,44 @@ def determine_edu_mapping(education_input: str | list[str], mapping: list, thres
 
 
 def parse_education_udf_factory():
-    EDU_OUT_SCHEMA = StructType([
-        StructField("highest_level_education", StringType(), True),
-        StructField("major",                   StringType(), True),
-        StructField("gpa",                     FloatType(),  True),
-        StructField("institution",             StringType(), True),
-    ])
-    def _parse_education(edu_arr):
+    def _parse_last_edu(edu_arr: list):
         if not edu_arr:
-            return (None, None, None, None)
-        ed0 = edu_arr[0]
-        text = f"{ed0.degree or ''} {ed0.description or ''}"
-        level, _ = level_from_text(text)
-        major, _ = major_from_text(text)
-        gpa_val = ed0.grade or gpa_from_text(text)
+            return (None, None, None)
+        last_edu = edu_arr[0] # Latest education entry
+        desc = f"{last_edu.degree or ''} {last_edu.description or ''}"
+        gpa_val = last_edu.grade or gpa_from_text(desc)
         return (
-            level,
-            major,
+            desc,
             float(gpa_val) if gpa_val is not None else None,
-            ed0.institution,
+            last_edu.institution
         )
-    parse_education_udf = udf(_parse_education, EDU_OUT_SCHEMA)
-    return parse_education_udf
 
+    EDU_TMP_SCHEMA = StructType([
+        StructField("edu_desc", StringType(), True),
+        StructField("edu_gpa", FloatType(), True),
+        StructField("edu_institution", StringType(), True),
+    ])
+    parse_last_edu_udf = udf(_parse_last_edu, EDU_TMP_SCHEMA)
+    return parse_last_edu_udf
+
+
+def determine_certification_types(certification_arr: list[str], mapping: list, threshold: int=80) -> list:
+    """
+    Function to process list of certifications and determine their types.
+    Args:
+        certification_arr (list): List of certification objects.
+        mapping (list): List of Row objects containing certification categories.
+        threshold (int): Minimum score for fuzzy matching to consider a match valid.
+    Returns:
+        list: List of certification types.
+    """
+    if not certification_arr or len(certification_arr) == 0:
+        return []
+    certification_arr = [_norm(c) for c in certification_arr if c]
+    best_matches = set()
+    for cert in certification_arr:
+        for row in mapping:
+            match_result = process.extractOne(query=cert, choices=row.group_references, scorer=fuzz.token_set_ratio)
+            if match_result and match_result[1] > threshold:
+                best_matches.add(row.group_name)
+    return list(best_matches)
