@@ -321,19 +321,19 @@ def save_education_synonyms(spark: SparkSession, filepath:str, data:list[Row]) -
     education.write.mode('overwrite').parquet(filepath)
     return
 
-def determine_edu_mapping(education_input: str | list[str], mapping: list, threshold: int=50, ) -> str | None:
+def determine_edu_mapping(education_input: str, mapping: list, threshold: int=50) -> str | None:
     """
     Determine the mapping for a given input string for possible education values (level/field).
     Uses fuzzy matching to find the best match from the provided mapping.
     Args:
         education_input (str): The input string to match against the mapping.
-        mapping (list): A li`st of Row objects containing level_references and level_scale.
+        mapping (list): A list of Row objects containing level_references and level_scale.
     Returns:
         str: The best matching value from the mapping, or None if no match is found.
     """
     if education_input is None or len(education_input) == 0:
         return None
-    education_input = _norm(", ".join(education_input)) if isinstance(education_input, list) else _norm(education_input)
+    education_input = _norm(education_input)
     best_score = 0
     best_match = None
     for row in mapping:
@@ -367,3 +367,24 @@ def parse_education_udf_factory():
     parse_education_udf = udf(_parse_education, EDU_OUT_SCHEMA)
     return parse_education_udf
 
+
+def determine_certification_types(certification_arr: list[str], mapping: list, threshold: int=80) -> list:
+    """
+    Function to process list of certifications and determine their types.
+    Args:
+        certification_arr (list): List of certification objects.
+        mapping (list): List of Row objects containing certification categories.
+        threshold (int): Minimum score for fuzzy matching to consider a match valid.
+    Returns:
+        list: List of certification types.
+    """
+    if not certification_arr or len(certification_arr) == 0:
+        return []
+    certification_arr = [_norm(c) for c in certification_arr if c]
+    best_matches = set()
+    for cert in certification_arr:
+        for row in mapping:
+            match_result = process.extractOne(query=cert, choices=row.group_references, scorer=fuzz.token_set_ratio)
+            if match_result and match_result[1] > threshold:
+                best_matches.add(row.group_name)
+    return list(best_matches)
