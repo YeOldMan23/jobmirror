@@ -100,6 +100,10 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
     # Read into pyspark dataframe
     df = read_bronze_resume_as_pyspark(snapshot_date, spark)
 
+    # Add skills columns
+    df = create_hard_skills_column(df, spark, og_column="hard_skills")
+    df = create_soft_skills_column(df, spark, og_column="soft_skills")
+
     # Add education columns
     education_ref_dir = os.path.join("datamart", "references")
     edu_levels = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_level_synonyms.parquet")).collect())
@@ -114,19 +118,14 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
         .withColumn("edu_field", udf(lambda x: determine_edu_mapping(x, edu_fields.value, 70), StringType())("tmp_edu.edu_desc"))
         .withColumn("edu_gpa", col("tmp_edu.edu_gpa"))
         .withColumn("edu_institution", col("tmp_edu.edu_institution"))
-        .withColumn("cert_categories", udf(lambda x: determine_certification_types(x, cert_categories.value, 80), ArrayType(StringType()))("resume_certifications"))
+        .withColumn("cert_categories", udf(lambda x: determine_certification_types(x, cert_categories.value, 80), ArrayType(StringType()))("certifications"))
         .drop("tmp_edu")
         .drop("education")
-        .drop("resume_certifications")
-
+        .drop("certifications")
     )
 
     # Add experience columns
     df = df.withColumn("YoE_list", get_resume_yoe("experience"))
-
-    # Add skills columns
-    df = create_hard_skills_column(df, spark, og_column="hard_skills")
-    df = create_soft_skills_column(df, spark, og_column="soft_skills")
 
     # Add miscellaneous columns
     df = clean_employment_type_column(df, "employment_type_preference") \
@@ -145,7 +144,7 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
     output_path = os.path.join("datamart", "silver", "resumes", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    upload_file_to_drive(service, output_path, resume_id)
+    # upload_file_to_drive(service, output_path, resume_id)
 
 
 def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
@@ -167,6 +166,10 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     df = read_bronze_jd_as_pyspark(snapshot_date, spark)
     df = df.withColumnRenamed("certifications", "jd_certifications")
 
+    # Add skills columns
+    df = create_hard_skills_column(df, spark, og_column="required_hard_skills")
+    df = create_soft_skills_column(df, spark, og_column="required_soft_skills")
+
     # Add education columns
     education_ref_dir = os.path.join("datamart", "references")
     edu_levels = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_level_synonyms.parquet")).collect())
@@ -181,10 +184,6 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
         .drop("required_education")
         .drop("jd_certifications")
     )
-
-    # Add skills columns
-    df = create_hard_skills_column(df, spark, og_column="required_hard_skills")
-    df = create_soft_skills_column(df, spark, og_column="required_soft_skills")
 
     # Add miscellaneous columns
     df = clean_employment_type_column(df, "employment_type") \
@@ -203,7 +202,7 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    upload_file_to_drive(service, output_path, jd_id)
+    # upload_file_to_drive(service, output_path, jd_id)
 
 def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
     """
@@ -236,7 +235,7 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
 
     print(f"Saved Silver Labels : {selected_date} No. Rows : {df.count()}")
 
-    upload_file_to_drive(service, output_path, label_id)
+    # upload_file_to_drive(service, output_path, label_id)
     
 
 def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSession) -> None:
@@ -291,4 +290,4 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
 
     print(f"Saved Silver Combined : {selected_date} No. Rows : {labels_jd_resume.count()}")
 
-    upload_file_to_drive(service, output_path, combined_id)
+    # upload_file_to_drive(service, output_path, combined_id)

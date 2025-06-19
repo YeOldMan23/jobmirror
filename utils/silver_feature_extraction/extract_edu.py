@@ -279,7 +279,7 @@ def determine_edu_mapping(education_input: str, mapping: list, threshold: int=50
 def parse_education_udf_factory():
     def _parse_last_edu(edu_arr: list):
         if not edu_arr:
-            return (None, None, None, None)
+            return (None, None, None)
         last_edu = edu_arr[0] # Latest education entry
         desc = f"{last_edu.degree or ''} {last_edu.description or ''}"
         gpa_val = last_edu.grade or gpa_from_text(desc)

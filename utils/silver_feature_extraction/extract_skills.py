@@ -5,7 +5,7 @@ import os
 import glob
 
 from pyspark.sql.functions import expr, udf, explode, collect_list, array
-from pyspark.sql import functions as F
+from pyspark.sql import functions as F, Row
 
 from ..gdrive_utils import connect_to_gdrive, sync_gdrive_db_to_local
 
@@ -128,9 +128,9 @@ def lemmatize_soft_skills(rows):
         elif soft_skills is None:
             soft_skills = []
 
-        row_dict["soft_skills_lemmatized"] = [extract_head_noun(s) for s in soft_skills]
+        lemmatized = [extract_head_noun(s) for s in soft_skills]
 
-        yield tuple(row_dict[col] for col in row_dict.keys())
+        yield Row(**row.asDict(), soft_skills_lemmatized=lemmatized)
 
 def create_soft_skills_column(df_spark, spark, og_column="soft_skills"):
     # Rename column to soft skills
