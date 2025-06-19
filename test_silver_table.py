@@ -17,7 +17,7 @@ if __name__ == "__main__":
     datamart_dir = os.path.join(os.getcwd(), "datamart")
 
     # Get the range of dates
-    date_range = get_snapshot_dates(datetime(2021, 6, 1), datetime(2021, 6, 30))
+    date_range = get_snapshot_dates(datetime(2021, 1, 1), datetime(2021, 12, 30))
 
     # For each range, read the silver table and parse
     for cur_date in date_range:

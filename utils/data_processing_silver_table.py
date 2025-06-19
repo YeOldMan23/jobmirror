@@ -202,7 +202,7 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    # upload_file_to_drive(service, output_path, jd_id)
+    upload_file_to_drive(service, output_path, jd_id)
 
 def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
     """
@@ -235,7 +235,7 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
 
     print(f"Saved Silver Labels : {selected_date} No. Rows : {df.count()}")
 
-    # upload_file_to_drive(service, output_path, label_id)
+    upload_file_to_drive(service, output_path, label_id)
     
 
 def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSession) -> None:
@@ -290,4 +290,4 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
 
     print(f"Saved Silver Combined : {selected_date} No. Rows : {labels_jd_resume.count()}")
 
-    # upload_file_to_drive(service, output_path, combined_id)
+    upload_file_to_drive(service, output_path, combined_id)
