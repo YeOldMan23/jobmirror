@@ -1,6 +1,7 @@
 # utils/s3_utils.py
 import boto3
-from config import AWSConfig
+import os
+from .config import AWSConfig
 
 def get_s3_client():
     """Create S3 client using environment variables"""
@@ -13,16 +14,35 @@ def get_s3_client():
         region_name=config.region
     )
 
-def upload_to_s3(local_file_path: str, s3_key: str):
-    """Upload file to S3 using env config"""
+def upload_to_s3(local_path: str, s3_key: str):
+    """Upload file or directory to S3 using env config"""
     config = AWSConfig()
     s3_client = get_s3_client()
     
     try:
-        s3_client.upload_file(local_file_path, config.bucket_name, s3_key)
-        print(f"Uploaded {local_file_path} to s3://{config.bucket_name}/{s3_key}")
+        # Check if it's a file or directory
+        if os.path.isfile(local_path):
+            # Single file upload
+            s3_client.upload_file(local_path, config.bucket_name, s3_key)
+            print(f"Uploaded {local_path} to s3://{config.bucket_name}/{s3_key}")
+        
+        elif os.path.isdir(local_path):
+            # Directory upload (for parquet)
+            for root, dirs, files in os.walk(local_path):
+                for file in files:
+                    local_file = os.path.join(root, file)
+                    # Maintain directory structure in S3
+                    relative_path = os.path.relpath(local_file, local_path)
+                    s3_file_key = os.path.join(s3_key, relative_path).replace("\\", "/")
+                    
+                    s3_client.upload_file(local_file, config.bucket_name, s3_file_key)
+                    print(f"Uploaded {local_file} to s3://{config.bucket_name}/{s3_file_key}")
+        else:
+            raise ValueError(f"Path {local_path} is neither a file nor directory")
+            
     except Exception as e:
         print(f"Error uploading: {e}")
+        raise
 
 def read_s3_data(bucket: str, key: str):
     """Read data from S3 bucket"""

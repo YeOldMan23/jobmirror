@@ -22,7 +22,7 @@ def test_aws_connection():
         print("AWS connection successful!")
         print("Bucket is accessible!")
         
-        # Optional: List a few objects to confirm read access
+        # List a few objects to confirm read access
         response = s3.list_objects_v2(Bucket=aws_config.bucket_name, MaxKeys=3)
         if 'Contents' in response:
             print(f"Found {len(response['Contents'])} objects in bucket")
