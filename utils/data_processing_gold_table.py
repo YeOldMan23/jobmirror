@@ -9,6 +9,7 @@ import os
 from datetime import datetime
 
 from .gold_feature_extraction.extract_skills import create_hard_skills_general_column, create_hard_skills_specific_column, create_soft_skills_column
+from .gold_feature_extraction.match_experience import process_gold_experience
 
 def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkSession):
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
@@ -23,6 +24,9 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
     df = create_hard_skills_general_column(df)
     df = create_hard_skills_specific_column(df)
     df = create_soft_skills_column(df)
+
+    # Add in job experience
+    df = process_gold_experience(df)
 
     # Select only relevant columns
     df = df.select(
