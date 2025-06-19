@@ -151,4 +151,4 @@ zstandard==0.23.0
 mistralai==1.8.1
 datasets==2.19.1
 pymongo==4.7.2
-
+boto3

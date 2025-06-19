@@ -19,12 +19,15 @@ import optuna
 
 
 from PIL import Image
+from typing import List, Tuple, Optional
+import logging
+from pyspark.sql import SparkSession, DataFrame
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import io
 from utils.config import AWSConfig
-from utils.s3_utils import get_s3_client
+from utils.s3_utils import get_s3_client, list_s3_folders
 
 # Connect to the MLflow server (in this case, we are using our own computer)
 mlflow.set_tracking_uri(uri="http://localhost:8080")
@@ -44,56 +47,124 @@ def process_snapshot_data(**kwargs):
     end_date = start_date + timedelta(days=365)
     return start_date, end_date
 
-def list_s3_folders(bucket, prefix):
-    s3_client = get_s3_client()
-    # s3 = boto3.client('s3')
-    paginator = s3_client.get_paginator('list_objects_v2')
-    result = paginator.paginate(Bucket=bucket, Prefix=prefix, Delimiter='/')
-    return [f's3://{bucket}/{cp["Prefix"]}' for page in result for cp in page.get("CommonPrefixes", [])]
+# def list_s3_folders(bucket, prefix):
+#     s3_client = get_s3_client()
+#     # s3 = boto3.client('s3')
+#     paginator = s3_client.get_paginator('list_objects_v2')
+#     result = paginator.paginate(Bucket=bucket, Prefix=prefix, Delimiter='/')
+#     return [f's3://{bucket}/{cp["Prefix"]}' for page in result for cp in page.get("CommonPrefixes", [])]
 
-def get_files(spark: SparkSession):
+# def get_files(spark: SparkSession):
 
+#     config = AWSConfig()
+#     s3_client = get_s3_client()
+#     # Process snapshot data
+#     start_date, end_date = process_snapshot_data(execution_date=datetime.now())
+
+#     feature_root_dir = f's3://{config.bucket_name}/features/parquet_data'#dummy path, replace with actual S3 path
+#     label_root_dir = f's3://{config.bucket_name}/labels/parquet_data'#dummy path, replace with actual S3 path
+
+#     all_folders_feature = list_s3_folders(config.bucket_name, "features/parquet_data/")
+#     all_folders_label = list_s3_folders(config.bucket_name, "labels/parquet_data/")
+    
+#     valid_paths_feature = []
+#     valid_paths_label = []
+    
+#     folders = [all_folders_feature, all_folders_label]
+#     valid_paths = [valid_paths_feature,valid_paths_label]
+#     dfs =[]
+    
+#     for i in range(len(folders)):
+#         folder = folders[i]
+#         for file in folder:
+#             # Extract snapshot_date from folder path
+#             try:
+#                 file_date_str = file.split("snapshot_date=")[-1] # assume that the file are named as follow: snapshot_date=2023-01-01/
+#                 file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
+#                 if start_date <= file_date <= end_date:
+#                     valid_paths[i].append(file)
+#             except Exception:
+#                 continue  # skip folders without valid format
+
+#         # Load only those folders into Spark
+#         df = spark.read.parquet(*valid_paths[i])
+#         dfs.append(df)
+#     return dfs
+def get_files(spark: SparkSession, **kwargs) -> List[Optional[DataFrame]]:
+    """
+    Get feature and label files from S3 within date range and load as Spark DataFrames
+    """
     config = AWSConfig()
-    s3_client = get_s3_client()
+    s3_client = get_s3_client()  # Get once and reuse
+    
     # Process snapshot data
-    start_date, end_date = process_snapshot_data(execution_date=datetime.now())
-
-    # feature_root_dir = "localhost://path/to/parquet_data"#dummy path, replace with actual S3 path
-    # all_folders_feature = [f.path for f in os.scandir(feature_root_dir) if f.is_dir()]
-
-    # label_root_dir = "localhost://path/to/parquet_data"#dummy path, replace with actual S3 path
-    # all_folders_label = [f.path for f in os.scandir(label_root_dir) if f.is_dir()]
-
-    feature_root_dir = f's3://{config.bucket_name}/features/parquet_data'#dummy path, replace with actual S3 path
-    label_root_dir = f's3://{config.bucket_name}/labels/parquet_data'#dummy path, replace with actual S3 path
-
-    all_folders_feature = list_s3_folders({config.bucket_name}, "features/parquet_data/")
-    all_folders_label = list_s3_folders({config.bucket_name}, "labels/parquet_data/")
+    start_date, end_date = process_snapshot_data(**kwargs)
     
-    valid_paths_feature = []
-    valid_paths_label = []
+    # S3 paths
+    feature_prefix = "features/parquet_data/"
+    label_prefix = "labels/parquet_data/"
     
-    folders = [all_folders_feature, all_folders_label]
-    valid_paths = [valid_paths_feature,valid_paths_label]
-    dfs =[]
+    # Get all folders using s3_utils function
+    all_folders_feature = list_s3_folders(config.bucket_name, feature_prefix, s3_client)
+    all_folders_label = list_s3_folders(config.bucket_name, label_prefix, s3_client)
     
-    for i in range(len(folders)):
-        folder = folders[i]
-        for file in folder:
-            # Extract snapshot_date from folder path
+    def filter_folders_by_date(folders: List[str], start_date: datetime, end_date: datetime) -> List[str]:
+        """Filter folders based on snapshot_date within date range"""
+        valid_paths = []
+        
+        for folder in folders:
             try:
-                file_date_str = file.split("snapshot_date=")[-1] # assume that the file are named as follow: snapshot_date=2023-01-01/
-                file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
-                if start_date <= file_date <= end_date:
-                    valid_paths[i].append(file)
-            except Exception:
-                continue  # skip folders without valid format
-
-        # Load only those folders into Spark
-        df = spark.read.parquet(*valid_paths[i])
-        dfs.append(df)
+                if "snapshot_date=" in folder:
+                    date_part = folder.rstrip('/').split("snapshot_date=")[-1]
+                    file_date = datetime.strptime(date_part, "%Y-%m-%d")
+                    
+                    if start_date <= file_date <= end_date:
+                        valid_paths.append(folder)
+                        
+            except (ValueError, IndexError) as e:
+                logging.warning(f"Skipping folder with invalid date format: {folder} - {str(e)}")
+                continue
+        
+        return valid_paths
+    
+    # Filter folders by date range
+    valid_paths_feature = filter_folders_by_date(all_folders_feature, start_date, end_date)
+    valid_paths_label = filter_folders_by_date(all_folders_label, start_date, end_date)
+    
+    logging.info(f"Found {len(valid_paths_feature)} valid feature folders")
+    logging.info(f"Found {len(valid_paths_label)} valid label folders")
+    
+    dfs = []
+    
+    # Load feature data
+    if valid_paths_feature:
+        try:
+            logging.info("Loading feature data...")
+            df_features = spark.read.parquet(*valid_paths_feature)
+            dfs.append(df_features)
+            logging.info(f"Successfully loaded feature data from {len(valid_paths_feature)} folders")
+        except Exception as e:
+            logging.error(f"Error loading feature data: {str(e)}")
+            dfs.append(None)
+    else:
+        logging.warning("No valid feature folders found in date range")
+        dfs.append(None)
+    
+    # Load label data
+    if valid_paths_label:
+        try:
+            logging.info("Loading label data...")
+            df_labels = spark.read.parquet(*valid_paths_label)
+            dfs.append(df_labels)
+            logging.info(f"Successfully loaded label data from {len(valid_paths_label)} folders")
+        except Exception as e:
+            logging.error(f"Error loading label data: {str(e)}")
+            dfs.append(None)
+    else:
+        logging.warning("No valid label folders found in date range")
+        dfs.append(None)
+    
     return dfs
-
 
 def register_model_mlflow(run_name, params, model, X_train, X_test, y_train, y_test, model_name): # Ensure it's a DataFrame
     # Start an MLflow run

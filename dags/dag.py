@@ -3,6 +3,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
+from utils import mongodb_to_parquet
 
 default_args = {
     'owner': 'airflow',
@@ -10,7 +11,6 @@ default_args = {
     'retries': 1, # retry once evry 5 minutes
     'retry_delay': timedelta(minutes=5),
 }
-
 
 
 with DAG(
@@ -43,6 +43,13 @@ with DAG(
 ###### Silver Label Table ######   
  # Input dummy operator for testing purpose. Actual script commented below.
     silver_label_store = DummyOperator(task_id="silver_label_store")
+    silver_label_store = PythonOperator(
+        task_id='run_silver_label_store',
+        python_callable=mongodb_to_parquet.read_silver_labels,
+        op_kwargs={
+            'snapshot_date': '{{ ds }}'
+        }
+    )
     # silver_label_store = BashOperator(
     #     task_id='run_silver_label_store',
     #     bash_command=(
@@ -74,6 +81,7 @@ with DAG(
 
     # Should contain processing for silver resume and silver JD tables
     silver_table_1 = DummyOperator(task_id="silver_table_1")
+
     # Merge silver resume and silver JD tables into a big silver table
     big_silver_table = DummyOperator(task_id="silver_table_2")
 
