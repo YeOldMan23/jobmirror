@@ -10,11 +10,11 @@ def match_employment_type(df):
     return df
 
 def match_work_authorization(df):
-    df.withColumn(
+    df = df.withColumn(
         "work_authorization_match",
         (col("work_authorization") == col("required_work_authorization")).cast("integer")
     )
-
+   
     return df
 
 def match_location_preference(df):

@@ -34,7 +34,7 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
     df = df.select(
         "resume_id", "job_id", "snapshot_date", # General
         "soft_skills_mean_score", "soft_skills_max_score", "soft_skills_count", "soft_skills_ratio", # Soft skills
-        "hard_skills_general_count", "hard_skills_general_ratio", "hard_skills_specific_count", "hard_skills_specific_ratio" # General skills
+        "hard_skills_general_count", "hard_skills_general_ratio", "hard_skills_specific_count", "hard_skills_specific_ratio", # General skills
         "work_authorization_match","employment_type_match","location_preference_match"
         # Add your new columns here
         )
