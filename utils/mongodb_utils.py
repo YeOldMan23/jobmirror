@@ -30,6 +30,7 @@ def get_pyspark_session() -> SparkSession:
         .config("spark.driver.memory", "4g") \
         .config("spark.sql.debug.maxToStringFields", 100) \
         .getOrCreate()
+    spark.sparkContext.setLogLevel("ERROR")
     return spark
 
 def test_mongo_connection(client: MongoClient):
