@@ -19,10 +19,12 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
 from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType, IntegerType
+from utils.mongodb_utils import get_pyspark_session
 
 import os
 import shutil
 import boto3
+import argparse
 
 import torch
 from datetime import datetime
@@ -321,3 +323,25 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
     print(f"Saved Silver Combined : {selected_date} No. Rows : {labels_jd_resume.count()}")
 
     upload_file_to_drive(service, output_path, combined_id)
+
+if __name__ == "__main__":
+
+    spark = get_pyspark_session()
+
+    # Setup argparse to parse command-line arguments
+    parser = argparse.ArgumentParser(description="run job")
+    parser.add_argument("--snapshotdate", type=str, required=True, help="YYYY-MM-DD")
+    parser.add_argument("--task", type=str, required=True, help="Which task to run")
+    
+    args = parser.parse_args()
+
+    if args.task == "data_processing_silver_resume":
+        data_processing_silver_resume(args.snapshotdate)
+    elif args.task == "data_processing_silver_jd":
+        data_processing_silver_jd(args.snapshotdate)
+    elif args.task == "data_processing_silver_combined":
+        data_processing_silver_combined(args.snapshotdate)
+    elif args.task == "data_processing_silver_labels":
+        data_processing_silver_labels(args.snapshotdate)
+    else:
+        raise ValueError(f"Unknown task: {args.task}")
