@@ -152,3 +152,18 @@ mistralai==1.8.1
 datasets==2.19.1
 pymongo==4.7.2
 
+# Core ML & preprocessing
+xgboost>=1.7.6
+
+
+# MLflow
+mlflow>=2.3.0
+
+# Optimization
+optuna>=3.1.0
+
+# Visualization (if used in other parts of your script)
+Pillow>=9.4.0  # for image logging
+
+# Optional but useful
+boto3>=1.26.0  # if you’re interacting with S3

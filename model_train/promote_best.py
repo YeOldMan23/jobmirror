@@ -11,7 +11,7 @@ def promote_best_model():
     run_id = best_run.info.run_id
     model_uri = f"runs:/{run_id}/model"
 
-    # Register model
+    # Register model, only a model better will be registered 
     result = mlflow.register_model(model_uri, "tracking-quickstart")
 
     # Set alias "champion"
