@@ -29,16 +29,16 @@ def get_relevant_yoe(sim_matrix, yoe_list):
 
     for cur_yoe, cur_exp_sim in zip(yoe_list, sim_matrix):
         if cur_exp_sim >= GLOBAL_SIM_THRESHOLD:
-            relevant_yoe += cur_yoe
+            relevant_yoe += abs(cur_yoe)
 
-    return max(0, relevant_yoe)
+    return max(0.0, relevant_yoe) if len(yoe_list) > 0 else 0.0
 
 @udf(FloatType())
 def get_total_yoe(yoe_list):
     """
     Get the total YoE from the array
     """
-    return max(0, sum(yoe_list))
+    return max(0.0, sum(yoe_list)) if len(yoe_list) > 0.0 else 1.0
 
 @udf(FloatType())
 def get_avg_job_sim(sim_matrix):
@@ -60,12 +60,12 @@ def get_max_job_sim(sim_matrix):
     else:
         return 0
     
-@udf(BooleanType())
+@udf(FloatType())
 def is_freshie(sim_matrix):
     """
     Boolean to determine if the person is new to the job market
     """
-    return len(sim_matrix) == 0
+    return 1.0 if len(sim_matrix) == 0 else 0.0
 
 def process_gold_experience(df):
     """
@@ -76,5 +76,8 @@ def process_gold_experience(df):
     df = df.withColumn("avg_exp_sim", get_avg_job_sim(df["exp_sim_list"]))
     df = df.withColumn("max_exp_sim", get_max_job_sim(df["exp_sim_list"]))
     df = df.withColumn("is_freshie", is_freshie(df["exp_sim_list"]))
+
+    # TODO Decide wether to drop the combinations with no JD
+    df = df.filter(col('role_title').isNotNull())
 
     return df

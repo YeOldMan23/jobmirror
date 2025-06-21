@@ -11,6 +11,15 @@ if __name__ == "__main__":
     # Datamart dir
     datamart_dir = os.path.join(os.getcwd(), "datamart")
 
+    # Check if the gold feature and label store exsits
+    gold_dir = os.path.join(datamart_dir, "gold")
+    feature_dir = os.path.join(gold_dir, 'feature_store')
+    label_dir = os.path.join(gold_dir, "label_store")
+
+    for cur_dir in [gold_dir, feature_dir, label_dir]:
+        if not os.path.exists(cur_dir):
+            os.mkdir(cur_dir)
+
     # Get the range of dates
     date_range = get_snapshot_dates(datetime(2021, 6, 1), datetime(2021, 7, 31))
 
