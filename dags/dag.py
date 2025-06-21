@@ -3,6 +3,13 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
+from airflow.models import Variable
+
+from utils import data_processing_bronze_table, data_processing_silver_table, data_processing_gold_table
+
+# Set batch indices for bronze table loading
+Variable.set("bronze_start_index", 0)
+Variable.set("bronze_end_index", 1000)
 
 default_args = {
     'owner': 'airflow',
@@ -10,8 +17,6 @@ default_args = {
     'retries': 1, # retry once evry 5 minutes
     'retry_delay': timedelta(minutes=5),
 }
-
-
 
 with DAG(
     'dag',
@@ -30,27 +35,28 @@ with DAG(
 ###### Bronze Table ######
 # Bronze tables processing includes label and features 
 # Retrieves data from huggingface, extract text using LLM and parse to MongoDB
-    bronze_store = PythonOperator(
+    bronze_store = BashOperator(
         task_id='run_bronze_feature_and_label_store',
         bash_command=(
-            'cd /opt/airflow/scripts && '
-            'python3 data_processing_bronze_table.py '
-            '--snapshotdate "{{ ds }}"'
+            'cd /opt/airflow && '
+            'python3 data-processing.py '
+            '--start {{ var.value.bronze_start_index }} '
+            '--end {{ var.value.bronze_end_index }} '
+            '--batch_size 100 '
         ),
     )
-    # ds stands for date. this is where to input the date based on the schedule provided above. 
 
 ###### Silver Label Table ######   
  # Input dummy operator for testing purpose. Actual script commented below.
     silver_label_store = DummyOperator(task_id="silver_label_store")
-    # silver_label_store = BashOperator(
-    #     task_id='run_silver_label_store',
-    #     bash_command=(
-    #         'cd /opt/airflow/scripts && '
-    #         'python3 mongodb_to_parquet.py '
-    #         '--snapshotdate "{{ ds }}"'
-    #     ),
-    # )
+    silver_label_store = BashOperator(
+    task_id='run_silver_jd_store',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_labels',
+    dag=dag
+    )
 
 ###### Gold Table ######
 # Input dummy operator for testing purpose. Actual script commented below.
@@ -72,10 +78,38 @@ with DAG(
  # --- feature store --- chaining multiple bronze table to silver table
     # bronze_table_1 = DummyOperator(task_id="bronze_table_1")
 
-    # Should contain processing for silver resume and silver JD tables
+    # Processing for resume silver table
     silver_table_1 = DummyOperator(task_id="silver_table_1")
-    # Merge silver resume and silver JD tables into a big silver table
-    big_silver_table = DummyOperator(task_id="silver_table_2")
+    silver_resume_store = BashOperator(
+    task_id='run_silver_resume_store',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_resume',
+    dag=dag
+    )
+
+    # Processing for jd silver table
+    silver_jd_store = BashOperator(
+    task_id='run_silver_jd_store',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_jd',
+    dag=dag
+    )
+
+    # Merge silver resume and silver JD tables into combined silver table
+    silver_combined = BashOperator(
+    task_id='run_silver_combined',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_combined',
+    dag=dag
+    )
+
+    [silver_resume_store, silver_jd_store] >> silver_combined
 
     # Create gold feature store
     gold_feature_store = DummyOperator(task_id="gold_feature_store")
@@ -84,7 +118,8 @@ with DAG(
     
     # Define task dependencies to run scripts sequentially
     # Since bronze feature store is already created, we skip the task in this step
-    silver_table_1 >> big_silver_table >> gold_feature_store
+    bronze_store >> []
+    # silver_table_1 >> big_silver_table >> gold_feature_store
     gold_feature_store >> feature_store_completed
     
     
