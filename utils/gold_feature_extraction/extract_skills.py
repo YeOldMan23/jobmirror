@@ -68,7 +68,10 @@ def create_soft_skills_column(df):
     # Get skills match count
     df = df.withColumn(
         "soft_skills_count",
-        size(expr("filter(soft_skills_compare.scores, x -> x > 0.8)"))
+        when(
+            (col("soft_skills_compare.scores").isNotNull()),
+            size(expr("filter(soft_skills_compare.scores, x -> x > 0.8)"))
+        ).otherwise(0)
     )
 
     # Get skills match ratio

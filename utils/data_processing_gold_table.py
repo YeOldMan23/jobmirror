@@ -20,7 +20,7 @@ def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkS
 
 def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession) -> None:
     # Read silver table
-    df = read_silver_table("combined", snapshot_date, spark)
+    df = read_silver_table("combined_resume_jd", snapshot_date, spark)
 
     # Add skills
     print("Processing skills")
@@ -39,7 +39,7 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
     df = match_location_preference(df)
     
     # Process the label store
-    df = process_labels(df)
+    df_labels = process_labels(df)
     
     # Select only relevant columns
     df = df.select(
@@ -52,11 +52,12 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
         # Add your new columns here
         # "YoE_list", "exp_sim_list",
         "relevant_yoe", "total_yoe", "avg_exp_sim", "max_exp_sim", "is_freshie", # Experience data
-        "fit_label" # Label data
         )
     
+    df_labels = df_labels.select("resume_id", "job_id", "snapshot_date", "fit_label")
+    
     # Test fit label works
-    df.show(50)
+    df_labels.show(5)
 
     # Save the parquet 
     print("Saving Feature Store")
@@ -70,4 +71,4 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     filename    = selected_date + ".parquet"
     output_path = os.path.join("datamart", "gold", "label_store", filename)
-    df.write.mode("overwrite").parquet(output_path)
+    df_labels.write.mode("overwrite").parquet(output_path)

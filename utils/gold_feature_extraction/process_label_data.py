@@ -20,7 +20,7 @@ def process_labels(df):
     """
     df = df.withColumn(
         "fit_label",
-        when(col("fit").isin("Fit"), 1.0).otherwise(0.0)
+        when(col("fit").isin("Fit"), 1).otherwise(0)
     )
 
     return df
