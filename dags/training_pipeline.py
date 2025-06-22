@@ -24,13 +24,15 @@ with DAG(
     description='data pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
     start_date=datetime(2023, 1, 1), 
-    end_date=datetime(2024, 12, 1),
+    # end_date=datetime(2024, 12, 1),
     catchup=True,
 ) as dag:
 
 ###########################
 ###### Data pipeline ######
 ###########################
+
+#### Data preprocessing ####
 
 ###### Bronze Table ######
 # Bronze tables processing includes label and features 
@@ -39,26 +41,73 @@ with DAG(
         task_id='run_bronze_feature_and_label_store',
         bash_command=(
             'cd /opt/airflow && '
-            'python3 data-processing.py '
+            'python3 data_processing_bronze_table.py '
             '--start {{ var.value.bronze_start_index }} '
             '--end {{ var.value.bronze_end_index }} '
             '--batch_size 100 '
+            '--type "training"'
         ),
     )
 
 ###### Silver Label Table ######   
- # Input dummy operator for testing purpose. Actual script commented below.
     silver_label_store = DummyOperator(task_id="silver_label_store")
     silver_label_store = BashOperator(
     task_id='run_silver_jd_store',
     bash_command='cd /opt/airflow/scripts && '
     'python3 data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_labels',
+    '--task data_processing_silver_labels'
+    '--type "training"',
     dag=dag
     )
 
-###### Gold Table ######
+###### Silver Feature Tables ###### 
+    # Processing for resume silver table
+    # silver_table_1 = DummyOperator(task_id="silver_table_1")
+    silver_resume_store = BashOperator(
+    task_id='run_silver_resume_store',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_resume'
+    '--type "training"',
+    dag=dag
+    )
+
+    # Processing for jd silver table
+    silver_jd_store = BashOperator(
+    task_id='run_silver_jd_store',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_jd'
+    '--type "training"',
+    dag=dag
+    )
+
+    # Merge silver resume and silver JD tables into combined silver table
+    silver_combined = BashOperator(
+    task_id='run_silver_combined',
+    bash_command='cd /opt/airflow/scripts && '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "{{ ds }}" '
+    '--task data_processing_silver_combined'
+    '--type "training"',
+    dag=dag
+    )
+
+###### Gold Feature Table ######
+    gold_feature_store = BashOperator(
+        task_id='run_gold_feature_store',
+        bash_command=(
+            'cd /opt/airflow/scripts && '
+            'python3 data_processing_gold_table.py '
+            '--snapshotdate "{{ ds }}"'
+            '--type "training"'
+        ),
+    )
+
+###### Gold Label Table ######
 # Input dummy operator for testing purpose. Actual script commented below.
     gold_label_store = DummyOperator(task_id="gold_label_store")
     # gold_label_store = BashOperator(
@@ -70,58 +119,12 @@ with DAG(
     #     ),
     # )
 
-    label_store_completed = DummyOperator(task_id="label_store_completed")
-
     # Define task dependencies to run scripts sequentially
-    bronze_store >> silver_label_store >> gold_label_store >> label_store_completed
-  
- # --- feature store --- chaining multiple bronze table to silver table
-    # bronze_table_1 = DummyOperator(task_id="bronze_table_1")
-
-    # Processing for resume silver table
-    silver_table_1 = DummyOperator(task_id="silver_table_1")
-    silver_resume_store = BashOperator(
-    task_id='run_silver_resume_store',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_resume',
-    dag=dag
-    )
-
-    # Processing for jd silver table
-    silver_jd_store = BashOperator(
-    task_id='run_silver_jd_store',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_jd',
-    dag=dag
-    )
-
-    # Merge silver resume and silver JD tables into combined silver table
-    silver_combined = BashOperator(
-    task_id='run_silver_combined',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_combined',
-    dag=dag
-    )
+    bronze_store >> silver_label_store >> gold_label_store 
 
     [silver_resume_store, silver_jd_store] >> silver_combined
-
-    # Create gold feature store
-    gold_feature_store = DummyOperator(task_id="gold_feature_store")
-
-    feature_store_completed = DummyOperator(task_id="feature_store_completed")
-    
-    # Define task dependencies to run scripts sequentially
-    # Since bronze feature store is already created, we skip the task in this step
-    bronze_store >> []
-    # silver_table_1 >> big_silver_table >> gold_feature_store
-    gold_feature_store >> feature_store_completed
-    
+    silver_combined >> gold_feature_store
+   
     
     ## model training 
     train_logreg = BashOperator(
@@ -144,22 +147,7 @@ with DAG(
         bash_command='python /opt/model_deploy/model_deploy.py',
     )
 
-    [train_logreg, train_xgb] >> promote>> deploy
-
-
-    # --- model inference ---
-    model_inference_start = DummyOperator(task_id="model_inference_start")
-
-    model_1_inference = DummyOperator(task_id="model_1_inference")
-
-    model_2_inference = DummyOperator(task_id="model_2_inference")
-
-    model_inference_completed = DummyOperator(task_id="model_inference_completed")
-    
-    # Define task dependencies to run scripts sequentially
-    feature_store_completed >> model_inference_start
-    model_inference_start >> model_1_inference >> model_inference_completed
-    model_inference_start >> model_2_inference >> model_inference_completed
+    [train_logreg, train_xgb] >> promote >> deploy
 
 
     # --- model monitoring ---
@@ -188,7 +176,7 @@ with DAG(
     model_automl_completed = DummyOperator(task_id="model_automl_completed")
     
     # Define task dependencies to run scripts sequentially
-    feature_store_completed >> model_automl_start
-    label_store_completed >> model_automl_start
+    # feature_store_completed >> model_automl_start
+    # label_store_completed >> model_automl_start
     model_automl_start >> model_1_automl >> model_automl_completed
     model_automl_start >> model_2_automl >> model_automl_completed

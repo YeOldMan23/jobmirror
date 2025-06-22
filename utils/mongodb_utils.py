@@ -26,7 +26,9 @@ def get_pyspark_session() -> SparkSession:
         .appName("MongoDBSpark") \
         .config("spark.mongodb.read.connection.uri", mongodb_uri) \
         .config("spark.mongodb.write.connection.uri", mongodb_uri) \
-        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0") \
+        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262") \
+        .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+        .config("spark.hadoop.fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain") \
         .config("spark.driver.memory", "4g") \
         .config("spark.sql.debug.maxToStringFields", 100) \
         .getOrCreate()
@@ -51,6 +53,7 @@ def exists_in_collection(collection, doc_id):
 # Read bronze tables
 #############################
 def read_bronze_table_as_pyspark(db_name, collection_name, spark: SparkSession):
+
     return spark.read \
         .format("mongodb") \
         .option("database", db_name) \
@@ -70,7 +73,6 @@ def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession)
     """
     Read labels as pyspark
     """
-
     # Datetime is randomized in the date of 2024, so we just need the month, datetime saved as string object
     # so need to use regex
 
@@ -96,7 +98,6 @@ def read_bronze_jd_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> 
     """
     Draw the JD and read the data, parse to parquet
     """
-
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 

@@ -155,8 +155,6 @@ def register_model_mlflow(run_name, params, model, X_train, X_test, y_train, y_t
 
         return model, f1
     
-
-
 def objective_lr(trial, X_train, X_test, y_train, y_test):
     params = {
         "C": trial.suggest_float("C", 1e-4, 1e2, log=True),
