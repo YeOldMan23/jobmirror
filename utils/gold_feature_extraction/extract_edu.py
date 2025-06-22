@@ -120,21 +120,16 @@ def map_edu_level(req: str, given: str, scale: list):
         else:
             # No requirement, but education provided.
             return (True, 0.75)
-
     # From here, req is not None.
     if given is None:
         return (False, 0.0) # Requirement, but no education provided.
-
     req_n_list = [row.group_scale for row in scale if row.group_name == req]
     given_n_list = [row.group_scale for row in scale if row.group_name == given]
-
     # If required or given education level is not in our reference scale, we can't compare.
     if not req_n_list or not given_n_list:
         return (False, 0.0)
-
     req_n = req_n_list[0]
     given_n = given_n_list[0]
-
     if given_n == req_n:
         return (True, 1.0)
     elif given_n > req_n:
@@ -149,6 +144,19 @@ def map_edu_field(req: str, given: str) -> bool:
         return True
     else:
         return False
+
+def map_certification(req: list, given: list) -> bool:
+    if req is None or not req or len(req) == 0:
+        return True
+    # from here, req is not None and has at least one element.
+    if given is None or not given or len(given) == 0:
+        return False
+    # from here, req and given are not None and have at least one element.
+    # if any given certification matches any required certification, return True.
+    for r in req:
+        if r in given:
+            return True
+    return False
 
 # ==============================================================================
 #  MAIN PUBLIC FUNCTION TO BE IMPORTED
@@ -208,6 +216,18 @@ def extract_education_features(df: DataFrame) -> DataFrame:
         c = df.filter(df.edu_field_match == match.edu_field_match).count()
         print(f"{match.edu_field_match} : {c}")
     
+    # Match certifications
+    print("  Matching certifications...")
+    df = (
+        df
+        .withColumn("cert_match", F.udf(map_certification, BooleanType())(F.col("required_cert_categories"), F.col("cert_categories")))
+        .drop("required_cert_categories", "cert_categories")
+    )
+    print("Distinct cert_match values:")
+    for match in df.select('cert_match').distinct().collect():
+        c = df.filter(df.cert_match == match.cert_match).count()
+        print(f"{match.cert_match} : {c}")
+
     # GPA standardization
     print("  Standardizing GPA...")
     df_with_gpa = _standardize_gpa(df)
