@@ -70,7 +70,7 @@ def _standardize_gpa(df: DataFrame) -> DataFrame:
 
 def _create_institution_tier(spark: SparkSession, df: DataFrame) -> DataFrame:
     """Adds an 'institution_tier' column by matching against a clean Parquet reference file."""
-    rankings_parquet_path = "../../datamart/references/qs_rankings"
+    rankings_parquet_path = "datamart/references/qs_rankings"
     
     # 1. Load and Prepare Rankings Data
     try:
