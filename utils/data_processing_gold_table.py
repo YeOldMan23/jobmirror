@@ -57,8 +57,7 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
         "resume_id", "job_id", "snapshot_date", # General
         "soft_skills_mean_score", "soft_skills_max_score", "soft_skills_count", "soft_skills_ratio", # Soft skills
         "hard_skills_general_count", "hard_skills_general_ratio", "hard_skills_specific_count", "hard_skills_specific_ratio", # Hard skills
-        "edu_gpa", # The standardized GPA
-        "institution_tier",
+        "edu_level_match", "edu_level_score", "edu_field_match", "cert_match", "edu_gpa", "institution_tier", # Education features
         "work_authorization_match","employment_type_match","location_preference_match", # Match preferences
         "relevant_yoe", "total_yoe", "avg_exp_sim", "max_exp_sim", "is_freshie" # Experience data
         )
