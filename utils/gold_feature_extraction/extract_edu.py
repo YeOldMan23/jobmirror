@@ -28,7 +28,7 @@ It is designed to be called from the main data processing pipeline.
 """
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql.types import StringType, IntegerType, FloatType, StructType, StructField
+from pyspark.sql.types import StringType, IntegerType, FloatType, BooleanType, StructType, StructField
 from rapidfuzz import fuzz
 import re
 
@@ -113,6 +113,36 @@ def _create_institution_tier(spark: SparkSession, df: DataFrame) -> DataFrame:
     
     return df_with_tier.drop("matched_rank")
 
+def map_edu_level(req: str, given: str, scale: list):
+    if req is None:
+        if given is None:
+            return (None, None)
+        else:
+            # No requirement, but education provided.
+            return (True, 0.75)
+
+    # From here, req is not None.
+    if given is None:
+        return (False, 0.0) # Requirement, but no education provided.
+
+    req_n_list = [row.group_scale for row in scale if row.group_name == req]
+    given_n_list = [row.group_scale for row in scale if row.group_name == given]
+
+    # If required or given education level is not in our reference scale, we can't compare.
+    if not req_n_list or not given_n_list:
+        return (False, 0.0)
+
+    req_n = req_n_list[0]
+    given_n = given_n_list[0]
+
+    if given_n == req_n:
+        return (True, 1.0)
+    elif given_n > req_n:
+        return (True, 0.75)
+    else: # given_n < req_n
+        return (False, 0.0)
+
+
 # ==============================================================================
 #  MAIN PUBLIC FUNCTION TO BE IMPORTED
 # ==============================================================================
@@ -130,6 +160,27 @@ def extract_education_features(df: DataFrame) -> DataFrame:
     
     # Get the active SparkSession
     spark = SparkSession.builder.getOrCreate()
+
+    # Match education level
+    print("  Matching education levels...")
+
+    # Broadcast the education level synonyms scale
+    scale = spark.sparkContext.broadcast(spark.read.parquet("datamart/references/education_level_synonyms.parquet").collect())
+
+    # Define the schema for the temporary UDF output
+    EDU_TMP_SCHEMA = StructType([
+        StructField("edu_match", BooleanType(), True),
+        StructField("edu_score", FloatType(), True),
+    ])
+
+    # map education levels
+    df = (
+        df
+        .withColumn("tmp_edu_match", F.udf(lambda req, giv: map_edu_level(req, giv, scale.value), EDU_TMP_SCHEMA)(F.col("required_edu_level"), F.col("edu_highest_level")))
+        .withColumn("edu_match", F.col("tmp_edu_match.edu_match"))
+        .withColumn("edu_score", F.col("tmp_edu_match.edu_score"))
+        .drop("tmp_edu_match")
+    )
     
     # Chain the feature creation functions
     df_with_gpa = _standardize_gpa(df)
