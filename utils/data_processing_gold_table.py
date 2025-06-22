@@ -5,10 +5,14 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
 from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType, IntegerType
 
+
+
 import os
 from datetime import datetime
 
 from .gold_feature_extraction.extract_skills import create_hard_skills_general_column, create_hard_skills_specific_column, create_soft_skills_column
+
+from .gold_feature_extraction.extract_edu import extract_education_features
 
 def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkSession):
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
@@ -23,12 +27,15 @@ def data_processing_gold_features(snapshot_date: datetime, spark : SparkSession)
     df = create_hard_skills_general_column(df)
     df = create_hard_skills_specific_column(df)
     df = create_soft_skills_column(df)
+    df = extract_education_features(df)
 
     # Select only relevant columns
     df = df.select(
         "resume_id", "job_id", "snapshot_date", # General
         "soft_skills_mean_score", "soft_skills_max_score", "soft_skills_count", "soft_skills_ratio", # Soft skills
         "hard_skills_general_count", "hard_skills_general_ratio", "hard_skills_specific_count", "hard_skills_specific_ratio" # General skills
+        "edu_gpa", # The standardized GPA
+        "institution_tier"
         # Add your new columns here
         )
 

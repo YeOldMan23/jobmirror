@@ -22,3 +22,118 @@ Output features for gold dataset:
 - cert_match: boolean indicating if the resume's certifications match the JD's required certifications
 """
 
+"""
+This script contains the logic to generate all education-related gold features.
+It is designed to be called from the main data processing pipeline.
+"""
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import StringType, IntegerType, FloatType, StructType, StructField
+from rapidfuzz import fuzz
+import re
+
+# ==============================================================================
+#  INTERNAL HELPER FUNCTIONS
+# ==============================================================================
+
+def _clean_institution_name(name: str) -> str:
+    """Cleans a university name to a standardized format for matching."""
+    if name is None:
+        return None
+    name = name.lower()
+    name = re.sub(r'[^\w\s]', '', name)
+    common_words = ['the', 'of', 'and', 'university', 'college', 'institute']
+    query = name.split()
+    result_words = [word for word in query if word.lower() not in common_words]
+    name = ' '.join(result_words)
+    name = name.strip()
+    return name
+
+def _standardize_gpa(df: DataFrame) -> DataFrame:
+    """Standardizes the 'edu_gpa' column in a DataFrame to a 0-4 scale."""
+    return df.withColumn(
+        "edu_gpa",
+        F.when(F.col("edu_gpa").isNull(), F.lit(None))
+         .when(F.col("edu_gpa") <= 4, F.col("edu_gpa"))
+         .when((F.col("edu_gpa") > 4) & (F.col("edu_gpa") <= 10), (F.col("edu_gpa") / 10.0) * 4.0)
+         .when((F.col("edu_gpa") > 10) & (F.col("edu_gpa") <= 100), (F.col("edu_gpa") / 100.0) * 4.0)
+         .otherwise(F.lit(None))
+         .cast(FloatType())
+    )
+
+def _create_institution_tier(spark: SparkSession, df: DataFrame) -> DataFrame:
+    """Adds an 'institution_tier' column by matching against a clean Parquet reference file."""
+    rankings_parquet_path = "datamart/references/qs_rankings"
+    
+    # 1. Load and Prepare Rankings Data
+    try:
+        rankings_df = spark.read.parquet(rankings_parquet_path)
+    except Exception as e:
+        print(f"  WARNING: Could not read rankings data from {rankings_parquet_path}. Skipping institution tiering. Error: {e}")
+        return df.withColumn("institution_tier", F.lit("Tier 3")) # Default to Tier 3 if rankings are missing
+
+    clean_name_udf = F.udf(_clean_institution_name, StringType())
+    rankings_df = rankings_df.select("Institution", "Rank").withColumn("cleaned_qs_name", clean_name_udf(F.col("Institution")))
+
+    # 2. Prepare Resume Data
+    resume_institutions_df = df.select("edu_institution").filter(F.col("edu_institution").isNotNull()).distinct()
+    resume_institutions_df = resume_institutions_df.withColumn("cleaned_resume_name", clean_name_udf(F.col("edu_institution")))
+
+    # 3. Fuzzy Match
+    def get_best_match(resume_name, rankings_broadcast):
+        best_score, best_rank = 0, None
+        for row in rankings_broadcast.value:
+            score = fuzz.token_sort_ratio(resume_name, row['cleaned_qs_name'])
+            if score > best_score:
+                best_score, best_rank = score, row['Rank']
+        return (best_rank, best_score) if best_score > 85 else (None, 0)
+
+    rankings_list_broadcast = spark.sparkContext.broadcast(rankings_df.collect())
+    match_schema = StructType([
+        StructField("matched_rank", IntegerType(), True),
+        StructField("match_score", IntegerType(), True)
+    ])
+    get_best_match_udf = F.udf(lambda name: get_best_match(name, rankings_list_broadcast), match_schema)
+    
+    matched_institutions_df = resume_institutions_df.withColumn(
+        "match_result", get_best_match_udf(F.col("cleaned_resume_name"))
+    ).select(
+        "edu_institution",
+        F.col("match_result.matched_rank").alias("matched_rank")
+    )
+    
+    # 4. Join and Create Tier
+    df_with_rank = df.join(matched_institutions_df, "edu_institution", "left")
+    df_with_tier = df_with_rank.withColumn(
+        "institution_tier",
+        F.when(F.col("matched_rank").isNotNull() & (F.col("matched_rank") <= 100), "Tier 1")
+         .when(F.col("matched_rank").isNotNull() & (F.col("matched_rank") <= 500), "Tier 2")
+         .otherwise("Tier 3")
+    )
+    
+    return df_with_tier.drop("matched_rank")
+
+# ==============================================================================
+#  MAIN PUBLIC FUNCTION TO BE IMPORTED
+# ==============================================================================
+def extract_education_features(df: DataFrame) -> DataFrame:
+    """
+    Main entry point function to run all education-related feature extractions.
+
+    Args:
+        df (DataFrame): The input DataFrame from the previous processing step.
+
+    Returns:
+        DataFrame: DataFrame with new education features added.
+    """
+    print("  Extracting education features...")
+    
+    # Get the active SparkSession
+    spark = SparkSession.builder.getOrCreate()
+    
+    # Chain the feature creation functions
+    df_with_gpa = _standardize_gpa(df)
+    df_with_all_edu_features = _create_institution_tier(spark, df_with_gpa)
+    
+    print("  Education features extracted.")
+    return df_with_all_edu_features`
