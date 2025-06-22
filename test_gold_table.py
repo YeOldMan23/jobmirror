@@ -1,4 +1,4 @@
-from utils.data_processing_gold_table import data_processing_gold_features
+from utils.data_processing_gold_table import data_processing_gold_features, data_processing_gold_labels
 
 from utils.date_utils import *
 from utils.mongodb_utils import get_pyspark_session
@@ -30,3 +30,4 @@ if __name__ == "__main__":
         print("Processing gold {}".format(snapshot_date))
 
         data_processing_gold_features(cur_date, spark)
+        data_processing_gold_labels(cur_date, spark)

@@ -93,7 +93,7 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession)
     output_path = os.path.join("datamart", "silver", "resumes", filename)
     df.write.mode("overwrite").parquet(output_path)
 
-    # upload_file_to_drive(service, output_path, resume_id)
+    upload_file_to_drive(service, output_path, resume_id)
 
 
 def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
@@ -226,9 +226,6 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
     labels_jd = labels_df.join(jd_df, on="job_id", how="inner")
     labels_jd_resume = labels_jd.join(resume_df, on="resume_id", how="inner")
 
-    """
-    DO UDFS HERE
-    """
     # Get the experience similarity score 
     labels_jd_resume = labels_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
 
