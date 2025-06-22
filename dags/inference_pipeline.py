@@ -21,13 +21,12 @@ with DAG(
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
     start_date=datetime(2023, 1, 1), 
     # end_date=datetime(2024, 12, 1),
-    catchup=True,
+    catchup=False,
 ) as dag:
     
 ###########################
 ### Inference pipeline ####
 ###########################   
-
 ###### Bronze Table ######
 # Bronze tables processing includes label and features 
 # Retrieves data from huggingface, extract text using LLM and parse to MongoDB
@@ -44,7 +43,6 @@ with DAG(
     )
 
 ###### Silver Feature Tables ###### 
-
     # Processing for resume silver table
     # silver_table_1 = DummyOperator(task_id="silver_table_1")
     silver_resume_store = BashOperator(
@@ -86,6 +84,7 @@ with DAG(
             'cd /opt/airflow/scripts && '
             'python3 data_processing_gold_table.py '
             '--snapshotdate "{{ ds }}"'
+            '--type "inference"'
         ),
     )
 

@@ -97,21 +97,22 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession,
     """
     # commenting out to test S3
 
-    # service = connect_to_gdrive()
+    service = connect_to_gdrive()
         
-    # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
         
-    # resume_path = ['datamart', 'silver', 'resume']
-    # resume_id = get_folder_id_by_path(service, resume_path, parent_root)
-    # print("\nResume folder ID:", resume_id)
+    resume_path = ['datamart', 'silver', 'resume']
+    resume_id = get_folder_id_by_path(service, resume_path, parent_root)
+    print("\nResume folder ID:", resume_id)
     
     # Read into pyspark dataframe
-    if type == "training": 
-        df = read_bronze_resume_as_pyspark(snapshot_date, spark)
-    elif type == "inference":
-        filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
-        s3_key = f"datamart/online/bronze/resume/{filename}"
-        df = read_parquet_from_s3(spark,s3_key) 
+    
+    df = read_bronze_resume_as_pyspark(snapshot_date, spark, type)
+
+    # if using S3
+    # filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
+    # s3_key = f"datamart/online/bronze/resume/{filename}"
+    # df = read_parquet_from_s3(spark,s3_key) 
     
     # Add skills columns
     df = create_hard_skills_column(df, spark, og_column="hard_skills")
@@ -123,7 +124,7 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession,
     edu_fields = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_field_synonyms.parquet")).collect())
     cert_categories = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "certification_categories.parquet")).collect())
 
-    # Change to S3 reads:
+    # Change to S3 reads if using S3:
     # edu_levels = spark.sparkContext.broadcast(
     #     read_parquet_from_s3(spark, "datamart/references/education_level_synonyms.parquet").collect()
     # )
@@ -163,32 +164,29 @@ def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession,
         .drop("location_preference") \
         .withColumnRenamed("location_preference_cleaned", "location_preference")
 
-    if type == "training": 
-        # Save table as parquet
-        filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
-        output_path = os.path.join("datamart", "silver", "online","resumes", filename)
-        df.write.mode("overwrite").parquet(output_path)
+    # if type == "training": 
+    #     # Save table as parquet
+    #     filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    #     output_path = os.path.join("datamart", "silver", "online","resumes", filename)
+    #     df.write.mode("overwrite").parquet(output_path)
         
-        # uploading to s3
-        s3_key = f"datamart/silver/resume/{filename}"
-        upload_to_s3(output_path, s3_key)
+    #     # uploading to s3
+    #     s3_key = f"datamart/silver/resume/{filename}"
+    #     upload_to_s3(output_path, s3_key)
         
+    # elif type == "inference":
+    #     print(df)
+    #     return df
+    # Save table as parquet
+
+    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    if type == "training":
+        output_path = os.path.join("datamart","silver", "resumes", filename)
     elif type == "inference":
-        print(df)
-        return df
-        # Save table as parquet
-        # filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
-        # output_path = os.path.join("datamart","online", "silver", "resumes", filename)
-        # df.write.mode("overwrite").parquet(output_path)
-        
-        # # uploading to s3
-        # s3_key = f"datamart/online/silver/resumes/{filename}"
-        # upload_to_s3(output_path, s3_key)        
+        output_path = os.path.join("datamart","online", "silver", "resumes", filename)
+    df.write.mode("overwrite").parquet(output_path)
     
-    # path is for temp storage of files. this function is to clear the folder when complete.
-    # shutil.rmtree(local_path)
-    
-    # upload_file_to_drive(service, output_path, resume_id)
+    upload_file_to_drive(service, output_path, resume_id)
 
 
 def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession, type):
@@ -196,24 +194,23 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession, typ
     Processes job descriptions from bronze layer to silver layer
     Output: saves into parquet
     """
-    # service = connect_to_gdrive()
+    service = connect_to_gdrive()
         
-    # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
                 
     jd_path = ['datamart', 'silver',  'job_description']
-    # jd_id = get_folder_id_by_path(service, jd_path, parent_root)
-    # print("\nJob description folder ID:", jd_id)
+    jd_id = get_folder_id_by_path(service, jd_path, parent_root)
+    print("\nJob description folder ID:", jd_id)
 
     # Read into pyspark dataframe
-    # df = read_bronze_jd_as_pyspark(snapshot_date, spark)
-        # Read into pyspark dataframe
+    df = read_bronze_jd_as_pyspark(snapshot_date, spark, type)
 
-    if type == "training": 
-        df = read_bronze_jd_as_pyspark(snapshot_date, spark)
-    elif type == "inference":
-        filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
-        s3_key = f"datamart/online/bronze/jd/{filename}"
-        df = read_parquet_from_s3(spark,s3_key)
+    # if type == "training": 
+    #     df = read_bronze_jd_as_pyspark(snapshot_date, spark)
+    # elif type == "inference":
+    #     filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
+    #     s3_key = f"datamart/online/bronze/jd/{filename}"
+    #     df = read_parquet_from_s3(spark,s3_key)
 
     df = df.withColumnRenamed("certifications", "jd_certifications")
 
@@ -227,6 +224,7 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession, typ
     edu_fields = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_field_synonyms.parquet")).collect())
     cert_categories = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "certification_categories.parquet")).collect())
     
+    # when using S3
     # edu_levels = spark.sparkContext.broadcast(
     #     read_parquet_from_s3(spark, "datamart/references/education_level_synonyms.parquet").collect()
     # )
@@ -258,22 +256,21 @@ def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession, typ
         .drop("job_location") \
         .withColumnRenamed("job_location_cleaned", "job_location")
     
+    # if type == "training":
+
+    #     # Save table as parquet
+    filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
     if type == "training":
-
-        # Save table as parquet
-        filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
         output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
-        df.write.mode("overwrite").parquet(output_path)
-
-        # uploading to s3
-        s3_key = f"datamart/silver/job_description/{filename}"
-        upload_to_s3(output_path, s3_key)
-
     elif type == "inference":
-        print(df)
-        return df
+        output_path = os.path.join("datamart", "online", "silver", "job_descriptions", filename)
+    df.write.mode("overwrite").parquet(output_path)
 
-    # upload_file_to_drive(service, output_path, jd_id)
+    #     # uploading to s3
+    #     s3_key = f"datamart/silver/job_description/{filename}"
+    #     upload_to_s3(output_path, s3_key)
+
+    upload_file_to_drive(service, output_path, jd_id)
 
 def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
     """
@@ -281,16 +278,16 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
     Output: saves into parquet
     """
 
-    # service = connect_to_gdrive()
+    service = connect_to_gdrive()
         
-    # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
         
-    # jd_path = ['datamart', 'silver',  'label']
-    # label_id = get_folder_id_by_path(service, jd_path, parent_root)
-    # print("\nLabel folder ID:", label_id)
+    jd_path = ['datamart', 'silver',  'label']
+    label_id = get_folder_id_by_path(service, jd_path, parent_root)
+    print("\nLabel folder ID:", label_id)
 
     # Read into pyspark dataframe
-    df = read_bronze_labels_as_pyspark(snapshot_date, spark)
+    df = read_bronze_labels_as_pyspark(snapshot_date, spark, type)
 
     # Group labels together
     df = standardize_label(df, "fit") \
@@ -300,16 +297,19 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
     # Save table as parquet
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     filename = selected_date + ".parquet"
-    output_path = os.path.join("datamart", "silver", "labels", filename)
+    if type == "training":
+        output_path = os.path.join("datamart", "silver", "labels", filename)
+    elif type == "inference":
+        output_path = os.path.join("datamart", "online","silver", "labels", filename)
     df.write.mode("overwrite").parquet(output_path)
 
     # uploading to s3
-    s3_key = f"datamart/silver/labels/{filename}"
-    upload_to_s3(output_path, s3_key)
+    # s3_key = f"datamart/silver/labels/{filename}"
+    # upload_to_s3(output_path, s3_key)
 
     print(f"Saved Silver Labels : {selected_date} No. Rows : {df.count()}")
 
-    # upload_file_to_drive(service, output_path, label_id)
+    upload_file_to_drive(service, output_path, label_id)
     
 def data_processing_silver_combined(snapshot_date: datetime,
                                      spark: SparkSession,
@@ -321,26 +321,31 @@ def data_processing_silver_combined(snapshot_date: datetime,
     Merge the parquets together, get the dataframe for further processing
     """
 
-    # service = connect_to_gdrive()
+    service = connect_to_gdrive()
         
-    # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
                 
-    # combine_path = ['datamart', 'silver',  'combined_resume_jd']
-    # combined_id = get_folder_id_by_path(service, combine_path, parent_root)
-    # print("\nCombined folder ID:", combined_id)
+    combine_path = ['datamart', 'silver',  'combined_resume_jd']
+    combined_id = get_folder_id_by_path(service, combine_path, parent_root)
+    print("\nCombined folder ID:", combined_id)
+
+    # if type == "training":
+    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     if type == "training":
-        selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
         jd_full_dir     = os.path.join("datamart", "silver", "job_descriptions", f"{selected_date}.parquet")
         resume_full_dir = os.path.join("datamart", "silver", "resumes", f"{selected_date}.parquet")
         labels_full_dir = os.path.join("datamart", "silver", "labels", f"{selected_date}.parquet")
-
-        jd_df     = spark.read.parquet(jd_full_dir)
-        resume_df = spark.read.parquet(resume_full_dir)
-        labels_df = spark.read.parquet(labels_full_dir)
-
     elif type == "inference":
-         if resume_df is None or jd_df is None:
-            raise ValueError("resume_df and jd_df must be provided in inference mode")
+        jd_full_dir     = os.path.join("datamart", "silver", "online","job_descriptions", f"{selected_date}.parquet")
+        resume_full_dir = os.path.join("datamart", "silver", "online","resumes", f"{selected_date}.parquet")
+        labels_full_dir = os.path.join("datamart", "silver", "online","labels", f"{selected_date}.parquet")       
+    jd_df     = spark.read.parquet(jd_full_dir)
+    resume_df = spark.read.parquet(resume_full_dir)
+    labels_df = spark.read.parquet(labels_full_dir)
+
+    # elif type == "inference":
+    #      if resume_df is None or jd_df is None:
+    #         raise ValueError("resume_df and jd_df must be provided in inference mode")
 
     # We do the individual transforms to dfs first
     ## Resume Transforms
@@ -364,13 +369,14 @@ def data_processing_silver_combined(snapshot_date: datetime,
     # Get the experience similarity score 
     combined_jd_resume = combined_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(combined_jd_resume['role_title'], combined_jd_resume['experience']))
 
+    # Save the parquet
+    filename    = selected_date + ".parquet"
     if type == "training":
-        filename    = selected_date + ".parquet"
         output_path = os.path.join("datamart", "silver", "combined_resume_jd", filename)
-        combined_jd_resume.write.mode("overwrite").parquet(output_path)
-        print(f"Saved Silver Combined : {selected_date} No. Rows : {combined_jd_resume.count()}")
     elif type == "inference":
-        return combined_jd_resume
+        output_path = os.path.join("datamart", "silver", "online","combined_resume_jd", filename)
+    combined_jd_resume.write.mode("overwrite").parquet(output_path)
+    print(f"Saved Silver Combined : {selected_date} No. Rows : {combined_jd_resume.count()}")
 
     # # Split into training and inference data based on label availability
     # training_data = labels_jd_resume.filter(col("fit").isNotNull())  # Has labels
@@ -391,13 +397,7 @@ def data_processing_silver_combined(snapshot_date: datetime,
     #     inference_clean.write.mode("overwrite").parquet(inference_output_path)
     #     print(f"Saved {inference_data.count()} inference records")
 
-    # # Save the parquet 
-    # filename    = selected_date + ".parquet"
-    # output_path = os.path.join("datamart", "silver", "combined_resume_jd", filename)
-    # labels_jd_resume.write.mode("overwrite").parquet(output_path)
-    # print(f"Saved Silver Combined : {selected_date} No. Rows : {labels_jd_resume.count()}")
-
-    # upload_file_to_drive(service, output_path, combined_id)
+    upload_file_to_drive(service, output_path, combined_id)
 
 if __name__ == "__main__":
 

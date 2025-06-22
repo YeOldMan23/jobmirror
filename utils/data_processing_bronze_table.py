@@ -86,7 +86,7 @@ def retrieve_inference_data():
         rng = np.random.default_rng(seed=42)
         # Define start and end date
         start_date = pd.to_datetime('2022-06-01')
-        end_date = pd.to_datetime('2022-12-01')
+        end_date = pd.to_datetime('2022-12-1')
         # Generate random timestamps between start_date and end_date
         random_dates = pd.to_datetime(
             rng.uniform(start_date.value, end_date.value, size=len(df))
@@ -117,7 +117,6 @@ def retrieve_inference_data():
     # Download from huggingface
     splits = {'train': 'train.csv', 'test': 'test.csv'}
     df = pd.read_csv("hf://datasets/cnamuangtoun/resume-job-description-fit/" + splits["test"])
-    # df = df.drop(columns=["label"])
 
     # Generate random snapshot dates
     df = generate_random_snapshot_dates(df)
@@ -392,7 +391,7 @@ if __name__ == "__main__":
     parser.add_argument('--start', type=int, required=True, help='Start index')
     parser.add_argument('--end', type=int, required=True, help='End index')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for bronze table processing')
-    parser.add_argument('--type', type=str, default='inference', help='Inference or training')  # Fixed line
+    parser.add_argument('--type', type=str, default='training', help='Inference or training')
     
     args = parser.parse_args()  # Fixed - removed the extra argument definition
 

@@ -53,7 +53,6 @@ def exists_in_collection(collection, doc_id):
 # Read bronze tables
 #############################
 def read_bronze_table_as_pyspark(db_name, collection_name, spark: SparkSession):
-
     return spark.read \
         .format("mongodb") \
         .option("database", db_name) \
@@ -69,7 +68,7 @@ def read_bronze_table_as_pandas(db_name, collection_name, query=None):
             d.pop("_id", None)
     return pd.DataFrame(data)
 
-def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
+def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession, type) -> pyspark.sql.dataframe.DataFrame:
     """
     Read labels as pyspark
     """
@@ -80,7 +79,10 @@ def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession)
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 
     # Use double curly braces to escape for formatting strings
-    df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_labels", spark)
+    if type == "training":
+        df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_labels", spark)
+    elif type == "inference":
+        df = read_bronze_table_as_pyspark("jobmirror_db", "online_bronze_labels", spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
     print("Number of label rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
     
@@ -94,14 +96,16 @@ def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession)
 
     return df2
 
-def read_bronze_jd_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
+def read_bronze_jd_as_pyspark(snapshot_date : datetime, spark: SparkSession, type) -> pyspark.sql.dataframe.DataFrame:
     """
     Draw the JD and read the data, parse to parquet
     """
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
-
-    df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_job_descriptions", spark)
+    if type == "training":
+        df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_job_descriptions", spark)
+    elif type == "inference":
+        df = read_bronze_table_as_pyspark("jobmirror_db", "online_bronze_job_descriptions", spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
     print("Number of JD rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
     
@@ -119,15 +123,17 @@ def read_bronze_jd_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> 
     
     return df_selected
 
-def read_bronze_resume_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
+def read_bronze_resume_as_pyspark(snapshot_date : datetime, spark: SparkSession, type) -> pyspark.sql.dataframe.DataFrame:
     """
     Draw the resume and read the data, parse to parquet
     """
 
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
-
-    df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_resumes", spark)
+    if type == "training":
+        df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_resumes", spark)
+    elif type == "inference":
+        df = read_bronze_table_as_pyspark("jobmirror_db", "online_bronze_resumes", spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
     print("Number of Resume rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
 

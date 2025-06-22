@@ -96,7 +96,7 @@ with DAG(
     dag=dag
     )
 
-###### Gold Feature Table ######
+###### Gold Tables ######
     gold_feature_store = BashOperator(
         task_id='run_gold_feature_store',
         bash_command=(
@@ -109,7 +109,7 @@ with DAG(
 
 ###### Gold Label Table ######
 # Input dummy operator for testing purpose. Actual script commented below.
-    gold_label_store = DummyOperator(task_id="gold_label_store")
+    # gold_label_store = DummyOperator(task_id="gold_label_store")
     # gold_label_store = BashOperator(
     #     task_id='run_gold_label_store',
     #     bash_command=(

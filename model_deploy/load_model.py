@@ -22,3 +22,5 @@ model = load_champion_model()
 
 ##### Load Data #####
 df = read_gold_feature(snapshot_date, spark)
+
+df = df.drop(columns="fit")

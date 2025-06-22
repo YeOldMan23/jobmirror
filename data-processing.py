@@ -22,7 +22,6 @@ if __name__ == "__main__":
     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
     spark = get_pyspark_session()
 
-
     # Get the range of dates
     date_range = get_snapshot_dates(datetime(2022, 6, 1), datetime(2022, 6, 1))
     process_bronze_table(spark, 0, 1000, 10, "inference")
