@@ -16,7 +16,7 @@ Input features from silver dataset:
 Output features for gold dataset:
 - edu_level_match: boolean indicating if the resume's highest education level matches the JD's required level
 - edu_level_score: float between 0 and 1 {1: exact match, 0.75: overqualified, 0: underqualified} indicating the match score based on education level
-- edu_field_match: float indicating the match score between the resume's field of study and the JD's required field
+- edu_field_match: boolean indicating the match between the resume's field of study and the JD's required field
 - edu_gpa: float between 0 and 1 indicating performance based on GPA, larger is better
 - edu_institution: float between 0 and 1 indicating the prestige of the institution, larger is better
 - cert_match: boolean indicating if the resume's certifications match the JD's required certifications
@@ -142,6 +142,13 @@ def map_edu_level(req: str, given: str, scale: list):
     else: # given_n < req_n
         return (False, 0.0)
 
+def map_edu_field(req: str, given: str) -> bool:
+    if req is None or req == "Others":
+        return True
+    elif req == given:
+        return True
+    else:
+        return False
 
 # ==============================================================================
 #  MAIN PUBLIC FUNCTION TO BE IMPORTED
@@ -166,24 +173,47 @@ def extract_education_features(df: DataFrame) -> DataFrame:
 
     # Broadcast the education level synonyms scale
     scale = spark.sparkContext.broadcast(spark.read.parquet("datamart/references/education_level_synonyms.parquet").collect())
-
     # Define the schema for the temporary UDF output
     EDU_TMP_SCHEMA = StructType([
         StructField("edu_match", BooleanType(), True),
         StructField("edu_score", FloatType(), True),
     ])
-
     # map education levels
     df = (
         df
         .withColumn("tmp_edu_match", F.udf(lambda req, giv: map_edu_level(req, giv, scale.value), EDU_TMP_SCHEMA)(F.col("required_edu_level"), F.col("edu_highest_level")))
-        .withColumn("edu_match", F.col("tmp_edu_match.edu_match"))
-        .withColumn("edu_score", F.col("tmp_edu_match.edu_score"))
-        .drop("tmp_edu_match")
+        .withColumn("edu_level_match", F.col("tmp_edu_match.edu_match"))
+        .withColumn("edu_level_score", F.col("tmp_edu_match.edu_score"))
+        .drop("tmp_edu_match", "required_edu_level", "edu_highest_level")
     )
+    print("Distinct edu_level_match values:")
+    for match in df.select('edu_level_match').distinct().collect():
+        c = df.filter(df.edu_level_match == match.edu_level_match).count()
+        print(f"{match.edu_level_match} : {c}")
+    print("Distinct edu_level_score values:")
+    for score in df.select('edu_level_score').distinct().collect():
+        c = df.filter(df.edu_level_score == score.edu_level_score).count()
+        print(f"{score.edu_level_score} : {c}")
+
+    # Match education field
+    print("  Matching education fields...")
+
+    df = (
+        df
+        .withColumn("edu_field_match", F.udf(map_edu_field, BooleanType())(F.col("required_edu_field"), F.col("edu_field")))
+        .drop("required_edu_field", "edu_field")
+    )
+    print("Distinct edu_field_match values:")
+    for match in df.select('edu_field_match').distinct().collect():
+        c = df.filter(df.edu_field_match == match.edu_field_match).count()
+        print(f"{match.edu_field_match} : {c}")
     
-    # Chain the feature creation functions
+    # GPA standardization
+    print("  Standardizing GPA...")
     df_with_gpa = _standardize_gpa(df)
+
+    # Institution tiering
+    print("  Creating institution tiers...")
     df_with_all_edu_features = _create_institution_tier(spark, df_with_gpa)
     
     print("  Education features extracted.")
