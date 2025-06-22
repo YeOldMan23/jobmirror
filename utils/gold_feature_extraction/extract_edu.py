@@ -36,6 +36,13 @@ import re
 #  INTERNAL HELPER FUNCTIONS
 # ==============================================================================
 
+
+
+
+
+
+    
+
 def _clean_institution_name(name: str) -> str:
     """Cleans a university name to a standardized format for matching."""
     if name is None:
@@ -184,7 +191,9 @@ def extract_education_features(df: DataFrame) -> DataFrame:
     
     # Chain the feature creation functions
     df_with_gpa = _standardize_gpa(df)
-    df_with_all_edu_features = _create_institution_tier(spark, df_with_gpa)
+    df_with_tier = _create_institution_tier(spark, df_with_gpa)
+    # df_with_all_edu_features = _create_cert_match(df_with_tier)
+
     
     print("  Education features extracted.")
     return df_with_all_edu_features
