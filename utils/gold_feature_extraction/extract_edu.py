@@ -238,16 +238,10 @@ def extract_education_features(df: DataFrame) -> DataFrame:
     # GPA standardization
     print("  Standardizing GPA...")
     df_with_gpa = _standardize_gpa(df)
-<<<<<<< HEAD
-    df_with_tier = _create_institution_tier(spark, df_with_gpa)
-    # df_with_all_edu_features = _create_cert_match(df_with_tier)
-
-=======
 
     # Institution tiering
     print("  Creating institution tiers...")
     df_with_all_edu_features = _create_institution_tier(spark, df_with_gpa)
->>>>>>> 3e0ce9719e5397fa98166e63cdc9a56516503ddd
     
     print("  Education features extracted.")
     return df_with_all_edu_features
