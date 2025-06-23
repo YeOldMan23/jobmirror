@@ -7,10 +7,23 @@ from airflow.hooks.base import BaseHook
 
 from datetime import datetime, timedelta
 
-
-
-
-
+def check_monitoring_results(**context):
+    """
+    Check monitoring results and set processing type
+    Returns 'training' if issues detected, otherwise 'inference' to put in BashOperator
+    """
+    # Get monitoring results from XCom
+    ti = context['ti']
+    model1_issues = ti.xcom_pull(task_ids='model_1_monitor', key='has_issues')
+    
+    # Determine type based on monitoring results
+    processing_type = "training" if model1_issues else "inference"
+    
+    # Set the Variable for other tasks to use
+    Variable.set("processing_type", processing_type)
+    
+    print(f"Setting processing type to: {processing_type}")
+    return processing_type
 
 
 default_args = {
