@@ -8,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import PolynomialFeatures, FunctionTransformer
 from xgboost import XGBClassifier
+import sys
 
 import mlflow.pytorch
 from mlflow.models.signature import infer_signature
@@ -23,8 +24,13 @@ import pandas as pd
 import io
 import boto3
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils.config import AWSConfig
+from utils.s3_utils import get_s3_client, list_s3_folders
+from utils import gdrive_utils 
+
 # Connect to the MLflow server (in this case, we are using our own computer)
-mlflow.set_tracking_uri(uri="http://localhost:8080")
+mlflow.set_tracking_uri(uri="http://localhost:8081")
 # Set the tracking experiment 
 mlflow.set_experiment("job-fit-classification")
 # Enable MLflow system metrics logging
@@ -171,6 +177,8 @@ def run_optuna_lr( X_train, X_test, y_train, y_test):
     def objective(trial): return objective_lr(trial, X_train, X_test, y_train, y_test)
     study = optuna.create_study(direction="maximize")
     study.optimize(objective, n_trials=20)
+
+service = gdrive_utils.connect_to_gdrive()
 
 if __name__ == "__main__":
     dfs = get_files(spark)
