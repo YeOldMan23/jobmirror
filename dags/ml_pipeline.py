@@ -2,8 +2,16 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
+from airflow.models import Variable, XCom
+from airflow.hooks.base import BaseHook
+
 from datetime import datetime, timedelta
-from airflow.models import Variable
+
+
+
+
+
+
 
 default_args = {
     'owner': 'airflow',
@@ -56,7 +64,7 @@ with DAG(
     bash_command='cd /opt/airflow/utils && '
     'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_labels'
+    '--task data_processing_silver_labels '
     '--type training',
     dag=dag
     )
@@ -121,7 +129,7 @@ with DAG(
     # Define task dependencies to run scripts sequentially
 
     bronze_store >> [silver_resume_store, silver_jd_store, silver_label_store] >> silver_combined
-    silver_combined >> gold_table
+    silver_combined >> [gold_feature_store, gold_label_store]
    
     
     ## model training 
@@ -145,7 +153,7 @@ with DAG(
         bash_command='python /opt/model_deploy/model_deploy.py',
     )
 
-    gold_table >> [train_logreg, train_xgb] >> promote >> deploy
+    [gold_feature_store, gold_label_store] >> [train_logreg, train_xgb] >> promote >> deploy
 
 
     # --- model monitoring ---
