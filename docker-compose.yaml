@@ -1,33 +1,24 @@
-services:
-  jupyter:
-    build: 
-      context: .              
-      dockerfile: Dockerfile.Jupyter
-    container_name: jupyter_lab
-    image: cs611-project:latest
-    ports:
-      - "8888:8888"
-    volumes:
-      - .:/app
-    environment:
-      - JUPYTER_ENABLE_LAB=yes
-      - CUDA_LAUNCH_BLOCKING=1 # Keep this for debugging CUDA errors
-    # deploy: # <--- ADD THIS SECTION
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all # Or specify a number, e.g., 1, or specific device_ids: ['0', '1']
-    #           capabilities: [gpu]
-    command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--notebook-dir=/app", "--ServerApp.token=''", "--ServerApp.disable_check_xsrf=True"]
 # services:
-
-  fix-perms:
-    image: busybox
-    command: chown -R 50000:0 /opt/airflow
-    volumes:
-      - airflow_data:/opt/airflow
-    restart: "no"
+#   jupyter:
+#     build: .
+#     container_name: jupyter_lab
+#     image: cs611-project:latest
+#     ports:
+#       - "8080:8888"
+#     volumes:
+#       - .:/app
+#     environment:
+#       - JUPYTER_ENABLE_LAB=yes
+#       - CUDA_LAUNCH_BLOCKING=1 # Keep this for debugging CUDA errors
+#     # deploy: # <--- ADD THIS SECTION
+#     #   resources:
+#     #     reservations:
+#     #       devices:
+#     #         - driver: nvidia
+#     #           count: all # Or specify a number, e.g., 1, or specific device_ids: ['0', '1']
+#     #           capabilities: [gpu]
+#     command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--notebook-dir=/app", "--ServerApp.token=''", "--ServerApp.disable_check_xsrf=True"]
+services:
   airflow-init:
     build:
       context: .              
@@ -36,7 +27,7 @@ services:
       - fix-perms
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__CORE__FERNET_KEY=ynwrGWdXVXTtM3vz_bQ9NpScZhL9s48yshCVmWh8qLo=
+      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - airflow_data:/opt/airflow
@@ -56,7 +47,7 @@ services:
       - airflow-init
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__CORE__FERNET_KEY=ynwrGWdXVXTtM3vz_bQ9NpScZhL9s48yshCVmWh8qLo=
+      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - airflow_data:/opt/airflow
@@ -81,7 +72,7 @@ services:
       - airflow-init
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__CORE__FERNET_KEY=ynwrGWdXVXTtM3vz_bQ9NpScZhL9s48yshCVmWh8qLo=
+      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - airflow_data:/opt/airflow
