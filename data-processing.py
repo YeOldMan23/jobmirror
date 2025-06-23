@@ -5,8 +5,9 @@ import argparse
 from pyspark.sql import SparkSession
 
 from utils.mongodb_utils import get_pyspark_session
-from utils.data_processing_bronze_table import process_bronze_table
-
+from utils.date_utils import *
+from utils.src.data_processing_bronze_table import process_bronze_table
+from utils.src.data_processing_silver_table import *
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process data.")
@@ -19,5 +20,11 @@ if __name__ == "__main__":
     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
     spark = get_pyspark_session()
+
+    # Get the range of dates
+    date_range = get_snapshot_dates(datetime(2022, 6, 1), datetime(2022, 12, 1))
+    process_bronze_table(spark, 0, 100, 10, "inference")
+
+
+
     
-    process_bronze_table(spark, args.start, args.end, args.batch_size)

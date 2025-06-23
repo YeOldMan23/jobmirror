@@ -27,6 +27,7 @@ def get_pyspark_session() -> SparkSession:
         .config("spark.mongodb.read.connection.uri", mongodb_uri) \
         .config("spark.mongodb.write.connection.uri", mongodb_uri) \
         .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0") \
+        .config("spark.jars.repositories", "https://repo1.maven.org/maven2/") \
         .config("spark.driver.memory", "4g") \
         .config("spark.sql.debug.maxToStringFields", 100) \
         .getOrCreate()

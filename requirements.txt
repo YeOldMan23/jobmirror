@@ -10,7 +10,7 @@ pandas==2.3.0
 protobuf==6.31.1
 # pydantic==2.11.7
 pymongo==4.13.2
-pyspark==4.0.0
+pyspark==3.5.5
 python-dotenv==1.1.0
 python_dateutil==2.9.0.post0
 rapidfuzz==3.13.0
@@ -19,5 +19,5 @@ sentence_transformers==4.1.0
 spacy==3.8.7
 torch==2.7.1
 tqdm==4.67.1
-pydantic>=1.10.0
-pydantic_core>=1.10.0
+jupyter
+jupyterlab
