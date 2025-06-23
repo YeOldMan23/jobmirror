@@ -15,21 +15,27 @@ from pyspark.sql import SparkSession
 
 import pandas as pd
 from datetime import datetime
+import tempfile
+
 
 # Create a SparkSession if you haven't already
 spark = SparkSession.builder \
     .appName("ReadParquet") \
+    .config("spark.python.worker.reuse", "false") \
+    .config("spark.network.timeout", "600s") \
     .getOrCreate()
+
 
 def connect_to_gdrive():
     creds = service_account.Credentials.from_service_account_file(
-        'credentials.json',
+        '/opt/airflow/utils/credentials.json',
         scopes=['https://www.googleapis.com/auth/drive']
     )
 
     service = build('drive', 'v3', credentials=creds)
 
     return service
+
 
 def list_folder_contents(service, folder_id, parent_path=''):
     all_files = []
@@ -253,51 +259,95 @@ def list_parquet_files_in_folder(service, folder_id):
     # Strictly return only files that end with ".parquet" (not .crc etc.)
     return [f for f in files if f["name"].endswith(".parquet")]
     
-def get_silver_file_if_exist(feature,service,snapshot_date): #feature example 'job_description'
+def get_silver_file_update(feature,service,snapshot_date, new_inference_df,spark): #feature example 'job_description'
     parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6'       
-    jd_path = ['datamart', 'silver',  feature]
+    jd_path = ['datamart','silver',  'online', feature]
     folder_id = get_folder_id_by_path(service, jd_path, parent_root) 
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month) 
     filename    = selected_date + ".parquet"
     file = get_file_by_name(service, folder_id, filename)
+    print(filename)
     parquet_file = list_parquet_files_in_folder(service, file["id"])[0] if file else None
-    if parquet_file:
-        local_file_path = os.path.join("tmp", feature, parquet_file["name"])
-        local_output_base = os.path.dirname(local_file_path)
-        download_file(service, parquet_file, output_base=local_output_base)
-        existing_df = spark.read.parquet(local_file_path)
-        return local_file_path
-    else:
-        return None
+    with tempfile.TemporaryDirectory() as tmpdir:
+        if parquet_file:
+            local_file_path = os.path.join(tmpdir, parquet_file["name"])
+            download_file(service, parquet_file, output_base=tmpdir)
+            print(f"Downloaded file to: {local_file_path}")
+            existing_df = spark.read.parquet(local_file_path)
+            combined_df = existing_df.unionByName(new_inference_df)
+            combined_df.coalesce(1).write.mode("overwrite").parquet(local_file_path)
+        else:
+            combined_df = new_inference_df
+        
     
+    output_path = os.path.join("datamart","silver","online", feature, filename)
+    combined_df.write.mode("overwrite").parquet(output_path)
+    
+    upload_file_to_drive(service, output_path, folder_id)
+
+    print(f"Overwriting combined df has {combined_df.count()} rows.")
+    return combined_df
 
 def get_month_list(start_date, end_date):
     return [f"{d.year}-{d.month}" for d in pd.date_range(start=start_date, end=end_date, freq='MS')]
 
 def get_gold_file_if_exist(service,start_date, end_date,spark): #feature example 'job_description'
-    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6'       
-    jd_path = ['datamart', 'gold', 'feature_store']
-    folder_id = get_folder_id_by_path(service, jd_path, parent_root) 
-    start_date = datetime(start_date.year, start_date.month, 1)
-    end_date = datetime(end_date.year, end_date.month, 1)
-    month_list = get_month_list(start_date, end_date)
-    request_files = []
-    for selected_date in month_list:
-        filename = selected_date + ".parquet"
-        print(f"Checking for file: {filename}")
-        file = get_file_by_name(service, folder_id, filename)
-         # If file exists, download it
-         # If file does not exist, return None
-        if file:
-            parquet_file = list_parquet_files_in_folder(service, file["id"])[0]
-            local_file_path = os.path.join("tmp",parquet_file["name"])
-            # print(f"Downloading file: {local_file_path}")
-            os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
-            local_output_base = os.path.dirname(local_file_path)
-            download_file(service, parquet_file, output_base=local_output_base)
-            request_files.append(local_file_path)
-    if request_files:
-        requested_df = spark.read.parquet(*request_files)
-        return requested_df
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6'
+    request_files = [[],[]]
+    for i, store in enumerate(["feature_store", "label_store"]):       
+        jd_path = ['datamart', 'gold', store]
+        folder_id = get_folder_id_by_path(service, jd_path, parent_root) 
+        start_date = datetime(start_date.year, start_date.month, 1)
+        end_date = datetime(end_date.year, end_date.month, 1)
+        month_list = get_month_list(start_date, end_date)
+        for selected_date in month_list:
+            filename = selected_date + ".parquet"
+            print(f"Checking for file: {filename}")
+            file = get_file_by_name(service, folder_id, filename)
+            # If file exists, download it
+            # If file does not exist, return None
+            if file:
+                parquet_file = list_parquet_files_in_folder(service, file["id"])[0]
+                local_file_path = os.path.join("tmp",parquet_file["name"])
+                # print(f"Downloading file: {local_file_path}")
+                os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+                local_output_base = os.path.dirname(local_file_path)
+                download_file(service, parquet_file, output_base=local_output_base)
+                request_files[i].append(local_file_path)
+    if request_files[0]:
+        feature_df = spark.read.parquet(*request_files[0])
+        label_df = spark.read.parquet(*request_files[1])
+        return feature_df, label_df
+    
 
+# #test gold
+# service = connect_to_gdrive()
+# start_date = pd.to_datetime("2021-06-01")
+# end_date = pd.to_datetime("2021-09-01")
+# requested_df=get_gold_file_if_exist(service,start_date, end_date,spark)
+# print(f"requested_df: {requested_df.count()} rows")
+
+
+
+#test silver update 
+
+# Step 1: Connect to Google Drive
+service = connect_to_gdrive()
+
+# Step 2: Set up test values
+feature = "job_description"
+snapshot_date = datetime(2020, 1, 1)
+
+# Step 3: Create test DataFrame
+data = [
+    {"resume_id": "R001", "prediction": 0.85, "snapshot_date": "2020-01"},
+    {"resume_id": "R002", "prediction": 0.73, "snapshot_date": "2020-01"}
+]
+new_inference_df = spark.createDataFrame(pd.DataFrame(data))
+
+# Step 4: Call your function to append/upload
+combined_df = get_silver_file_update(feature, service, snapshot_date, new_inference_df,spark)
+
+# Step 5: Read back (if needed, verify locally or re-download)
+print(" Update complete — verify contents on Drive.{combined_df}")
 

@@ -2,15 +2,11 @@ google_api_python_client==2.172.0
 google_auth_oauthlib==1.2.2
 langchain==0.3.25
 mistralai==1.8.2
-mlflow==3.1.0
-mlflow-skinny==3.1.0
-numpy==1.26.4
 optuna==4.4.0
 pandas==2.3.0
 protobuf==6.31.1
-# pydantic==2.11.7
 pymongo==4.13.2
-pyspark==3.5.5
+pyspark==4.0.0
 python-dotenv==1.1.0
 python_dateutil==2.9.0.post0
 rapidfuzz==3.13.0
@@ -19,5 +15,7 @@ sentence_transformers==4.1.0
 spacy==3.8.7
 torch==2.7.1
 tqdm==4.67.1
-jupyter
-jupyterlab
+pydantic==2.11.7
+mlflow==3.1.0
+mlflow-skinny==3.1.0
+numpy==2.3.0

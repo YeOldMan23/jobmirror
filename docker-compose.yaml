@@ -19,6 +19,15 @@
 #     #           capabilities: [gpu]
 #     command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--notebook-dir=/app", "--ServerApp.token=''", "--ServerApp.disable_check_xsrf=True"]
 services:
+  fix-perms:
+    image: busybox
+    user: root
+    command: >
+      sh -c "chown -R 50000:0 /opt/airflow && chown -R 50000:0 /mlflow && chmod -R 2775 /mlflow"
+    volumes:
+      - airflow_data:/opt/airflow
+      - ./mlflow-data:/mlflow
+    restart: "no"
   airflow-init:
     build:
       context: .              
@@ -55,6 +64,8 @@ services:
       - ./model_train:/opt/airflow/model_train
       - ./model_deploy:/opt/airflow/model_deploy
       - ./scripts:/opt/airflow/scripts
+      - ./utils:/opt/airflow/utils
+      - ./static:/opt/airflow/static
     ports:
       - "8080:8080"
     healthcheck:
@@ -80,7 +91,25 @@ services:
       - ./model_train:/opt/airflow/model_train
       - ./model_deploy:/opt/airflow/model_deploy
       - ./scripts:/opt/airflow/scripts
+      - ./utils:/opt/airflow/utils
+      - ./static:/opt/airflow/static
+      - ./mlflow-data:/mlflow
     command: scheduler
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    command: >
+      sh -c "
+        chown -R 0:0 /mlflow &&
+        mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root /mlflow/artifacts
+        "
+    volumes:
+      - ./mlflow-data:/mlflow
 
 volumes:
   airflow_data:
+
