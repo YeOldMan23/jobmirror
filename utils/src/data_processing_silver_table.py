@@ -304,7 +304,7 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
     combine_path = ['datamart', 'silver',  'combined_resume_jd']
     combined_id = get_folder_id_by_path(service, combine_path, parent_root)
     print("\nCombined folder ID:", combined_id)
-
+    
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     if type == "training":
         jd_full_dir     = os.path.join("datamart", "silver", "job_descriptions", f"{selected_date}.parquet")
