@@ -17,7 +17,7 @@ with DAG(
     default_args=default_args,
     params={
         "bronze_start": 0,
-        "bronze_end": 1000,
+        "bronze_end": 100,
     },
     description='data pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
@@ -42,8 +42,8 @@ with DAG(
         bash_command=(
             'cd /opt/airflow/utils && '
             'python3 src/data_processing_bronze_table.py '
-            '--start {{ var.value.bronze_start_index }} '
-            '--end {{ var.value.bronze_end_index }} '
+            '--start {{ params.bronze_start }} '
+            '--end {{ params.bronze_end }} '
             '--batch_size 10 '
             '--type training'
         ),
@@ -102,9 +102,9 @@ with DAG(
         bash_command=(
             'cd /opt/airflow/utils && '
             'python3 src/data_processing_gold_table.py '
-            '--snapshotdate "{{ ds }}"'
-            '--type training'
-            '--store feature'
+            '--snapshotdate "{{ ds }}" '
+            '--type training '
+            '--store feature '
         ),
     )
     gold_label_store = BashOperator(
@@ -112,9 +112,9 @@ with DAG(
         bash_command=(
             'cd /opt/airflow/utils && '
             'python3 src/data_processing_gold_table.py '
-            '--snapshotdate "{{ ds }}"'
-            '--type training'
-            '--store label'
+            '--snapshotdate "{{ ds }}" '
+            '--type training '
+            '--store label '
         ),
     )
 
