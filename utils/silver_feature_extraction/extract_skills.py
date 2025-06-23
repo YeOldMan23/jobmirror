@@ -8,7 +8,7 @@ from pyspark.sql.functions import expr, udf, explode, collect_list, array
 from pyspark.sql import functions as F, Row
 
 from ..gdrive_utils import connect_to_gdrive, sync_gdrive_db_to_local
-from ..s3_utils import upload_to_s3, read_parquet_from_s3
+# from ..s3_utils import upload_to_s3, read_parquet_from_s3
 
 from pyspark.sql.types import StructType, StructField, ArrayType, StringType, FloatType
 from rapidfuzz import process, fuzz

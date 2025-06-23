@@ -26,9 +26,8 @@ def get_pyspark_session() -> SparkSession:
         .appName("MongoDBSpark") \
         .config("spark.mongodb.read.connection.uri", mongodb_uri) \
         .config("spark.mongodb.write.connection.uri", mongodb_uri) \
-        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262") \
-        .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-        .config("spark.hadoop.fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain") \
+        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0") \
+        .config("spark.jars.repositories", "https://repo1.maven.org/maven2/") \
         .config("spark.driver.memory", "4g") \
         .config("spark.sql.debug.maxToStringFields", 100) \
         .getOrCreate()

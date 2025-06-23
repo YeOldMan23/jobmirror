@@ -5,12 +5,6 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from airflow.models import Variable
 
-from utils import data_processing_bronze_table, data_processing_silver_table, data_processing_gold_table
-
-# Set batch indices for bronze table loading
-Variable.set("bronze_start_index", 0)
-Variable.set("bronze_end_index", 1000)
-
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -19,13 +13,19 @@ default_args = {
 }
 
 with DAG(
-    'dag',
+    'training_dag',
     default_args=default_args,
+    params={
+        "bronze_start": 0,
+        "bronze_end": 1000,
+    },
     description='data pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
-    start_date=datetime(2023, 1, 1), 
-    # end_date=datetime(2024, 12, 1),
+    start_date=datetime(2021, 9, 1), 
+    end_date=datetime(2021, 12, 1),
     catchup=True,
+    max_active_runs=1,
+    tags=['training']
 ) as dag:
 
 ###########################
@@ -40,24 +40,24 @@ with DAG(
     bronze_store = BashOperator(
         task_id='run_bronze_feature_and_label_store',
         bash_command=(
-            'cd /opt/airflow && '
-            'python3 data_processing_bronze_table.py '
+            'cd /opt/airflow/utils && '
+            'python3 src/data_processing_bronze_table.py '
             '--start {{ var.value.bronze_start_index }} '
             '--end {{ var.value.bronze_end_index }} '
-            '--batch_size 100 '
-            '--type "training"'
+            '--batch_size 10 '
+            '--type training'
         ),
     )
 
 ###### Silver Label Table ######   
-    silver_label_store = DummyOperator(task_id="silver_label_store")
+    # silver_label_store = DummyOperator(task_id="silver_label_store")
     silver_label_store = BashOperator(
-    task_id='run_silver_jd_store',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
+    task_id='run_silver_label_store',
+    bash_command='cd /opt/airflow/utils && '
+    'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
     '--task data_processing_silver_labels'
-    '--type "training"',
+    '--type training',
     dag=dag
     )
 
@@ -66,33 +66,33 @@ with DAG(
     # silver_table_1 = DummyOperator(task_id="silver_table_1")
     silver_resume_store = BashOperator(
     task_id='run_silver_resume_store',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
+    bash_command='cd /opt/airflow/utils && '
+    'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
     '--task data_processing_silver_resume'
-    '--type "training"',
+    '--type training',
     dag=dag
     )
 
     # Processing for jd silver table
     silver_jd_store = BashOperator(
     task_id='run_silver_jd_store',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
+    bash_command='cd /opt/airflow/utils && '
+    'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
     '--task data_processing_silver_jd'
-    '--type "training"',
+    '--type training',
     dag=dag
     )
 
     # Merge silver resume and silver JD tables into combined silver table
     silver_combined = BashOperator(
     task_id='run_silver_combined',
-    bash_command='cd /opt/airflow/scripts && '
-    'python3 data_processing_silver_table.py '
+    bash_command='cd /opt/airflow/utils && '
+    'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
     '--task data_processing_silver_combined'
-    '--type "training"',
+    '--type training',
     dag=dag
     )
 
@@ -100,30 +100,28 @@ with DAG(
     gold_feature_store = BashOperator(
         task_id='run_gold_feature_store',
         bash_command=(
-            'cd /opt/airflow/scripts && '
-            'python3 data_processing_gold_table.py '
+            'cd /opt/airflow/utils && '
+            'python3 src/data_processing_gold_table.py '
             '--snapshotdate "{{ ds }}"'
-            '--type "training"'
+            '--type training'
+            '--store feature'
+        ),
+    )
+    gold_label_store = BashOperator(
+        task_id='run_gold_label_store',
+        bash_command=(
+            'cd /opt/airflow/utils && '
+            'python3 src/data_processing_gold_table.py '
+            '--snapshotdate "{{ ds }}"'
+            '--type training'
+            '--store label'
         ),
     )
 
-###### Gold Label Table ######
-# Input dummy operator for testing purpose. Actual script commented below.
-    # gold_label_store = DummyOperator(task_id="gold_label_store")
-    # gold_label_store = BashOperator(
-    #     task_id='run_gold_label_store',
-    #     bash_command=(
-    #         'cd /opt/airflow/scripts && '
-    #         'python3 gold_label_store.py '
-    #         '--snapshotdate "{{ ds }}"'
-    #     ),
-    # )
-
     # Define task dependencies to run scripts sequentially
-    bronze_store >> silver_label_store >> gold_label_store 
 
-    [silver_resume_store, silver_jd_store] >> silver_combined
-    silver_combined >> gold_feature_store
+    bronze_store >> [silver_resume_store, silver_jd_store, silver_label_store] >> silver_combined
+    silver_combined >> gold_table
    
     
     ## model training 
@@ -147,7 +145,7 @@ with DAG(
         bash_command='python /opt/model_deploy/model_deploy.py',
     )
 
-    [train_logreg, train_xgb] >> promote >> deploy
+    gold_table >> [train_logreg, train_xgb] >> promote >> deploy
 
 
     # --- model monitoring ---
@@ -160,7 +158,7 @@ with DAG(
     model_monitor_completed = DummyOperator(task_id="model_monitor_completed")
     
     # Define task dependencies to run scripts sequentially
-    model_inference_completed >> model_monitor_start
+    # model_inference_completed >> model_monitor_start
     model_monitor_start >> model_1_monitor >> model_monitor_completed
     model_monitor_start >> model_2_monitor >> model_monitor_completed
 
