@@ -10,6 +10,16 @@ from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 import io
 
 from tqdm import tqdm
+from pyspark.sql import SparkSession
+
+
+import pandas as pd
+from datetime import datetime
+
+# Create a SparkSession if you haven't already
+spark = SparkSession.builder \
+    .appName("ReadParquet") \
+    .getOrCreate()
 
 def connect_to_gdrive():
     creds = service_account.Credentials.from_service_account_file(
@@ -47,14 +57,19 @@ def list_folder_contents(service, folder_id, parent_path=''):
     return all_files
 
 def download_file(service, file, output_base):
-    os.makedirs(os.path.dirname(os.path.join(output_base, file['path'])), exist_ok=True)
-    file_path = os.path.join(output_base, file['path'])
+    os.makedirs(os.path.dirname(os.path.join(output_base, file['name'])), exist_ok=True)
+    file_path = os.path.join(output_base, file['name'])
 
     export_formats = {
         'application/vnd.google-apps.document': 'application/pdf',
         'application/vnd.google-apps.spreadsheet': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.google-apps.presentation': 'application/pdf',
     }
+        # Get mimeType from API if not present
+    if  file['mimeType'] is None:
+        print("[INFO] Fetching MIME type via Drive API")
+        file_meta = service.files().get(fileId=file['id'], fields='mimeType').execute()
+        file['mimeType'] = file_meta['mimeType']
 
     if file['mimeType'] in export_formats:
         # Export Google Docs formats
@@ -216,3 +231,73 @@ def upload_file_to_drive(service, local_file_path, drive_folder_id, drive_file_n
                 print(f"Upload progress: {int(status.progress() * 100)}%")
         print(f"Uploaded file '{response.get('name')}' with ID: {response.get('id')}")
         return response.get('id')
+
+  
+def get_file_by_name(service, folder_id, filename):
+    query = f"'{folder_id}' in parents and name = '{filename}' and trashed = false"
+    results = service.files().list(q=query, spaces='drive', fields='files(id, name, mimeType)', pageSize=1).execute()
+    files = results.get('files', [])
+    return files[0] if files else None
+
+def list_parquet_files_in_folder(service, folder_id):
+    query = (
+        f"'{folder_id}' in parents and trashed = false "
+        "and mimeType != 'application/vnd.google-apps.folder'"
+    )
+    results = service.files().list(
+        q=query,
+        fields="files(id, name, mimeType)"
+    ).execute()
+    files = results.get("files", [])
+    
+    # Strictly return only files that end with ".parquet" (not .crc etc.)
+    return [f for f in files if f["name"].endswith(".parquet")]
+    
+def get_silver_file_if_exist(feature,service,snapshot_date): #feature example 'job_description'
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6'       
+    jd_path = ['datamart', 'silver',  feature]
+    folder_id = get_folder_id_by_path(service, jd_path, parent_root) 
+    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month) 
+    filename    = selected_date + ".parquet"
+    file = get_file_by_name(service, folder_id, filename)
+    parquet_file = list_parquet_files_in_folder(service, file["id"])[0] if file else None
+    if parquet_file:
+        local_file_path = os.path.join("tmp", feature, parquet_file["name"])
+        local_output_base = os.path.dirname(local_file_path)
+        download_file(service, parquet_file, output_base=local_output_base)
+        existing_df = spark.read.parquet(local_file_path)
+        return local_file_path
+    else:
+        return None
+    
+
+def get_month_list(start_date, end_date):
+    return [f"{d.year}-{d.month}" for d in pd.date_range(start=start_date, end=end_date, freq='MS')]
+
+def get_gold_file_if_exist(service,start_date, end_date,spark): #feature example 'job_description'
+    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6'       
+    jd_path = ['datamart', 'gold', 'feature_store']
+    folder_id = get_folder_id_by_path(service, jd_path, parent_root) 
+    start_date = datetime(start_date.year, start_date.month, 1)
+    end_date = datetime(end_date.year, end_date.month, 1)
+    month_list = get_month_list(start_date, end_date)
+    request_files = []
+    for selected_date in month_list:
+        filename = selected_date + ".parquet"
+        print(f"Checking for file: {filename}")
+        file = get_file_by_name(service, folder_id, filename)
+         # If file exists, download it
+         # If file does not exist, return None
+        if file:
+            parquet_file = list_parquet_files_in_folder(service, file["id"])[0]
+            local_file_path = os.path.join("tmp",parquet_file["name"])
+            # print(f"Downloading file: {local_file_path}")
+            os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+            local_output_base = os.path.dirname(local_file_path)
+            download_file(service, parquet_file, output_base=local_output_base)
+            request_files.append(local_file_path)
+    if request_files:
+        requested_df = spark.read.parquet(*request_files)
+        return requested_df
+
+
