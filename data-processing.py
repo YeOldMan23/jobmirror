@@ -10,6 +10,7 @@ from utils.src.data_processing_bronze_table import process_bronze_table
 from utils.src.data_processing_silver_table import *
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser(description="Process data.")
     parser.add_argument('--start', type=int, required=True, help='Start index')
     parser.add_argument('--end', type=int, required=True, help='End index')
@@ -22,8 +23,8 @@ if __name__ == "__main__":
 
     # Get the range of dates
     date_range = get_snapshot_dates(datetime(2022, 6, 1), datetime(2022, 12, 1))
-    
-    process_bronze_table(spark, 0, 100, 10, "inference")
+
+    process_bronze_table(spark, 0, 100, 10, args.type)
 
 
 

@@ -118,6 +118,7 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
     upload_file_to_drive(service, output_path, directory_id)
 
 if __name__ == "__main__":
+    
     # Get the pyspark session
     spark = get_pyspark_session()
     

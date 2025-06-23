@@ -16,7 +16,6 @@ try:
 except:
     Variable.set("processing_type", "inference")
 
-
 def check_monitoring_results(**context):
     """
     Check monitoring results and set processing type

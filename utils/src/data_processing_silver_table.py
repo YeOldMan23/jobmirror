@@ -304,7 +304,7 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
     combine_path = ['datamart', 'silver',  'combined_resume_jd']
     combined_id = get_folder_id_by_path(service, combine_path, parent_root)
     print("\nCombined folder ID:", combined_id)
-    
+
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     if type == "training":
         jd_full_dir     = os.path.join("datamart", "silver", "job_descriptions", f"{selected_date}.parquet")
@@ -347,31 +347,33 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
         output_path = os.path.join("datamart", "silver", "combined_resume_jd", filename)
     elif type == "inference":
         output_path = os.path.join("datamart", "silver", "online","combined_resume_jd", filename)
+    
     combined_jd_resume.write.mode("overwrite").parquet(output_path)
     
     print(f"Saved Silver Combined : {selected_date} No. Rows : {combined_jd_resume.count()}")
 
     upload_file_to_drive(service, output_path, combined_id)
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     spark = get_pyspark_session()
+    # Get the pyspark session
+    spark = get_pyspark_session()
 
-#     # Setup argparse to parse command-line arguments
-#     parser = argparse.ArgumentParser(description="run job")
-#     parser.add_argument("--snapshotdate", type=str, required=True, help="YYYY-MM-DD")
-#     parser.add_argument("--task", type=str, required=True, help="Which task to run")
-#     parser.add_argument('--type', type=str, default='training', help='Inference or training')
+    # Setup argparse to parse command-line arguments
+    parser = argparse.ArgumentParser(description="run job")
+    parser.add_argument("--snapshotdate", type=str, required=True, help="YYYY-MM-DD")
+    parser.add_argument("--task", type=str, required=True, help="Which task to run")
+    parser.add_argument('--type', type=str, default='training', help='Inference or training')
     
-#     args = parser.parse_args()
+    args = parser.parse_args()
 
-#     if args.task == "data_processing_silver_resume":
-#         data_processing_silver_resume(args.snapshotdate, args.type, spark)
-#     elif args.task == "data_processing_silver_jd":
-#         data_processing_silver_jd(args.snapshotdate, args.type, spark)
-#     elif args.task == "data_processing_silver_combined":
-#         data_processing_silver_combined(args.snapshotdate, args.type, spark)
-#     elif args.task == "data_processing_silver_labels":
-#         data_processing_silver_labels(args.snapshotdate, args.type, spark)
-#     else:
-#         raise ValueError(f"Unknown task: {args.task}")
+    if args.task == "data_processing_silver_resume":
+        data_processing_silver_resume(args.snapshotdate, args.type, spark)
+    elif args.task == "data_processing_silver_jd":
+        data_processing_silver_jd(args.snapshotdate, args.type, spark)
+    elif args.task == "data_processing_silver_combined":
+        data_processing_silver_combined(args.snapshotdate, args.type, spark)
+    elif args.task == "data_processing_silver_labels":
+        data_processing_silver_labels(args.snapshotdate, args.type, spark)
+    else:
+        raise ValueError(f"Unknown task: {args.task}")

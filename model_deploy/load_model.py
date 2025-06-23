@@ -14,7 +14,7 @@ def load_champion_model(model_name="job-fit-classifier"):
     raise ValueError("Champion model not found.")
 
 def read_gold_feature(snapshot_date : datetime, spark : SparkSession):
-    '''Get data from    '''
+    '''Get data from feature store  '''
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     table_dir     = "datamart", "gold", "online", "feature_store", f"{selected_date}.parquet"
     return read_parquet_from_s3(table_dir)
