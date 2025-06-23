@@ -5,7 +5,17 @@ from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.models import Variable, XCom
 from airflow.hooks.base import BaseHook
 
+# included a dummy reference
+from src.monitoring import monitoring
+
 from datetime import datetime, timedelta
+
+# this is assuming an auto training. else we automatically set whether to train or not. 
+try:
+    Variable.get("processing_type")
+except:
+    Variable.set("processing_type", "inference")
+
 
 def check_monitoring_results(**context):
     """
@@ -14,7 +24,7 @@ def check_monitoring_results(**context):
     """
     # Get monitoring results from XCom
     ti = context['ti']
-    model1_issues = ti.xcom_pull(task_ids='model_1_monitor', key='has_issues')
+    model1_issues = ti.xcom_pull(task_ids='model_monitor_start', key='fail')
     
     # Determine type based on monitoring results
     processing_type = "training" if model1_issues else "inference"
@@ -24,7 +34,6 @@ def check_monitoring_results(**context):
     
     print(f"Setting processing type to: {processing_type}")
     return processing_type
-
 
 default_args = {
     'owner': 'airflow',
@@ -91,7 +100,7 @@ silver_resume_store = BashOperator(
     bash_command='cd /opt/airflow/utils && '
     'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_resume'
+    '--task data_processing_silver_resume '
     '--type {{ var.value.processing_type }}',
     dag=dag
 )
@@ -102,7 +111,7 @@ silver_jd_store = BashOperator(
     bash_command='cd /opt/airflow/utils && '
     'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_jd'
+    '--task data_processing_silver_jd '
     '--type {{ var.value.processing_type }}',
     dag=dag
 )
@@ -113,7 +122,7 @@ silver_combined = BashOperator(
     bash_command='cd /opt/airflow/utils && '
     'python3 src/data_processing_silver_table.py '
     '--snapshotdate "{{ ds }}" '
-    '--task data_processing_silver_combined'
+    '--task data_processing_silver_combined '
     '--type {{ var.value.processing_type }}',
     dag=dag
 )
@@ -168,21 +177,22 @@ deploy = BashOperator(
 )
 
 # --- model monitoring ---
-model_monitor_start = DummyOperator(task_id="model_monitor_start")
+model_monitor_start = PythonOperator(
+    task_id="model_monitor_start",
+    python_callable=monitoring,
+    dag=dag)
 
+# assuming we push the xcom keys as 'fail' it will set --type as training
 model_1_monitor = PythonOperator(
     task_id="model_1_monitor",
     python_callable=check_monitoring_results,
     dag=dag)
-
-model_2_monitor = DummyOperator(task_id="model_2_monitor",dag=dag)
 
 model_monitor_completed = DummyOperator(task_id="model_monitor_completed",dag=dag)
 
 # Define task dependencies to run scripts sequentially
 # model_inference_completed >> model_monitor_start
 model_monitor_start >> model_1_monitor >> model_monitor_completed
-model_monitor_start >> model_2_monitor >> model_monitor_completed
 
 model_monitor_completed >> bronze_store
 bronze_store >> [silver_resume_store, silver_jd_store, silver_label_store] >> silver_combined
