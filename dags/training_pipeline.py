@@ -9,7 +9,6 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-
 with DAG(
     'training-pipeline',
     default_args=default_args,

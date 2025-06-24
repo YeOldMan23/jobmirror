@@ -173,3 +173,4 @@ def read_bronze_resume_as_pyspark(snapshot_date : datetime, spark: SparkSession)
     )
 
     return df_selected
+

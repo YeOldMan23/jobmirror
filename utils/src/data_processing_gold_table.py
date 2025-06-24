@@ -118,6 +118,7 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
     upload_file_to_drive(service, output_path, directory_id)
 
 if __name__ == "__main__":
+    
     # Get the pyspark session
     spark = get_pyspark_session()
     
@@ -133,6 +134,9 @@ if __name__ == "__main__":
         data_processing_gold_features(args.snapshotdate, args.type, spark)
     elif args.store == "label":
         data_processing_gold_labels(args.snapshotdate, args.type, spark)
+<<<<<<< HEAD
+    
+=======
     
     # # Datamart dir
     # datamart_dir = os.path.join(os.getcwd(), "datamart")
@@ -145,3 +149,4 @@ if __name__ == "__main__":
     #     snapshot_date = f"{cur_date.year}-{cur_date.month}"
     #     print("Processing gold {}".format(snapshot_date))
     #     data_processing_gold_features(cur_date, spark)
+>>>>>>> 0d24345d18675f64212ff1270ff443d876e08feb
