@@ -101,8 +101,10 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     service = connect_to_gdrive()
         
     parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
-        
-    resume_path = ['datamart', 'silver', 'resume']
+    if type == "training":    
+        resume_path = ['datamart', 'silver', 'resume']
+    elif type == "inference":
+        resume_path = ['datamart', 'silver', 'online', 'resume']
     resume_id = get_folder_id_by_path(service, resume_path, parent_root)
     print("\nResume folder ID:", resume_id)
     
@@ -184,7 +186,7 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     if type == "training":
         output_path = os.path.join("datamart","silver", "resumes", filename)
     elif type == "inference":
-        output_path = os.path.join("datamart","online", "silver", "resumes", filename)
+        output_path = os.path.join("datamart", "silver","online", "resumes", filename)
     df.write.mode("overwrite").parquet(output_path)
     
     upload_file_to_drive(service, output_path, resume_id)
@@ -198,8 +200,11 @@ def data_processing_silver_jd(snapshot_date : datetime, type, spark: SparkSessio
     service = connect_to_gdrive()
         
     parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
-                
-    jd_path = ['datamart', 'silver',  'job_description']
+    if type == "training":    
+        jd_path = ['datamart', 'silver',  'job_description']
+    elif type == "inference":    
+        jd_path = ['datamart', 'silver', 'online',  'job_description']
+
     jd_id = get_folder_id_by_path(service, jd_path, parent_root)
     print("\nJob description folder ID:", jd_id)
 
@@ -244,7 +249,7 @@ def data_processing_silver_jd(snapshot_date : datetime, type, spark: SparkSessio
     if type == "training":
         output_path = os.path.join("datamart", "silver", "job_descriptions", filename)
     elif type == "inference":
-        output_path = os.path.join("datamart", "online", "silver", "job_descriptions", filename)
+        output_path = os.path.join("datamart", "silver", "online", "job_descriptions", filename)
     df.write.mode("overwrite").parquet(output_path)
 
     #     # uploading to s3
@@ -262,8 +267,11 @@ def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSe
     service = connect_to_gdrive()
         
     parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
-        
-    jd_path = ['datamart', 'silver',  'label']
+    if type == "training":    
+        jd_path = ['datamart', 'silver',  'label']
+    elif type == "inference":    
+        jd_path = ['datamart', 'silver', 'online',  'label']    
+
     label_id = get_folder_id_by_path(service, jd_path, parent_root)
     print("\nLabel folder ID:", label_id)
 
@@ -281,7 +289,7 @@ def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSe
     if type == "training":
         output_path = os.path.join("datamart", "silver", "labels", filename)
     elif type == "inference":
-        output_path = os.path.join("datamart", "online","silver", "labels", filename)
+        output_path = os.path.join("datamart","silver", "online", "labels", filename)
     df.write.mode("overwrite").parquet(output_path)
 
     # uploading to s3
@@ -300,8 +308,11 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
     service = connect_to_gdrive()
         
     parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
-                
-    combine_path = ['datamart', 'silver',  'combined_resume_jd']
+    if type == "training":    
+        combine_path = ['datamart', 'silver', 'combined_resume_jd']
+    elif type == "inference":    
+        combine_path = ['datamart', 'silver', 'online', 'combined_resume_jd']             
+
     combined_id = get_folder_id_by_path(service, combine_path, parent_root)
     print("\nCombined folder ID:", combined_id)
 

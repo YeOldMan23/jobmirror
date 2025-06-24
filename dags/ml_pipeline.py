@@ -6,33 +6,34 @@ from airflow.models import Variable, XCom
 from airflow.hooks.base import BaseHook
 
 # included a dummy reference
-from src.monitoring import monitoring
+# from src.monitoring import monitoring
 
 from datetime import datetime, timedelta
 
-# this is assuming an auto training. else we automatically set whether to train or not. 
 try:
     Variable.get("processing_type")
 except:
     Variable.set("processing_type", "inference")
 
-def check_monitoring_results(**context):
-    """
-    Check monitoring results and set processing type
-    Returns 'training' if issues detected, otherwise 'inference' to put in BashOperator
-    """
-    # Get monitoring results from XCom
-    ti = context['ti']
-    model1_issues = ti.xcom_pull(task_ids='model_monitor_start', key='fail')
+# # this is assuming an auto training. else we automatically set whether to train or not. 
+
+# def check_monitoring_results(**context):
+#     """
+#     Check monitoring results and set processing type
+#     Returns 'training' if issues detected, otherwise 'inference' to put in BashOperator
+#     """
+#     # Get monitoring results from XCom
+#     ti = context['ti']
+#     model1_issues = ti.xcom_pull(task_ids='model_monitor_start', key='fail')
     
-    # Determine type based on monitoring results
-    processing_type = "training" if model1_issues else "inference"
+#     # Determine type based on monitoring results
+#     processing_type = "training" if model1_issues else "inference"
     
-    # Set the Variable for other tasks to use
-    Variable.set("processing_type", processing_type)
+#     # Set the Variable for other tasks to use
+#     Variable.set("processing_type", processing_type)
     
-    print(f"Setting processing type to: {processing_type}")
-    return processing_type
+#     print(f"Setting processing type to: {processing_type}")
+#     return processing_type
 
 default_args = {
     'owner': 'airflow',
@@ -42,7 +43,7 @@ default_args = {
 }
 
 dag =  DAG(
-    'training_dag',
+    'ml_pipeline',
     default_args=default_args,
     params={
         "bronze_start": 0,
@@ -166,6 +167,7 @@ train_xgb = BashOperator(
 promote = BashOperator(
     task_id='promote_best_model',
     bash_command='python /opt/model_train/promote_best.py',
+    trigger_rule='one_success',
     dag=dag
 )
 
@@ -176,43 +178,41 @@ deploy = BashOperator(
 )
 
 # --- model monitoring ---
-model_monitor_start = PythonOperator(
-    task_id="model_monitor_start",
-    python_callable=monitoring,
-    dag=dag)
+model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
+# model_monitor_start = PythonOperator(
+#     task_id="model_monitor_start",
+#     python_callable=monitoring,
+#     dag=dag)
 
 # assuming we push the xcom keys as 'fail' it will set --type as training
-model_1_monitor = PythonOperator(
-    task_id="model_1_monitor",
-    python_callable=check_monitoring_results,
-    dag=dag)
+# model_1_monitor = PythonOperator(
+#     task_id="model_1_monitor",
+#     python_callable=check_monitoring_results,
+#     dag=dag)
 
 model_monitor_completed = DummyOperator(task_id="model_monitor_completed",dag=dag)
+model_1_monitor = DummyOperator(task_id="model_1_monitor", dag=dag)
 
 # Define task dependencies to run scripts sequentially
 # model_inference_completed >> model_monitor_start
-model_monitor_start >> model_1_monitor >> model_monitor_completed
-
-model_monitor_completed >> bronze_store
 bronze_store >> [silver_resume_store, silver_jd_store, silver_label_store] >> silver_combined
 silver_combined >> [gold_feature_store, gold_label_store]
+[gold_feature_store, gold_label_store] >> train_logreg >> promote >> deploy
+[gold_feature_store, gold_label_store] >> train_xgb >> promote >> deploy
+model_monitor_start >> model_1_monitor >> model_monitor_completed >> bronze_store
 
-[gold_feature_store, gold_label_store] >> [train_logreg, train_xgb] >> promote >> deploy
-
-# Define task dependencies to run scripts sequentially
 
 # --- model auto training ---
+# model_automl_start = DummyOperator(task_id="model_automl_start", dag=dag)
 
-model_automl_start = DummyOperator(task_id="model_automl_start", dag=dag)
+# model_1_automl = DummyOperator(task_id="model_1_automl", dag=dag)
 
-model_1_automl = DummyOperator(task_id="model_1_automl", dag=dag)
+# model_2_automl = DummyOperator(task_id="model_2_automl", dag=dag)
 
-model_2_automl = DummyOperator(task_id="model_2_automl", dag=dag)
-
-model_automl_completed = DummyOperator(task_id="model_automl_completed", dag=dag)
+# model_automl_completed = DummyOperator(task_id="model_automl_completed", dag=dag)
 
 # Define task dependencies to run scripts sequentially
 # feature_store_completed >> model_automl_start
 # label_store_completed >> model_automl_start
-model_automl_start >> model_1_automl >> model_automl_completed
-model_automl_start >> model_2_automl >> model_automl_completed
+# model_automl_start >> model_1_automl >> model_automl_completed
+# model_automl_start >> model_2_automl >> model_automl_completed

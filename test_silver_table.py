@@ -15,7 +15,7 @@ if __name__ == "__main__":
     spark = get_pyspark_session()    
     
     # Datamart dir
-    datamart_dir = os.path.join(os.getcwd(), "datamart")
+    # datamart_dir = os.path.join(os.getcwd(), "datamart/")
 
     # Get the range of dates
     date_range = get_snapshot_dates(datetime(2022, 6, 1), datetime(2022, 12, 1))
