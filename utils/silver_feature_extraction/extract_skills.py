@@ -22,7 +22,7 @@ nlp = spacy.load("en_core_web_sm")
 
 def read_hard_skills_list(spark):
     # sync_gdrive_db_to_local()
-    # df_hard_skills_keywords = read_parquet_from_s3(spark, "datamart/references/Technology_Skills.parquet")
+    
     df_hard_skills_keywords = spark.read.option("header", "true").parquet("datamart/references/Technology_Skills.parquet")
     return df_hard_skills_keywords
 

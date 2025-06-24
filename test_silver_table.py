@@ -10,9 +10,8 @@ from utils.gdrive_utils import get_folder_id_by_path, connect_to_gdrive
 
 
 if __name__ == "__main__":
-
     # Get the pyspark session
-    spark = get_pyspark_session()    
+    spark = get_pyspark_session()
     
     # Datamart dir
     # datamart_dir = os.path.join(os.getcwd(), "datamart/")
@@ -22,7 +21,8 @@ if __name__ == "__main__":
     print(date_range)
     # For each range, read the silver table and parse
     for cur_date in date_range:
-        snapshot_date = f"{cur_date.year}-{cur_date.month:02d}"
+        snapshot_date = f"{cur_date.year}-{cur_date.month}"
+
         print("Processing silver {}".format(snapshot_date))
         data_processing_silver_resume(cur_date, "inference", spark)
         data_processing_silver_jd(cur_date, "inference", spark)

@@ -15,10 +15,11 @@ if __name__ == "__main__":
     parser.add_argument('--start', type=int, required=True, help='Start index')
     parser.add_argument('--end', type=int, required=True, help='End index')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for bronze table processing')
-    args = parser.parse_args('--type', type=int, default=1, help='Inference or training')
+    args = parser.parse_args()
 
     load_dotenv()
     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
     spark = get_pyspark_session()
 
     # Get the range of dates

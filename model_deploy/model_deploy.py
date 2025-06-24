@@ -13,7 +13,3 @@ for mv in client.search_model_versions(f"name='{MODEL_NAME}'"):
         break
 
 model = mlflow.sklearn.load_model(model_deploy.source)
-
-
-####### Load data #######
-

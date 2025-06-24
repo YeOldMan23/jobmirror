@@ -134,4 +134,19 @@ if __name__ == "__main__":
         data_processing_gold_features(args.snapshotdate, args.type, spark)
     elif args.store == "label":
         data_processing_gold_labels(args.snapshotdate, args.type, spark)
+<<<<<<< HEAD
     
+=======
+    
+    # # Datamart dir
+    # datamart_dir = os.path.join(os.getcwd(), "datamart")
+
+    # # Get the range of dates
+    # date_range = get_snapshot_dates(datetime(2021, 6, 1), datetime(2021, 7, 31))
+
+    # # For each range, read the silver table and parse
+    # for cur_date in date_range:
+    #     snapshot_date = f"{cur_date.year}-{cur_date.month}"
+    #     print("Processing gold {}".format(snapshot_date))
+    #     data_processing_gold_features(cur_date, spark)
+>>>>>>> 0d24345d18675f64212ff1270ff443d876e08feb

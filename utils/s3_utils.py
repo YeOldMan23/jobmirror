@@ -2,7 +2,6 @@
 import boto3
 import os
 from .config import AWSConfig
-from pyspark.sql import SparkSession
 
 def get_s3_client():
     """Create S3 client using environment variables"""
@@ -45,15 +44,15 @@ def upload_to_s3(local_path: str, s3_key: str):
         print(f"Error uploading: {e}")
         raise
 
-def read_parquet_from_s3(spark: SparkSession, key: str):
-    """Read Parquet directly from S3 using Spark's S3A connector."""
-    config = AWSConfig()
-    s3_path = f"s3a://{config.bucket_name}/{key}" 
+def read_s3_data(bucket: str, key: str):
+    """Read data from S3 bucket"""
+    s3_client = get_s3_client()
     
     try:
-        return spark.read.parquet(s3_path)
+        response = s3_client.get_object(Bucket=bucket, Key=key)
+        return response['Body'].read()
     except Exception as e:
-        print(f"Error reading Parquet from S3: {e}")
+        print(f"Error reading from S3: {e}")
         return None
     
 def list_s3_folders(bucket, prefix):
