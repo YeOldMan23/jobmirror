@@ -7,6 +7,7 @@ default_args = {
     'depends_on_past': False,
     'retries': 1, # retry once evry 5 minutes
     'retry_delay': timedelta(minutes=5),
+    
 }
 
 with DAG(
@@ -17,6 +18,7 @@ with DAG(
     start_date=datetime(2021, 8, 1), 
     end_date=datetime(2021, 11, 1),
     catchup=True,
+    tags=['training']
 ) as dag:
 
     train_xgb = BashOperator(

@@ -20,6 +20,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
 from pyspark.sql.types import FloatType, StructType, StructField, StringType, ArrayType, BooleanType, IntegerType
 from utils.mongodb_utils import get_pyspark_session
+from dotenv import load_dotenv
 
 import os
 # import shutil
@@ -30,6 +31,7 @@ import uuid
 import torch
 from datetime import datetime
 
+# load_dotenv()
 ###################################################
 # Gold Table Aggregations for Experience
 ###################################################
@@ -351,6 +353,9 @@ if __name__ == "__main__":
 
     # Get the pyspark session
     spark = get_pyspark_session()
+
+    # load_dotenv("/opt/airflow/.env")
+    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
     # Setup argparse to parse command-line arguments
     parser = argparse.ArgumentParser(description="run job")

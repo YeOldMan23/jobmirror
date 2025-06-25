@@ -8,6 +8,7 @@ from pyspark.sql.types import FloatType, StructType, StructField, StringType, Ar
 import os
 import argparse
 from datetime import datetime
+from dotenv import load_dotenv
 from utils.mongodb_utils import get_pyspark_session
 from utils.date_utils import get_snapshot_dates
 
@@ -19,6 +20,7 @@ from utils.gold_feature_extraction.feature_match import match_employment_type, m
 from utils.gold_feature_extraction.process_label_data import process_labels
 from utils.gold_feature_extraction.extract_edu import extract_education_features
 from utils.gold_feature_extraction.match_experience import process_gold_experience
+
 
 def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkSession, type):
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
@@ -119,6 +121,9 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
 
 if __name__ == "__main__":
     
+    load_dotenv("/opt/airflow/.env")
+    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
     # Get the pyspark session
     spark = get_pyspark_session()
     
@@ -134,19 +139,4 @@ if __name__ == "__main__":
         data_processing_gold_features(args.snapshotdate, args.type, spark)
     elif args.store == "label":
         data_processing_gold_labels(args.snapshotdate, args.type, spark)
-<<<<<<< HEAD
     
-=======
-    
-    # # Datamart dir
-    # datamart_dir = os.path.join(os.getcwd(), "datamart")
-
-    # # Get the range of dates
-    # date_range = get_snapshot_dates(datetime(2021, 6, 1), datetime(2021, 7, 31))
-
-    # # For each range, read the silver table and parse
-    # for cur_date in date_range:
-    #     snapshot_date = f"{cur_date.year}-{cur_date.month}"
-    #     print("Processing gold {}".format(snapshot_date))
-    #     data_processing_gold_features(cur_date, spark)
->>>>>>> 0d24345d18675f64212ff1270ff443d876e08feb

@@ -7,9 +7,10 @@
 #       - "8080:8888"
 #     volumes:
 #       - .:/app
+#       # - ./utils:/app/utils
 #     environment:
 #       - JUPYTER_ENABLE_LAB=yes
-#       - CUDA_LAUNCH_BLOCKING=1 # Keep this for debugging CUDA errors
+#       # - CUDA_LAUNCH_BLOCKING=1 # Keep this for debugging CUDA errors
 #     # deploy: # <--- ADD THIS SECTION
 #     #   resources:
 #     #     reservations:
@@ -44,6 +45,7 @@ services:
       - ./model_train:/opt/airflow/model_train
       - ./model_deploy:/opt/airflow/model_deploy
       - ./utils:/opt/airflow/utils
+      # - ./.env:/opt/airflow/.env
     entrypoint: >
       /bin/bash -c "airflow db init &&
       airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true"
@@ -58,6 +60,8 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    # env_file:
+    #   - .env 
     volumes:
       - airflow_data:/opt/airflow
       - ./dags:/opt/airflow/dags
@@ -66,6 +70,7 @@ services:
       - ./scripts:/opt/airflow/scripts
       - ./utils:/opt/airflow/utils
       - ./static:/opt/airflow/static
+      # - ./.env:/opt/airflow/.env
     ports:
       - "8080:8080"
     healthcheck:
@@ -85,6 +90,8 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    # env_file:
+    #   - .env 
     volumes:
       - airflow_data:/opt/airflow
       - ./dags:/opt/airflow/dags

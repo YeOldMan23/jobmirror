@@ -1,5 +1,9 @@
 import pandas as pd
 import os
+import sys
+# Ensure /opt/airflow/utils is in sys.path
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
@@ -263,7 +267,6 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
     resume_parser = PydanticOutputParser(pydantic_object=Resume)
     jd_parser = PydanticOutputParser(pydantic_object=JD)
 
-
     ###############
     # Parse every row in df
     ###############
@@ -392,19 +395,18 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
 
     print(f"============ END PROCESS BRONZE TABLE =============")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process data.")
-    parser.add_argument('--start', type=int, required=True, help='Start index')
-    parser.add_argument('--end', type=int, required=True, help='End index')
-    parser.add_argument('--batch_size', type=int, default=1, help='Batch size for bronze table processing')
-    parser.add_argument('--type', type=str, default='training', help='Inference or training')
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description="Process data.")
+#     parser.add_argument('--start', type=int, required=True, help='Start index')
+#     parser.add_argument('--end', type=int, required=True, help='End index')
+#     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for bronze table processing')
+#     parser.add_argument('--type', type=str, default='training', help='Inference or training')
     
-    args = parser.parse_args()  # Fixed - removed the extra argument definition
+#     args = parser.parse_args()  # Fixed - removed the extra argument definition
 
-    load_dotenv()
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-    spark = get_pyspark_session()
-
-    # Get the range of dates
-    process_bronze_table(spark, args.start, args.end, args.batch_size, args.type) 
+#     load_dotenv("/opt/airflow/.env")
+#     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+#     spark = get_pyspark_session()
+#     # Get the range of dates
+#     process_bronze_table(spark, args.start, args.end, args.batch_size, args.type) 
 

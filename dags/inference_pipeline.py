@@ -43,19 +43,19 @@ default_args = {
 }
 
 dag =  DAG(
-    'ml_pipeline',
+    'ml-pipeline',
     default_args=default_args,
     params={
         "bronze_start": 0,
-        "bronze_end": 100,
+        "bronze_end": 2,
     },
     description='data pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
-    start_date=datetime(2021, 9, 1), 
-    end_date=datetime(2021, 12, 1),
-    catchup=True,
+    start_date=datetime(2022, 9, 1), 
+    # end_date=datetime(2021, 12, 1),
+    catchup=False,
     max_active_runs=1,
-    tags=['training']
+    tags=['inference']
 )
 
 ###########################
@@ -152,9 +152,10 @@ gold_label_store = BashOperator(
 )
 
 # model inferencing
-inference = BashOperator(
+model_inference_start = DummyOperator(task_id="model_inference_start", dag=dag)
+inference_task = BashOperator(
     task_id='make_predictions',
-    bash_command = 'python /opt/model_deploy/load_model/py',
+    bash_command = 'python /opt/model_deploy/load_model.py',
     dag=dag
 )
 
@@ -186,10 +187,10 @@ inference = BashOperator(
 
 # --- model monitoring ---
 model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
-# model_monitor_start = PythonOperator(
-#     task_id="model_monitor_start",
-#     python_callable=monitoring,
-#     dag=dag)
+model_monitor_start = PythonOperator(
+    task_id="model_monitor_start",
+    python_callable=model_monitoring,
+    dag=dag)
 
 # assuming we push the xcom keys as 'fail' it will set --type as training
 # model_1_monitor = PythonOperator(
@@ -198,14 +199,17 @@ model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
 #     dag=dag)
 
 model_monitor_completed = DummyOperator(task_id="model_monitor_completed",dag=dag)
-model_1_monitor = DummyOperator(task_id="model_1_monitor", dag=dag)
+model_monitor = BashOperator(task_id="model_monitoring",
+                               bash_command = 'python /opt/utils/model_monitoring.py',
+                               dag=dag)
 
 # Define task dependencies to run scripts sequentially
 # model_inference_completed >> model_monitor_start
 bronze_store >> [silver_resume_store, silver_jd_store, silver_label_store] >> silver_combined
 silver_combined >> [gold_feature_store, gold_label_store]
-[gold_feature_store, gold_label_store] >> inference >> model_monitor_start
-model_monitor_start >> model_1_monitor >> model_monitor_completed >> bronze_store
+[gold_feature_store, gold_label_store] >> model_inference_start
+model_inference_start >> inference_task >> model_monitor_start
+model_monitor_start >> model_monitor >> model_monitor_completed
 
 
 # --- model auto training ---
