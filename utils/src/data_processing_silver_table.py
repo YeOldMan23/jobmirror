@@ -30,6 +30,7 @@ import uuid
 
 import torch
 from datetime import datetime
+from typing import Optional
 
 # load_dotenv()
 ###################################################
@@ -110,8 +111,14 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     print("\nResume folder ID:", resume_id)
     
     # Read into pyspark dataframe
-    df = read_bronze_resume_as_pyspark(snapshot_date, spark)
+    
+    df = read_bronze_resume_as_pyspark(snapshot_date, spark, type)
 
+    # if using S3
+    # filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
+    # s3_key = f"datamart/online/bronze/resume/{filename}"
+    # df = read_parquet_from_s3(spark,s3_key) 
+    
     # Add skills columns
     df = create_hard_skills_column(df, spark, og_column="hard_skills")
     df = create_soft_skills_column(df, spark, og_column="soft_skills")
@@ -121,6 +128,17 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     edu_levels = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_level_synonyms.parquet")).collect())
     edu_fields = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "education_field_synonyms.parquet")).collect())
     cert_categories = spark.sparkContext.broadcast(spark.read.parquet(os.path.join(education_ref_dir, "certification_categories.parquet")).collect())
+
+    # Change to S3 reads if using S3:
+    # edu_levels = spark.sparkContext.broadcast(
+    #     read_parquet_from_s3(spark, "datamart/references/education_level_synonyms.parquet").collect()
+    # )
+    # edu_fields = spark.sparkContext.broadcast(
+    #     read_parquet_from_s3(spark, "datamart/references/education_field_synonyms.parquet").collect()
+    # )
+    # cert_categories = spark.sparkContext.broadcast(
+    #     read_parquet_from_s3(spark, "datamart/references/certification_categories.parquet").collect()
+    # )
 
     _edu_udf = parse_education_udf_factory()
     df = (
@@ -151,7 +169,21 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
         .drop("location_preference") \
         .withColumnRenamed("location_preference_cleaned", "location_preference")
 
+    # if type == "training": 
+    #     # Save table as parquet
+    #     filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    #     output_path = os.path.join("datamart", "silver", "online","resumes", filename)
+    #     df.write.mode("overwrite").parquet(output_path)
+        
+    #     # uploading to s3
+    #     s3_key = f"datamart/silver/resume/{filename}"
+    #     upload_to_s3(output_path, s3_key)
+        
+    # elif type == "inference":
+    #     print(df)
+    #     return df
     # Save table as parquet
+
     filename = str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
     if type == "training":
         output_path = os.path.join("datamart","silver", "resumes", filename)
@@ -261,7 +293,7 @@ def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSe
     print("\nLabel folder ID:", label_id)
 
     # Read into pyspark dataframe
-    df = read_bronze_labels_as_pyspark(snapshot_date, spark)
+    df = read_bronze_labels_as_pyspark(snapshot_date, spark, type)
 
     # Group labels together
     df = standardize_label(df, "fit") \
@@ -283,6 +315,8 @@ def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSe
     upload_file_to_drive(service, output_path, label_id)
 
     print(f"Saved Silver Labels : {selected_date} No. Rows : {df.count()}")
+
+    upload_file_to_drive(service, output_path, label_id)
     
 def data_processing_silver_combined(snapshot_date: datetime, type, spark : SparkSession) -> None:
     """
@@ -325,16 +359,16 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
     jd_df = jd_df.withColumnRenamed("hard_skills_general", "jd_hard_skills_general") \
             .withColumnRenamed("hard_skills_specific", "jd_hard_skills_specific") \
             .withColumnRenamed("soft_skills", "jd_soft_skills")
-
+    
     # Combine the parquets together
     labels_jd = labels_df.join(jd_df, on="job_id", how="inner")
-    labels_jd_resume = labels_jd.join(resume_df, on="resume_id", how="inner")
+    combined_jd_resume = labels_jd.join(resume_df, on="resume_id", how="inner")
 
     """
     DO UDFS HERE
     """
     # Get the experience similarity score 
-    labels_jd_resume = labels_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(labels_jd_resume['role_title'], labels_jd_resume['experience']))
+    combined_jd_resume = combined_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(combined_jd_resume['role_title'], combined_jd_resume['experience']))
 
     # Save the parquet
     filename    = selected_date + str(uuid.uuid4())[:8] + ".parquet"
