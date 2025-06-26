@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.dummy import DummyOperator
 from datetime import datetime, timedelta
 
 default_args = {
@@ -20,6 +21,8 @@ with DAG(
     catchup=True,
     tags=['training']
 ) as dag:
+    
+    get_gold_features = DummyOperator(task_id="fetch_processed_features_for_training", dag=dag)
 
     train_xgb = BashOperator(
         task_id='train_xgboost_classifier',

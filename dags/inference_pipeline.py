@@ -69,6 +69,7 @@ dag =  DAG(
 # Retrieves processed gold features
 
 ###### Gold Tables ######
+get_gold_features = DummyOperator(task_id="fetch_processed_features_for_training", dag=dag)
 gold_feature_store = BashOperator(
     task_id='run_gold_feature_store',
     bash_command=(
@@ -119,8 +120,7 @@ model_monitor = BashOperator(task_id="model_monitoring",
 
 # Define task dependencies to run scripts sequentially
 # model_inference_completed >> model_monitor_start
-bronze_store >> [silver_resume_store, silver_jd_store, silver_label_store] >> silver_combined
-silver_combined >> [gold_feature_store, gold_label_store]
+get_gold_features >> [gold_feature_store, gold_label_store]
 [gold_feature_store, gold_label_store] >> model_inference_start
 model_inference_start >> inference_task >> model_monitor_start
 model_monitor_start >> model_monitor >> model_monitor_completed
