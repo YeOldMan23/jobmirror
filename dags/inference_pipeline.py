@@ -71,7 +71,7 @@ bronze_store = BashOperator(
     task_id='run_bronze_feature_and_label_store',
     bash_command=(
         'cd /opt/airflow/utils && '
-        'python3 src/data_processing_bronze_table.py '
+        'python3 data_processing_bronze_table.py '
         '--start {{ params.bronze_start }} '
         '--end {{ params.bronze_end }} '
         '--batch_size 10 '
@@ -85,8 +85,8 @@ bronze_store = BashOperator(
 silver_label_store = BashOperator(
     task_id='run_silver_label_store',
     bash_command='cd /opt/airflow/utils && '
-    'python3 src/data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "2022-09-01" '
     '--task data_processing_silver_labels '
     '--type {{ var.value.processing_type }}',
     dag=dag
@@ -98,8 +98,8 @@ silver_label_store = BashOperator(
 silver_resume_store = BashOperator(
     task_id='run_silver_resume_store',
     bash_command='cd /opt/airflow/utils && '
-    'python3 src/data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "2022-09-01" '
     '--task data_processing_silver_resume '
     '--type {{ var.value.processing_type }}',
     dag=dag
@@ -109,8 +109,8 @@ silver_resume_store = BashOperator(
 silver_jd_store = BashOperator(
     task_id='run_silver_jd_store',
     bash_command='cd /opt/airflow/utils && '
-    'python3 src/data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "2022-09-01" '
     '--task data_processing_silver_jd '
     '--type {{ var.value.processing_type }}',
     dag=dag
@@ -120,8 +120,8 @@ silver_jd_store = BashOperator(
 silver_combined = BashOperator(
     task_id='run_silver_combined',
     bash_command='cd /opt/airflow/utils && '
-    'python3 src/data_processing_silver_table.py '
-    '--snapshotdate "{{ ds }}" '
+    'python3 data_processing_silver_table.py '
+    '--snapshotdate "2022-09-01" '
     '--task data_processing_silver_combined '
     '--type {{ var.value.processing_type }}',
     dag=dag
@@ -132,8 +132,8 @@ gold_feature_store = BashOperator(
     task_id='run_gold_feature_store',
     bash_command=(
         'cd /opt/airflow/utils && '
-        'python3 src/data_processing_gold_table.py '
-        '--snapshotdate "{{ ds }}" '
+        'python3 data_processing_gold_table.py '
+        '--snapshotdate "2022-09-01" '
         '--type {{ var.value.processing_type }} '
         '--store feature '
     ),
@@ -143,8 +143,8 @@ gold_label_store = BashOperator(
     task_id='run_gold_label_store',
     bash_command=(
         'cd /opt/airflow/utils && '
-        'python3 src/data_processing_gold_table.py '
-        '--snapshotdate "{{ ds }}" '
+        'python3 data_processing_gold_table.py '
+        '--snapshotdate "2022-09-01" '
         '--type {{ var.value.processing_type }} '
         '--store label '
     ),
@@ -187,10 +187,10 @@ inference_task = BashOperator(
 
 # --- model monitoring ---
 model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
-model_monitor_start = PythonOperator(
-    task_id="model_monitor_start",
-    python_callable=model_monitoring,
-    dag=dag)
+# model_monitor_start = PythonOperator(
+#     task_id="model_monitor_start",
+#     python_callable=model_monitoring,
+#     dag=dag)
 
 # assuming we push the xcom keys as 'fail' it will set --type as training
 # model_1_monitor = PythonOperator(

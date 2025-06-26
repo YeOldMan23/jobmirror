@@ -15,8 +15,8 @@ import re
 import time
 import argparse
 
-from utils.resume_schema import Resume
-from utils.jd_schema import JD
+from resume_schema import Resume
+from jd_schema import JD
 from pydantic import BaseModel, Field
 from typing import List, Optional, get_origin, get_args, Union
 
@@ -24,10 +24,10 @@ from langchain.output_parsers import PydanticOutputParser
 from mistralai import Mistral
 
 from pyspark.sql.types import ArrayType, StringType, IntegerType, FloatType, BooleanType, TimestampType, StructField, StructType
-from utils.mongodb_utils import get_collection, exists_in_collection
-from utils.mongodb_utils import get_pyspark_session
+from mongodb_utils import get_collection, exists_in_collection
+from mongodb_utils import get_pyspark_session
 # from utils.s3_utils import upload_to_s3
-from utils.date_utils import *
+from date_utils import *
 
 ###############
 # SOURCE
@@ -241,15 +241,23 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
     # Retrieve data from source
     ###############
     if type == "training":
-        df = retrieve_data_from_source()
+        # df = retrieve_data_from_source()
         resume_collection = get_collection("jobmirror_db", "bronze_resumes")
         label_collection = get_collection("jobmirror_db", "bronze_labels")
         jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
     elif type == "inference":
-        df = retrieve_inference_data()
+        # df = retrieve_inference_data()
         resume_collection = get_collection("jobmirror_db", "online_bronze_resumes")
         label_collection = get_collection("jobmirror_db", "online_bronze_labels")
         jd_collection = get_collection("jobmirror_db", "online_bronze_job_descriptions")
+
+    # Load documents as DataFrames
+    resumes = pd.DataFrame(list(resume_collection.find()))
+    labels = pd.DataFrame(list(label_collection.find()))
+    jds = pd.DataFrame(list(jd_collection.find()))
+
+    # Merge based on IDs
+    df = labels.merge(resumes, on="resume_id").merge(jds, on="job_id")
 
     df['resume_text'] = df['resume_text'].apply(clean_text)
     df['job_description_text'] = df['job_description_text'].apply(clean_text)

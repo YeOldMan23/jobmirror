@@ -24,12 +24,15 @@ services:
     image: busybox
     user: root
     command: >
-      sh -c "chown -R 50000:0 /opt/airflow && chown -R 50000:0 /mlflow && chmod -R 2775 /mlflow"
+      sh -c "chown -R 50000:0 /opt/airflow && chown -R 50000:0 /opt/airflow/datamart && chown -R 50000:0 /mlflow && chmod -R 2775 /mlflow"
     volumes:
       - airflow_data:/opt/airflow
       - ./mlflow-data:/mlflow
+      - ./datamart:/opt/airflow/datamart
     restart: "no"
   airflow-init:
+    env_file:
+      - .env
     build:
       context: .              
       dockerfile: Dockerfile.Airflow
@@ -39,18 +42,23 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/app/utils
     volumes:
       - airflow_data:/opt/airflow
       - ./dags:/opt/airflow/dags
       - ./model_train:/opt/airflow/model_train
       - ./model_deploy:/opt/airflow/model_deploy
       - ./utils:/opt/airflow/utils
+      - ivy_cache:/root/.ivy2
+      - ./datamart:/opt/airflow/datamart
       # - ./.env:/opt/airflow/.env
     entrypoint: >
       /bin/bash -c "airflow db init &&
       airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true"
 
   airflow-webserver:
+    env_file:
+      - .env
     build:
       context: .              
       dockerfile: Dockerfile.Airflow
@@ -60,6 +68,9 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/app/utils
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     # env_file:
     #   - .env 
     volumes:
@@ -70,6 +81,8 @@ services:
       - ./scripts:/opt/airflow/scripts
       - ./utils:/opt/airflow/utils
       - ./static:/opt/airflow/static
+      - ivy_cache:/root/.ivy2
+      - ./datamart:/opt/airflow/datamart
       # - ./.env:/opt/airflow/.env
     ports:
       - "8080:8080"
@@ -81,6 +94,8 @@ services:
     command: webserver
 
   airflow-scheduler:
+    env_file:
+      - .env
     build:
       context: .              
       dockerfile: Dockerfile.Airflow
@@ -90,6 +105,7 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/app
     # env_file:
     #   - .env 
     volumes:
@@ -101,6 +117,8 @@ services:
       - ./utils:/opt/airflow/utils
       - ./static:/opt/airflow/static
       - ./mlflow-data:/mlflow
+      - ivy_cache:/root/.ivy2
+      - ./datamart:/opt/airflow/datamart
     command: scheduler
 
   mlflow:
@@ -119,4 +137,6 @@ services:
 
 volumes:
   airflow_data:
+  ivy_cache:
+
 

@@ -9,6 +9,7 @@ import os
 import argparse
 from datetime import datetime
 from dotenv import load_dotenv
+from pathlib import Path
 from utils.mongodb_utils import get_pyspark_session
 from utils.date_utils import get_snapshot_dates
 
@@ -22,13 +23,21 @@ from utils.gold_feature_extraction.extract_edu import extract_education_features
 from utils.gold_feature_extraction.match_experience import process_gold_experience
 
 
-def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkSession, type):
-    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+def read_silver_table(table_name: str, snapshot_date, spark, type: str):
+    # Define project root
+    project_root = Path("/opt/airflow")  # Adjust if needed
+
+    # Format the snapshot date
+    selected_date = f"{snapshot_date.year}-{snapshot_date.month:02}"
+
+    # Construct the full file path
     if type == "training":
-        table_dir  = os.path.join("datamart", "silver", table_name, f"{selected_date}.parquet")
+        table_path = project_root / "datamart/silver" / table_name / f"{selected_date}.parquet"
     elif type == "inference":
-        table_dir     = os.path.join("datamart", "silver", "online", table_name, f"{selected_date}.parquet")
-    return spark.read.parquet(table_dir)
+        table_path = project_root / "datamart/silver/online" / table_name / f"{selected_date}.parquet"
+
+    # Read and return the DataFrame
+    return spark.read.parquet(str(table_path))
 
 # For S3
 # def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkSession):
@@ -39,10 +48,10 @@ def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkS
 def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSession) -> None:
     
     # Connect to Google Drive
-    service = connect_to_gdrive()
-    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
-    directory_path = ['datamart', 'gold', 'feature_store']
-    directory_id = get_folder_id_by_path(service, directory_path, parent_root)
+    # service = connect_to_gdrive()
+    # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+    # directory_path = ['datamart', 'gold', 'feature_store']
+    # directory_id = get_folder_id_by_path(service, directory_path, parent_root)
     
     # Read silver table
     df = read_silver_table("combined_resume_jd", snapshot_date, spark, type)
@@ -79,13 +88,20 @@ def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSe
     # df_labels = df_labels.select("resume_id", "job_id", "snapshot_date", "fit_label")
     # Save the parquet 
     print("Saving Feature Store")
+
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     filename    = selected_date + ".parquet"
+    project_root = Path("/opt/airflow")
     if type == "training":
-        output_path = os.path.join("datamart", "gold", "feature_store", filename)
+        output_path = project_root / "datamart/gold/feature_store" / filename
     elif type == "inference":
-        output_path = os.path.join("datamart", "gold", "online", "feature_store", filename)
-    df.write.mode("overwrite").parquet(output_path)
+        output_path = project_root / "datamart/gold/online/feature_store" / filename
+
+    # Ensure parent directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Save DataFrame
+    df.write.mode("overwrite").parquet(str(output_path))
 
     # uploading to s3
     # s3_key = f"datamart/gold/feature_store/{filename}"
@@ -94,10 +110,10 @@ def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSe
 
 def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, type) -> None:
     # Connect to Google Drive
-    service = connect_to_gdrive()
-    parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
-    directory_path = ['datamart', 'gold', 'label_store']
-    directory_id = get_folder_id_by_path(service, directory_path, parent_root)
+    # service = connect_to_gdrive()
+    # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
+    # directory_path = ['datamart', 'gold', 'label_store']
+    # directory_id = get_folder_id_by_path(service, directory_path, parent_root)
 
     # Read silver table
     df = read_silver_table("combined_resume_jd", snapshot_date, spark, type)
@@ -108,16 +124,33 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
 
     # Save the label store
     print("Saving Label Store")
-    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
-    filename    = selected_date + ".parquet"
+
+    project_root = Path("/opt/airflow")
+
+    # Format the date and filename
+    selected_date = f"{snapshot_date.year}-{snapshot_date.month:02}"
+    filename = f"{selected_date}.parquet"
+
+    # Build the full output path
     if type == "training":
-        output_path = os.path.join("datamart", "gold", "label_store", filename)
+        output_path = project_root / "datamart/gold/label_store" / filename
     elif type == "inference":
-        output_path = os.path.join("datamart", "gold", "online", "label_store", filename)
-    df_labels.write.mode("overwrite").parquet(output_path)
+        output_path = project_root / "datamart/gold/online/label_store" / filename
+
+    # Ensure the output directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    df_labels.write.mode("overwrite").parquet(str(output_path))
+
+    # selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    # filename    = selected_date + ".parquet"
+    # if type == "training":
+    #     output_path = os.path.join("datamart", "gold", "label_store", filename)
+    # elif type == "inference":
+    #     output_path = os.path.join("datamart", "gold", "online", "label_store", filename)
+    # df_labels.write.mode("overwrite").parquet(output_path)
 
     # Upload parquet to drive
-    upload_file_to_drive(service, output_path, directory_id)
+    # upload_file_to_drive(service, output_path, directory_id)
 
 if __name__ == "__main__":
     
