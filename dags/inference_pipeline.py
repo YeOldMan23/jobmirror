@@ -159,31 +159,6 @@ inference_task = BashOperator(
     dag=dag
 )
 
-## model training 
-# train_logreg = BashOperator(
-#     task_id='train_logistic_regression',
-#     bash_command='python /opt/model_train/train_logreg.py',
-#     dag=dag
-# )
-
-# train_xgb = BashOperator(
-#     task_id='train_xgboost_classifier',
-#     bash_command='python /opt/model_train/train_xgb.py',
-#     dag=dag
-# )
-
-# promote = BashOperator(
-#     task_id='promote_best_model',
-#     bash_command='python /opt/model_train/promote_best.py',
-#     trigger_rule='one_success',
-#     dag=dag
-# )
-
-# deploy = BashOperator(
-#     task_id='model_deploy',
-#     bash_command='python /opt/model_deploy/model_deploy.py',
-#     dag=dag
-# )
 
 # --- model monitoring ---
 model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
@@ -210,19 +185,3 @@ silver_combined >> [gold_feature_store, gold_label_store]
 [gold_feature_store, gold_label_store] >> model_inference_start
 model_inference_start >> inference_task >> model_monitor_start
 model_monitor_start >> model_monitor >> model_monitor_completed
-
-
-# --- model auto training ---
-# model_automl_start = DummyOperator(task_id="model_automl_start", dag=dag)
-
-# model_1_automl = DummyOperator(task_id="model_1_automl", dag=dag)
-
-# model_2_automl = DummyOperator(task_id="model_2_automl", dag=dag)
-
-# model_automl_completed = DummyOperator(task_id="model_automl_completed", dag=dag)
-
-# Define task dependencies to run scripts sequentially
-# feature_store_completed >> model_automl_start
-# label_store_completed >> model_automl_start
-# model_automl_start >> model_1_automl >> model_automl_completed
-# model_automl_start >> model_2_automl >> model_automl_completed
