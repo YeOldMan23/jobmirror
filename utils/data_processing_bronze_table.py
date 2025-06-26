@@ -240,16 +240,18 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
     ###############
     # Retrieve data from source
     ###############
-    if type == "training":
+    # if type == "training":
         # df = retrieve_data_from_source()
-        resume_collection = get_collection("jobmirror_db", "bronze_resumes")
-        label_collection = get_collection("jobmirror_db", "bronze_labels")
-        jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
-    elif type == "inference":
-        # df = retrieve_inference_data()
-        resume_collection = get_collection("jobmirror_db", "online_bronze_resumes")
-        label_collection = get_collection("jobmirror_db", "online_bronze_labels")
-        jd_collection = get_collection("jobmirror_db", "online_bronze_job_descriptions")
+        
+    resume_collection = get_collection("jobmirror_db", "bronze_resumes")
+    label_collection = get_collection("jobmirror_db", "bronze_labels")
+    jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
+
+    # elif type == "inference":
+    #     # df = retrieve_inference_data()
+    #     resume_collection = get_collection("jobmirror_db", "online_bronze_resumes")
+    #     label_collection = get_collection("jobmirror_db", "online_bronze_labels")
+    #     jd_collection = get_collection("jobmirror_db", "online_bronze_job_descriptions")
 
     # Load documents as DataFrames
     resumes = pd.DataFrame(list(resume_collection.find()))
@@ -283,9 +285,9 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
     parsed_jds = []
     parsed_labels = []
 
-    # resume_collection = get_collection("jobmirror_db", "bronze_resumes")
-    # label_collection = get_collection("jobmirror_db", "bronze_labels")
-    # jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
+    resume_collection = get_collection("jobmirror_db", "bronze_resumes")
+    label_collection = get_collection("jobmirror_db", "bronze_labels")
+    jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
 
     df_parted = df.iloc[partition_start:partition_end]
 
@@ -334,47 +336,47 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
                 resume_df = spark.createDataFrame(parsed_resumes, schema=pydantic_to_spark_schema(Resume))
                 jd_df = spark.createDataFrame(parsed_jds, schema=pydantic_to_spark_schema(JD))
                 label_df = spark.createDataFrame(parsed_labels, schema=label_schema)
-                if type == "training":
-                    resume_df.write.format("mongodb") \
-                        .mode("append") \
-                        .option("database", "jobmirror_db") \
-                        .option("collection", "bronze_resumes") \
-                        .save()
+                # if type == "training":
+                resume_df.write.format("mongodb") \
+                    .mode("append") \
+                    .option("database", "jobmirror_db") \
+                    .option("collection", "bronze_resumes") \
+                    .save()
 
-                    jd_df.write.format("mongodb") \
-                        .mode("append") \
-                        .option("database", "jobmirror_db") \
-                        .option("collection", "bronze_job_descriptions") \
-                        .save()
+                jd_df.write.format("mongodb") \
+                    .mode("append") \
+                    .option("database", "jobmirror_db") \
+                    .option("collection", "bronze_job_descriptions") \
+                    .save()
 
-                    label_df.write.format("mongodb") \
-                        .mode("append") \
-                        .option("database", "jobmirror_db") \
-                        .option("collection", "bronze_labels") \
-                        .save()
+                label_df.write.format("mongodb") \
+                    .mode("append") \
+                    .option("database", "jobmirror_db") \
+                    .option("collection", "bronze_labels") \
+                    .save()
 
-                    parsed_resumes.clear()
-                    parsed_jds.clear()
-                    parsed_labels.clear()
+                parsed_resumes.clear()
+                parsed_jds.clear()
+                parsed_labels.clear()
 
-                elif type == "inference":
-                    resume_df.write.format("mongodb") \
-                        .mode("append") \
-                        .option("database", "jobmirror_db") \
-                        .option("collection", "online_bronze_resumes") \
-                        .save()
+                # elif type == "inference":
+                #     resume_df.write.format("mongodb") \
+                #         .mode("append") \
+                #         .option("database", "jobmirror_db") \
+                #         .option("collection", "online_bronze_resumes") \
+                #         .save()
 
-                    jd_df.write.format("mongodb") \
-                        .mode("append") \
-                        .option("database", "jobmirror_db") \
-                        .option("collection", "online_bronze_job_descriptions") \
-                        .save()
+                #     jd_df.write.format("mongodb") \
+                #         .mode("append") \
+                #         .option("database", "jobmirror_db") \
+                #         .option("collection", "online_bronze_job_descriptions") \
+                #         .save()
 
-                    label_df.write.format("mongodb") \
-                        .mode("append") \
-                        .option("database", "jobmirror_db") \
-                        .option("collection", "online_bronze_labels") \
-                        .save()
+                #     label_df.write.format("mongodb") \
+                #         .mode("append") \
+                #         .option("database", "jobmirror_db") \
+                #         .option("collection", "online_bronze_labels") \
+                #         .save()
 
                     # # Get snapshot_date from the row data
                     # snapshot_date = row['snapshot_date']
@@ -388,10 +390,9 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size, type
                     #     df_to_write.write.mode("overwrite").parquet(output_path)
                     #     upload_to_s3(output_path, s3_key)
                     
-                    parsed_resumes.clear()
-                    parsed_jds.clear()
-                    parsed_labels.clear()
-                     
+                    # parsed_resumes.clear()
+                    # parsed_jds.clear()
+                    # parsed_labels.clear()                    
 
                 batch_idx = 0
 

@@ -88,7 +88,7 @@ def read_bronze_table_as_pandas(db_name, collection_name, query=None):
             d.pop("_id", None)
     return pd.DataFrame(data)
 
-def read_bronze_labels_as_pyspark(snapshot_date : datetime, type, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
+def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
     """
     Read labels as pyspark
     """
@@ -98,11 +98,10 @@ def read_bronze_labels_as_pyspark(snapshot_date : datetime, type, spark: SparkSe
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 
-    # Use double curly braces to escape for formatting strings
-    if type == "training":
-        collection_name = "bronze_labels"
-    elif type == "inference":
-        collection_name = "online_bronze_labels"
+    # if type == "training":
+    collection_name = "bronze_labels"
+    # elif type == "inference":
+    #     collection_name = "online_bronze_labels"
 
     df = read_bronze_table_as_pyspark("jobmirror_db", collection_name, spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
@@ -118,17 +117,17 @@ def read_bronze_labels_as_pyspark(snapshot_date : datetime, type, spark: SparkSe
 
     return df2
 
-def read_bronze_jd_as_pyspark(snapshot_date : datetime, type, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
+def read_bronze_jd_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
     """
     Draw the JD and read the data, parse to parquet
     """
 
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
-    if type == "training":
-        collection_name = "bronze_job_descriptions"
-    elif type == "inference":
-        collection_name = "online_bronze_job_descriptions"
+    # if type == "training":
+    collection_name = "bronze_job_descriptions"
+    # elif type == "inference":
+    #     collection_name = "online_bronze_job_descriptions"
 
     df = read_bronze_table_as_pyspark("jobmirror_db", collection_name, spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
@@ -148,17 +147,17 @@ def read_bronze_jd_as_pyspark(snapshot_date : datetime, type, spark: SparkSessio
     
     return df_selected
 
-def read_bronze_resume_as_pyspark(snapshot_date : datetime, type, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
+def read_bronze_resume_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> pyspark.sql.dataframe.DataFrame:
     """
     Draw the resume and read the data, parse to parquet
     """
 
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
-    if type == "training":
-        collection_name = "bronze_resumes"
-    elif type == "inference":
-        collection_name = "online_bronze_resumes"
+    # if type == "training":
+    collection_name = "bronze_resumes"
+    # elif type == "inference":
+    #     collection_name = "online_bronze_resumes"
 
     df = read_bronze_table_as_pyspark("jobmirror_db", collection_name, spark)
     # df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_resumes", spark)

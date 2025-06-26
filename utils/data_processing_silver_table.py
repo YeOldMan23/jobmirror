@@ -105,10 +105,11 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
     # s3_key = f"datamart/online/bronze/resume/{filename}"
     # df = read_s3_data('jobmirror-s3', s3_key, spark)
-    if type == "training":
-        filepath =  f"datamart/bronze/resume/{filename}"
-    elif type == "inference":
-        filepath = f"datamart/online/bronze/resume/{filename}"
+
+    # if type == "training":
+    filepath =  f"datamart/bronze/resume/{filename}"
+    # elif type == "inference":
+    #     filepath = f"datamart/online/bronze/resume/{filename}"
     
     df = read_bronze_resume_as_pyspark(snapshot_date, type, spark)
 
@@ -141,7 +142,6 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     edu_fields_path = education_ref_dir / "education_field_synonyms.parquet"
     cert_categories_path = education_ref_dir / "certification_categories.parquet"
 
-    # Broadcast them
     edu_levels = spark.sparkContext.broadcast(spark.read.parquet(str(edu_levels_path)).collect())
     edu_fields = spark.sparkContext.broadcast(spark.read.parquet(str(edu_fields_path)).collect())
     cert_categories = spark.sparkContext.broadcast(spark.read.parquet(str(cert_categories_path)).collect())
@@ -186,11 +186,9 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
 
     project_root = Path("/opt/airflow") 
     output_filename = f"{snapshot_date.year}-{snapshot_date.month}.parquet"
-    # Determine local output path based on type
-    if type == "training":
-        local_output_path = project_root / "datamart/silver/resumes" / output_filename
-    elif type == "inference":
-        local_output_path = project_root / "datamart/silver/online/resumes" / output_filename
+    local_output_path = project_root / "datamart/silver/resumes" / output_filename
+ 
+    # local_output_path = project_root / "datamart/silver/online/resumes" / output_filename
 
     # Ensure the output directory exists
     local_output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -201,14 +199,14 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     print(f"Saved Silver Resume to: {output_filename} No. Rows: {df.count()}")
 
 
-def data_processing_silver_jd(snapshot_date : datetime, type, spark: SparkSession):
+def data_processing_silver_jd(snapshot_date : datetime, spark: SparkSession):
     """
     Processes job descriptions from bronze layer to silver layer
     Output: saves into parquet
     """
 
     # Read into pyspark dataframe
-    df = read_bronze_jd_as_pyspark(snapshot_date, type, spark)
+    df = read_bronze_jd_as_pyspark(snapshot_date, spark)
 
     df = df.withColumnRenamed("certifications", "jd_certifications")
 
@@ -270,10 +268,8 @@ def data_processing_silver_jd(snapshot_date : datetime, type, spark: SparkSessio
 
     project_root = Path("/opt/airflow") 
     # Determine local output path
-    if type == "training":
-        local_output_path = project_root / "datamart/silver/job_descriptions" / filename
-    elif type == "inference":
-        local_output_path = project_root / "datamart/silver/online/job_descriptions" / filename
+    # if type == "training":
+    local_output_path = project_root / "datamart/silver/job_descriptions" / filename
 
     # Ensure the directory exists
     local_output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -284,7 +280,7 @@ def data_processing_silver_jd(snapshot_date : datetime, type, spark: SparkSessio
     print(f"Saved Silver JD to: {filename} No. Rows: {df.count()}")
 
 
-def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSession):
+def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession):
     """
     Processes labels from bronze layer to silver layer
     Output: saves into parquet
@@ -315,10 +311,10 @@ def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSe
     filename = f"{selected_date}.parquet"
 
     # Determine local output path
-    if type == "training":
-        local_output_path = project_root / "datamart/silver/labels" / filename
-    elif type == "inference":
-        local_output_path = project_root / "datamart/silver/online/labels" / filename
+    # if type == "training":
+    local_output_path = project_root / "datamart/silver/labels" / filename
+    # elif type == "inference":
+    #     local_output_path = project_root / "datamart/silver/online/labels" / filename
 
     # Ensure the output directory exists
     local_output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -328,17 +324,18 @@ def data_processing_silver_labels(snapshot_date : datetime, type, spark: SparkSe
 
     print(f"Saved Silver Labels to: {selected_date} No. Rows: {df.count()}")
     
-def data_processing_silver_combined(snapshot_date: datetime, type, spark : SparkSession) -> None:
+def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSession) -> None:
     """
     Merge the parquets together, get the dataframe for further processing
     """
 
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     filename = f"{selected_date}.parquet"
+
     # if type == "training":
-    #     jd_key = f"datamart/silver/job_descriptions/{selected_date}.parquet"
-    #     resume_key = f"datamart/silver/resumes/{selected_date}.parquet"
-    #     labels_key = f"datamart/silver/labels/{selected_date}.parquet"
+    jd_key = f"datamart/silver/job_descriptions/{selected_date}.parquet"
+    resume_key = f"datamart/silver/resumes/{selected_date}.parquet"
+    labels_key = f"datamart/silver/labels/{selected_date}.parquet"
     # elif type == "inference":
     #     jd_key = f"datamart/silver/online/job_descriptions/{selected_date}.parquet"
     #     resume_key = f"datamart/silver/online/resumes/{selected_date}.parquet"
@@ -352,14 +349,14 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
     project_root = Path("/opt/airflow")
 
     # Determine file paths based on type
-    if type == "training":
-        jd_path = project_root / "datamart/silver/job_descriptions" / filename
-        resume_path = project_root / "datamart/silver/resumes" / filename
-        labels_path = project_root / "datamart/silver/labels" / filename
-    elif type == "inference":
-        jd_path = project_root / "datamart/silver/online/job_descriptions" / filename
-        resume_path = project_root / "datamart/silver/online/resumes" / filename
-        labels_path = project_root / "datamart/silver/online/labels" / filename
+    # if type == "training":
+    jd_path = project_root / "datamart/silver/job_descriptions" / filename
+    resume_path = project_root / "datamart/silver/resumes" / filename
+    labels_path = project_root / "datamart/silver/labels" / filename
+    # elif type == "inference":
+    #     jd_path = project_root / "datamart/silver/online/job_descriptions" / filename
+    #     resume_path = project_root / "datamart/silver/online/resumes" / filename
+    #     labels_path = project_root / "datamart/silver/online/labels" / filename
 
     # Read from local file system
     jd_df = spark.read.parquet(str(jd_path))
@@ -394,10 +391,10 @@ def data_processing_silver_combined(snapshot_date: datetime, type, spark : Spark
     filename = f"{selected_date}{str(uuid.uuid4())[:8]}.parquet"
 
     # Determine local output path
-    if type == "training":
-        local_output_path = project_root / "datamart/silver/combined_jd_resume" / filename
-    elif type == "inference":
-        local_output_path = project_root / "datamart/silver/online/combined_jd_resume" / filename
+    # if type == "training":
+    local_output_path = project_root / "datamart/silver/combined_jd_resume" / filename
+    # elif type == "inference":
+    #     local_output_path = project_root / "datamart/silver/online/combined_jd_resume" / filename
 
     # Ensure the output directory exists
     local_output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -425,7 +422,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="run job")
     parser.add_argument("--snapshotdate", type=str, required=True, help="YYYY-MM-DD")
     parser.add_argument("--task", type=str, required=True, help="Which task to run")
-    parser.add_argument('--type', type=str, default='training', help='Inference or training')
+    # parser.add_argument('--type', type=str, default='training', help='Inference or training')
     
     args = parser.parse_args()
 

@@ -10,10 +10,10 @@ from airflow.hooks.base import BaseHook
 
 from datetime import datetime, timedelta
 
-try:
-    Variable.get("processing_type")
-except:
-    Variable.set("processing_type", "inference")
+# try:
+#     Variable.get("processing_type")
+# except:
+#     Variable.set("processing_type", "inference")
 
 # # this is assuming an auto training. else we automatically set whether to train or not. 
 
@@ -45,14 +45,14 @@ default_args = {
 dag =  DAG(
     'ml-pipeline',
     default_args=default_args,
-    params={
-        "bronze_start": 0,
-        "bronze_end": 2,
-    },
-    description='data pipeline run once a month',
+    # params={
+    #     "bronze_start": 0,
+    #     "bronze_end": 2,
+    # },
+    description='inference pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
     start_date=datetime(2022, 9, 1), 
-    # end_date=datetime(2021, 12, 1),
+    end_date=datetime(2022, 10, 1), 
     catchup=False,
     max_active_runs=1,
     tags=['inference']
@@ -66,66 +66,7 @@ dag =  DAG(
 
 ###### Bronze Table ######
 # Bronze tables processing includes label and features 
-# Retrieves data from huggingface, extract text using LLM and parse to MongoDB
-bronze_store = BashOperator(
-    task_id='run_bronze_feature_and_label_store',
-    bash_command=(
-        'cd /opt/airflow/utils && '
-        'python3 data_processing_bronze_table.py '
-        '--start {{ params.bronze_start }} '
-        '--end {{ params.bronze_end }} '
-        '--batch_size 10 '
-        '--type {{ var.value.processing_type }}'
-    ),
-    dag=dag
-)
-
-###### Silver Label Table ######   
-# silver_label_store = DummyOperator(task_id="silver_label_store")
-silver_label_store = BashOperator(
-    task_id='run_silver_label_store',
-    bash_command='cd /opt/airflow/utils && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "2022-09-01" '
-    '--task data_processing_silver_labels '
-    '--type {{ var.value.processing_type }}',
-    dag=dag
-)
-
-###### Silver Feature Tables ###### 
-# Processing for resume silver table
-# silver_table_1 = DummyOperator(task_id="silver_table_1")
-silver_resume_store = BashOperator(
-    task_id='run_silver_resume_store',
-    bash_command='cd /opt/airflow/utils && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "2022-09-01" '
-    '--task data_processing_silver_resume '
-    '--type {{ var.value.processing_type }}',
-    dag=dag
-)
-
-# Processing for jd silver table
-silver_jd_store = BashOperator(
-    task_id='run_silver_jd_store',
-    bash_command='cd /opt/airflow/utils && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "2022-09-01" '
-    '--task data_processing_silver_jd '
-    '--type {{ var.value.processing_type }}',
-    dag=dag
-)
-
-# Merge silver resume and silver JD tables into combined silver table
-silver_combined = BashOperator(
-    task_id='run_silver_combined',
-    bash_command='cd /opt/airflow/utils && '
-    'python3 data_processing_silver_table.py '
-    '--snapshotdate "2022-09-01" '
-    '--task data_processing_silver_combined '
-    '--type {{ var.value.processing_type }}',
-    dag=dag
-)
+# Retrieves processed gold features
 
 ###### Gold Tables ######
 gold_feature_store = BashOperator(
@@ -133,8 +74,7 @@ gold_feature_store = BashOperator(
     bash_command=(
         'cd /opt/airflow/utils && '
         'python3 data_processing_gold_table.py '
-        '--snapshotdate "2022-09-01" '
-        '--type {{ var.value.processing_type }} '
+        '--snapshotdate "{{ ds }}" '
         '--store feature '
     ),
     dag=dag
@@ -144,8 +84,7 @@ gold_label_store = BashOperator(
     bash_command=(
         'cd /opt/airflow/utils && '
         'python3 data_processing_gold_table.py '
-        '--snapshotdate "2022-09-01" '
-        '--type {{ var.value.processing_type }} '
+        '--snapshotdate "{{ ds }}" '
         '--store label '
     ),
     dag=dag

@@ -92,10 +92,10 @@ def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSe
     selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
     filename    = selected_date + ".parquet"
     project_root = Path("/opt/airflow")
-    if type == "training":
-        output_path = project_root / "datamart/gold/feature_store" / filename
-    elif type == "inference":
-        output_path = project_root / "datamart/gold/online/feature_store" / filename
+    # if type == "training":
+    output_path = project_root / "datamart/gold/feature_store" / filename
+    # elif type == "inference":
+    #     output_path = project_root / "datamart/gold/online/feature_store" / filename
 
     # Ensure parent directory exists
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -109,6 +109,7 @@ def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSe
     print(f"Saved Gold Features : {selected_date} No. Rows : {df.count()}")
 
 def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, type) -> None:
+
     # Connect to Google Drive
     # service = connect_to_gdrive()
     # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
@@ -132,10 +133,10 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
     filename = f"{selected_date}.parquet"
 
     # Build the full output path
-    if type == "training":
-        output_path = project_root / "datamart/gold/label_store" / filename
-    elif type == "inference":
-        output_path = project_root / "datamart/gold/online/label_store" / filename
+
+    output_path = project_root / "datamart/gold/label_store" / filename
+    # elif type == "inference":
+    #     output_path = project_root / "datamart/gold/online/label_store" / filename
 
     # Ensure the output directory exists
     output_path.parent.mkdir(parents=True, exist_ok=True)
