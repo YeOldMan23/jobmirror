@@ -31,10 +31,7 @@ def read_silver_table(table_name: str, snapshot_date, spark, type: str):
     selected_date = f"{snapshot_date.year}-{snapshot_date.month:02}"
 
     # Construct the full file path
-    if type == "training":
-        table_path = project_root / "datamart/silver" / table_name / f"{selected_date}.parquet"
-    elif type == "inference":
-        table_path = project_root / "datamart/silver/online" / table_name / f"{selected_date}.parquet"
+    table_path = project_root / "datamart/silver" / table_name / f"{selected_date}.parquet"
 
     # Read and return the DataFrame
     return spark.read.parquet(str(table_path))
@@ -133,22 +130,11 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
     filename = f"{selected_date}.parquet"
 
     # Build the full output path
-
     output_path = project_root / "datamart/gold/label_store" / filename
-    # elif type == "inference":
-    #     output_path = project_root / "datamart/gold/online/label_store" / filename
-
+ 
     # Ensure the output directory exists
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df_labels.write.mode("overwrite").parquet(str(output_path))
-
-    # selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
-    # filename    = selected_date + ".parquet"
-    # if type == "training":
-    #     output_path = os.path.join("datamart", "gold", "label_store", filename)
-    # elif type == "inference":
-    #     output_path = os.path.join("datamart", "gold", "online", "label_store", filename)
-    # df_labels.write.mode("overwrite").parquet(output_path)
 
     # Upload parquet to drive
     # upload_file_to_drive(service, output_path, directory_id)
@@ -156,7 +142,7 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
 if __name__ == "__main__":
     
     load_dotenv("/opt/airflow/.env")
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+    # os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
     # Get the pyspark session
     spark = get_pyspark_session()
@@ -174,3 +160,4 @@ if __name__ == "__main__":
     elif args.store == "label":
         data_processing_gold_labels(args.snapshotdate, args.type, spark)
     
+

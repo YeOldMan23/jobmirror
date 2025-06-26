@@ -37,57 +37,6 @@ from typing import Optional
 
 # load_dotenv()
 ###################################################
-# Gold Table Aggregations for Experience
-###################################################
-
-@udf(FloatType())
-def get_relevant_yoe(sim_matrix, yoe_list, threshold : float):
-    """
-    Get the relevant YoE from the array
-    """
-    relevant_yoe = 0
-
-    for cur_yoe, cur_exp_sim in zip(yoe_list, sim_matrix):
-        if cur_exp_sim >= threshold:
-            relevant_yoe += cur_yoe
-
-    return max(0, relevant_yoe)
-
-@udf(FloatType())
-def get_total_yoe(yoe_list):
-    """
-    Get the total YoE from the array
-    """
-    return max(0, sum(yoe_list))
-
-@udf(FloatType())
-def get_avg_job_sim(sim_matrix):
-    """
-    Get Average Job Sim
-    """
-    if len(sim_matrix) > 0:
-        return sum(sim_matrix) / len(sim_matrix)
-    else:
-        return 0
-    
-@udf(FloatType())
-def get_max_job_sim(sim_matrix):
-    """
-    Get Max Job Sim
-    """
-    if len(sim_matrix) > 0:
-        return max(sim_matrix)
-    else:
-        return 0
-    
-@udf(BooleanType())
-def is_freshie(sim_matrix):
-    """
-    Boolean to determine if the person is new to the job market
-    """
-    return len(sim_matrix) == 0
-
-###################################################
 # Individual silver tables processing
 ###################################################
 def data_processing_silver_skills_ref(spark: SparkSession):
@@ -379,9 +328,6 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
     labels_jd = labels_df.join(jd_df, on="job_id", how="inner")
     combined_jd_resume = labels_jd.join(resume_df, on="resume_id", how="inner")
 
-    """
-    DO UDFS HERE
-    """
     # Get the experience similarity score 
     combined_jd_resume = combined_jd_resume.withColumn("exp_sim_list", get_title_similarity_score(combined_jd_resume['role_title'], combined_jd_resume['experience']))
 
