@@ -22,16 +22,14 @@ def get_mongo_client() -> MongoClient:
 def get_pyspark_session() -> SparkSession:
     load_dotenv()
     mongodb_uri = os.getenv("MONGO_DB_URL")
-    aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
-    aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
     spark = SparkSession.builder \
         .appName("MongoDBSpark") \
         .config("spark.mongodb.read.connection.uri", mongodb_uri) \
         .config("spark.mongodb.write.connection.uri", mongodb_uri) \
         .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0") \
-        .config("spark.driver.memory", "4g") \
         .config("spark.sql.debug.maxToStringFields", 100) \
         .getOrCreate()
+        
 
     # spark = SparkSession.builder \
     #     .appName("MongoDBSpark") \

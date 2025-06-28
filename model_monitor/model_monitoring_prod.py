@@ -143,9 +143,9 @@ def model_monitor_prod(snapshotdate,base_path):
     
     model_type = str(get_model_train_date()[0])
     if model_type.startswith("XGB"):
-        model_type_file="XGBoostClassi"
+        model_type_file="XGBoostClassifier"
     else:
-        model_type_file="LogRegClassi"
+        model_type_file="LogRegClassier"
     # print(model_type_file)
 
     run_id = get_model_train_date()[2]

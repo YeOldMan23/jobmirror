@@ -145,9 +145,9 @@ def model_monitor_shad(snapshotdate,base_path):
 
 ##################################################################
     if model_type.startswith("XGB"):   # to comapre with the dir what the file name is 
-        model_type_file="XGBoostClassi"
+        model_type_file="XGBoostClassifier"
     else:
-        model_type_file="LogRegClassi"
+        model_type_file="LogRegClassifier"
 ########################################################################################
     run_id = get_shadow_model_info()[2]
     

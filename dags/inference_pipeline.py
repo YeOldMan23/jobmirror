@@ -95,7 +95,7 @@ gold_label_store = BashOperator(
 model_inference_start = DummyOperator(task_id="model_inference_start", dag=dag)
 inference_task = BashOperator(
     task_id='make_predictions',
-    bash_command = 'python /opt/model_deploy/load_model.py',
+    bash_command = 'python /opt/model_deploy/inference.py',
     dag=dag
 )
 
@@ -128,7 +128,11 @@ monitoring_task_shad = BashOperator(
 #     dag=dag)
 
 model_monitor_completed = DummyOperator(task_id="model_monitor_completed",dag=dag)
-model_monitor = BashOperator(task_id="model_monitoring",
+model_monitor_production = BashOperator(task_id="model_monitoring",
+                               bash_command = 'python /opt/utils/model_monitoring.py',
+                               dag=dag)
+
+model_monitor_shadow = BashOperator(task_id="model_monitoring",
                                bash_command = 'python /opt/utils/model_monitoring.py',
                                dag=dag)
 
@@ -137,4 +141,5 @@ model_monitor = BashOperator(task_id="model_monitoring",
 get_gold_features >> [gold_feature_store, gold_label_store]
 [gold_feature_store, gold_label_store] >> model_inference_start
 model_inference_start >> inference_task >> model_monitor_start
-model_monitor_start >> model_monitor >> model_monitor_completed
+model_monitor_start >>[ model_monitor_production,model_monitor_shadow] >> model_monitor_completed
+
