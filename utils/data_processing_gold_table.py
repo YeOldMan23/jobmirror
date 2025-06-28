@@ -21,18 +21,20 @@ from gold_feature_extraction.extract_edu import extract_education_features
 from gold_feature_extraction.match_experience import process_gold_experience
 
 
-def read_silver_table(table_name: str, snapshot_date, spark, type: str):
+def read_silver_table(table_name: str, snapshot_date : datetime, spark, type: str):
     # Define project root
     project_root = Path("/opt/airflow")  # Adjust if needed
 
     # Format the snapshot date
-    selected_date = f"{snapshot_date.year}-{snapshot_date.month:02}"
+    selected_date = f"{snapshot_date.year}-{snapshot_date.month}"
 
     # Construct the full file path
-    table_path = project_root / "datamart/silver" / table_name / f"{selected_date}.parquet"
+    # table_path = project_root / "datamart/silver" / table_name / f"{selected_date}.parquet"
+    table_path = f"./datamart/silver/{table_name}/{selected_date}.parquet"
 
     # Read and return the DataFrame
-    return spark.read.parquet(str(table_path))
+    print("Table Path : ", table_path)
+    return spark.read.parquet(table_path)
 
 # For S3
 # def read_silver_table(table_name : str, snapshot_date : datetime, spark : SparkSession):
@@ -40,7 +42,7 @@ def read_silver_table(table_name: str, snapshot_date, spark, type: str):
 #     table_dir = f"datamart/silver/{table_name}/{selected_date}.parquet"
 #     return read_parquet_from_s3(spark, table_dir)
 
-def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSession) -> None:
+def data_processing_gold_features(snapshot_date, type, spark : SparkSession) -> None:
     
     # Connect to Google Drive
     # service = connect_to_gdrive()
@@ -48,8 +50,11 @@ def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSe
     # directory_path = ['datamart', 'gold', 'feature_store']
     # directory_id = get_folder_id_by_path(service, directory_path, parent_root)
     
+    # Convert the snapshot date to datetime object
+    snapshot_datetime = datetime.strptime(snapshot_date, "%Y-%m-%d")
+
     # Read silver table
-    df = read_silver_table("combined_resume_jd", snapshot_date, spark, type)
+    df = read_silver_table("combined_resume_jd", snapshot_datetime, spark, type)
 
     # Add skills
     print("Processing Skills")
@@ -84,7 +89,7 @@ def data_processing_gold_features(snapshot_date: datetime, type, spark : SparkSe
     # Save the parquet 
     print("Saving Feature Store")
 
-    selected_date = str(snapshot_date.year) + "-" + str(snapshot_date.month)
+    selected_date = str(snapshot_datetime.year) + "-" + str(snapshot_datetime.month)
     filename    = selected_date + ".parquet"
     project_root = Path("/opt/airflow")
     # if type == "training":
@@ -110,9 +115,10 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
     # parent_root = '1_eMgnRaFtt-ZSZD3zfwai3qlpYJ-M5C6' 
     # directory_path = ['datamart', 'gold', 'label_store']
     # directory_id = get_folder_id_by_path(service, directory_path, parent_root)
+    snapshot_datetime = datetime.strptime(snapshot_date, "%Y-%m-%d")
 
     # Read silver table
-    df = read_silver_table("combined_resume_jd", snapshot_date, spark, type)
+    df = read_silver_table("combined_resume_jd", snapshot_datetime, spark, type)
 
     # Process the label store
     df_labels = process_labels(df)

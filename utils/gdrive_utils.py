@@ -323,7 +323,7 @@ def get_gold_file_if_exist(service,start_date, end_date,spark): #feature example
 # #test gold
 # service = connect_to_gdrive()
 # start_date = pd.to_datetime("2021-06-01")
-# end_date = pd.to_datetime("2021-09-01")
+# end_date = pd.to_datetime("2021-09-01") 
 # requested_df=get_gold_file_if_exist(service,start_date, end_date,spark)
 # print(f"requested_df: {requested_df.count()} rows")
 

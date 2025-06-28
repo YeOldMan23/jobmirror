@@ -19,7 +19,22 @@ def get_mongo_client() -> MongoClient:
     client = MongoClient(uri, server_api=ServerApi('1'))
     return client
 
-def get_pyspark_session() -> SparkSession:
+def get_pyspark_session(is_local = False) -> SparkSession:
+    if is_local:
+        # use the local pyspark session
+        spark = SparkSession.builder \
+            .appName("LocalPySparkApp") \
+            .master("local[*]") \
+            .config("spark.driver.memory", "8g") \
+            .config("spark.executor.memory", "8g") \
+            .config("spark.sql.shuffle.partitions", "4") \
+            .config("spark.sql.debug.maxToStringFields", "100") \
+            .getOrCreate()
+        
+        spark.sparkContext.setLogLevel("ERROR")
+
+        return spark
+
     load_dotenv()
     mongodb_uri = os.getenv("MONGO_DB_URL")
     spark = SparkSession.builder \

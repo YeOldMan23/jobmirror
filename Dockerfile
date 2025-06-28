@@ -1,4 +1,4 @@
-# FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runtime
+# FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runti`me
 # FROM pytorch/pytorch:latest
 FROM python:3.12-slim
 
