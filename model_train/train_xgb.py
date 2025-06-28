@@ -18,9 +18,16 @@ import optuna
 from typing import List
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.ml.feature import VectorAssembler
+from pyspark.sql.functions import udf, col, when 
+from pyspark.sql.types import DoubleType
 
 from utils.gdrive_utils import connect_to_gdrive, get_gold_file_if_exist
-
+import mlflow
+import matplotlib.pyplot as plt
+import tempfile
+import os
+from sklearn.metrics import f1_score
+import numpy as np
 
 
 # Connect to the MLflow server
@@ -37,17 +44,6 @@ print("Artifact location:", experiment.artifact_location)
 
 spark = SparkSession.builder.getOrCreate()
 
-
-def process_snapshot_data(**kwargs):
-    # Get execution date from Airflow
-    exec_date = kwargs['execution_date']  # type: datetime.datetime
-
-    # Define 12-month window
-    start_date = exec_date
-    end_date = start_date + timedelta(days=365)
-    return start_date, end_date
-
-
 def get_files(spark, feature_file_path, label_file_path) -> List[DataFrame]:
     """
     Get feature and label files from local parquet files for testing
@@ -62,36 +58,100 @@ def get_files(spark, feature_file_path, label_file_path) -> List[DataFrame]:
     
     return [df_features, df_labels]
 
+def tune_threshold(y_true, y_prob):
+    thresholds = np.arange(0.0, 1.01, 0.01)
+    best_threshold, best_score = 0.5, 0
 
-def register_model_mlflow(run_name, params, model, train_df, test_df, model_name,feature_col): # Ensure it's a DataFrame
+    for t in thresholds:
+        y_pred = (y_prob >= t).astype(int)
+        score = f1_score(y_true, y_pred)
+        if score > best_score:
+            best_score = score
+            best_threshold = t
+
+    return best_threshold, best_score
+
+def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df, model_name,feature_col): # Ensure it's a DataFrame
     # Start an MLflow run
     with mlflow.start_run(run_name=run_name):
 
         # Instantiate the Ridge model with parameters
         classifier = model(**params, labelCol="fit_label", featuresCol=feature_col)
         model = classifier.fit(train_df)
+
+        feature = train_df.columns
+        # Get feature importances from the trained model
+        importances = model.featureImportances.toArray()
+
+        columns_to_remove = ['resume_id', 'job_id', 'snapshot_date','fit_label', 'features']
+
+        # Remove the columns if they exist in feature_col
+        feature = [col for col in feature if col not in columns_to_remove]
+
+        print(feature)
+        print(importances)
+
+        print(len(feature))
+        print(len(importances))
+
+        # Combine with feature names
+        feature_importance_df = pd.DataFrame({
+            'Feature': feature,
+            'Importance': importances
+        }).sort_values(by="Importance", ascending=False)
+
+        print(feature_importance_df)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            plt.figure(figsize=(10, 6))
+            plt.barh(feature_importance_df['Feature'], feature_importance_df['Importance'])
+            plt.xlabel("Feature Importance")
+            plt.ylabel("Feature")
+            plt.title(" Feature Importances")
+            plt.gca().invert_yaxis()  # highest at top
+            plt.tight_layout()
+            bar_plot_path = os.path.join(tmpdir, "feature_summary_bar.png")
+            # --- Bar plot of mean absolute SHAP values ---
+            plt.savefig(bar_plot_path, bbox_inches="tight")
+            mlflow.log_artifact(bar_plot_path, artifact_path="feature_importance")
+
+        plt.close()
         predictions = model.transform(test_df).persist()
         _ = predictions.count() # Force model materialization by transforming and counting
 
+        get_prob_1 = udf(lambda v: float(v[1]), DoubleType())
+        df_prob = predictions.withColumn("prob_1", get_prob_1(col("probability")))
+        pdf = df_prob.select("prob_1", "fit_label").toPandas()
+        y_prob = pdf["prob_1"].values
+        y_true = pdf["fit_label"].values
 
-        evaluator_acc = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="prediction", metricName="accuracy")
-        evaluator_prec = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="prediction", metricName="weightedPrecision")
-        evaluator_rec = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="prediction", metricName="weightedRecall")
-        evaluator_f1 = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="prediction", metricName="f1")
+        best_thresh, best_f1 = tune_threshold(y_true, y_prob)
+        print(f"Best threshold = {best_thresh:.2f} with F1 = {best_f1:.4f}")
+
+        mlflow.log_params({"best_thresh":float(best_thresh)})
+
+        df_pred = df_prob.withColumn(
+            "custom_prediction",
+            when(col("prob_1") >= best_thresh, 1).otherwise(0).cast("double")
+        )
+
+
+        evaluator_acc = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="custom_prediction", metricName="accuracy")
+        evaluator_prec = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="custom_prediction", metricName="weightedPrecision")
+        evaluator_rec = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="custom_prediction", metricName="weightedRecall")
+        evaluator_f1 = MulticlassClassificationEvaluator(labelCol="fit_label", predictionCol="custom_prediction", metricName="f1")
 
         
-        acc = evaluator_acc.evaluate(predictions)
-        prec = evaluator_prec.evaluate(predictions)
-        rec = evaluator_rec.evaluate(predictions)
-        f1 = evaluator_f1.evaluate(predictions)
+        acc = evaluator_acc.evaluate(df_pred)
+        prec = evaluator_prec.evaluate(df_pred)
+        rec = evaluator_rec.evaluate(df_pred)
+        f1 = evaluator_f1.evaluate(df_pred)
 
 
-        metric_eval = {"acc": acc, "prec": prec, "rec": rec, "f1": f1}
+        metric_eval = {"acc": acc, "prec": prec, "rec": rec, "f1": f1, }
 
         # Log the hyperparameters
         mlflow.log_params(params)
 
-        # Log the loss metric
         mlflow.log_metrics(metric_eval)
         
          # log table
@@ -99,9 +159,9 @@ def register_model_mlflow(run_name, params, model, train_df, test_df, model_name
         if os.path.exists(log_dir):
             shutil.rmtree(log_dir)
 
-        predictions.select("fit_label", "prediction") \
+        df_pred.select("fit_label", "custom_prediction") \
             .withColumnRenamed("fit_label", "ground_truth") \
-            .withColumnRenamed("prediction", "predictions") \
+            .withColumnRenamed("custom_prediction", "predictions") \
             .coalesce(1) \
             .write \
             .option("header", True) \
@@ -117,7 +177,7 @@ def register_model_mlflow(run_name, params, model, train_df, test_df, model_name
         mlflow.set_tag("Training Info", f"Basic {model_name} model for job fit classification")
 
         # Infer the model signature
-        signature = infer_signature(test_df.select(feature_col), predictions.select("prediction"))
+        signature = infer_signature(test_df.select(feature_col), df_pred.select("custom_prediction"))
         
         # Log the model
         mlflow.spark.log_model(
@@ -136,14 +196,41 @@ def register_model_mlflow(run_name, params, model, train_df, test_df, model_name
 
         # Save test data with predictions
         test_path = f"/tmp/test_spark_{uuid.uuid4()}.parquet"
-        predictions.select(["fit_label", "prediction", feature_col]).write.mode("overwrite").parquet(test_path)
+        df_pred.select(["fit_label", "custom_prediction", feature_col]).write.mode("overwrite").parquet(test_path)
         mlflow.log_artifact(test_path, artifact_path="test_data")
+
+
+        # === OOT EVALUATION ===
+        oot_predictions = model.transform(oot_df).persist()
+        _ = oot_predictions.count()
+
+        get_prob_1 = udf(lambda v: float(v[1]), DoubleType())
+        df_prob_oot = oot_predictions.withColumn("prob_1", get_prob_1(col("probability")))
+
+        df_pred_oot = df_prob_oot.withColumn(
+            "custom_prediction",
+            when(col("prob_1") >= best_thresh, 1).otherwise(0).cast("double")
+        )
+
+        oot_acc = evaluator_acc.evaluate(df_pred_oot)
+        oot_prec = evaluator_prec.evaluate(df_pred_oot)
+        oot_rec = evaluator_rec.evaluate(df_pred_oot)
+        oot_f1 = evaluator_f1.evaluate(df_pred_oot)
+
+        oot_metrics = {
+            "oot_acc": oot_acc,
+            "oot_prec": oot_prec,
+            "oot_rec": oot_rec,
+            "oot_f1": oot_f1
+        }
+        
+        mlflow.log_metrics(oot_metrics)
 
         mlflow.set_tag("model_type", "GBTClassifier")
         return model, f1
     
 
-def run_optuna_xgb( train_df, test_df,feature_col,snapshot_date):
+def run_optuna_xgb( train_df, test_df,oot_df,feature_col,snapshot_date):
     def objective(trial):
         params = {
             "stepSize": trial.suggest_float("stepSize", 0.01, 0.3),
@@ -151,11 +238,11 @@ def run_optuna_xgb( train_df, test_df,feature_col,snapshot_date):
             "maxBins": trial.suggest_int("maxBins", 32, 500),
             "lossType":'logistic'
         }
-        _, f1 = register_model_mlflow(f"xgb_{snapshot_date}_trial_{trial.number}", params, GBTClassifier, train_df, test_df, "GBTClassifier",feature_col)
+        _, f1 = register_model_mlflow(f"xgb_{snapshot_date}_trial_{trial.number}", params, GBTClassifier, train_df, test_df,oot_df, "GBTClassifier",feature_col)
         return f1
 
     study = optuna.create_study(direction="maximize")
-    study.optimize(objective, n_trials=20)
+    study.optimize(objective, n_trials=2)
     return study
 
 
@@ -169,21 +256,29 @@ if __name__ == "__main__":
 
     service = connect_to_gdrive()
     snapshot_date = datetime.strptime(args.snapshotdate, "%Y-%m-%d")  # adjust format if needed
-    start_date = snapshot_date - relativedelta(months=2)
+    start_date = snapshot_date - relativedelta(months=5)
     end_date = snapshot_date
     feature_df, input_df =get_gold_file_if_exist(service,start_date, end_date,spark)
     print(f"requested_df: {feature_df.count()} rows")
+    print(f"Getting feature inputs: {feature_df.columns}")
 
-    feature_col = ['hard_skills_general_ratio', 'soft_skills_ratio', 'location_preference_match','employment_type_match','work_authorization_match',
-    'relevant_yoe','avg_exp_sim','is_freshie']
+    feature_col = ['soft_skills_mean_score', 'soft_skills_max_score', 'soft_skills_count', 'soft_skills_ratio', 'hard_skills_general_count', 'hard_skills_general_ratio', 'hard_skills_specific_count', 'hard_skills_specific_ratio', 'edu_gpa', 'edu_level_match', 'edu_level_score', 'edu_field_match', 'cert_match', 'work_authorization_match', 'employment_type_match', 'location_preference_match', 'relevant_yoe', 'total_yoe', 'avg_exp_sim', 'max_exp_sim', 'is_freshie']
 
     input_df = feature_df.join(input_df.select("resume_id", "job_id", "fit_label"), on=["resume_id", "job_id"], how="inner")
     input_df = input_df.select(*feature_col, "fit_label")
+
+    input_df = input_df.withColumn("edu_level_match", col("edu_level_match").cast("int")) \
+       .withColumn("edu_field_match", col("edu_field_match").cast("int")) \
+       .withColumn("cert_match", col("cert_match").cast("int"))
+    
     input_df = input_df.fillna(0.0, subset=feature_col)
+    print(f"rows:{input_df.count()}")
+    input_df = input_df.dropna()
+    print(f"rows:{input_df.count()}")
 
     assembler = VectorAssembler(inputCols=feature_col, outputCol="features")
     df_transformed = assembler.transform(input_df)
 
-    train_df, test_df = df_transformed.randomSplit([0.8, 0.2], seed=42)
-    run_optuna_xgb(train_df, test_df, feature_col = "features", snapshot_date=args.snapshotdate)
+    train_df, test_df, oot_df = df_transformed.randomSplit([0.8, 0.1, 0.1], seed=42) #already shuffling
+    run_optuna_xgb(train_df, test_df,oot_df, feature_col = "features", snapshot_date=args.snapshotdate)
     spark.stop()

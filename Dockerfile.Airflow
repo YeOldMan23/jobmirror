@@ -27,7 +27,7 @@ WORKDIR /app
 
 # Copy the requirements file into the container
 COPY requirements.txt ./
-COPY .env /opt/airflow/.env
+# COPY .env /opt/airflow/.env
 
 
 # Switch to the airflow user before installing Python dependencies
