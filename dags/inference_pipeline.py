@@ -50,10 +50,10 @@ dag =  DAG(
     #     "bronze_end": 2,
     # },
     description='inference pipeline run once a month',
-    schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
-    start_date=datetime(2022, 9, 1), 
-    end_date=datetime(2022, 10, 1), 
-    catchup=False,
+    schedule_interval='0 1 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
+    start_date=datetime(2021, 9, 1),  # have to be after training
+    end_date=datetime(2021, 11, 1), 
+    catchup=True,
     max_active_runs=1,
     tags=['inference']
 )
@@ -69,12 +69,11 @@ dag =  DAG(
 # Retrieves processed gold features
 
 ###### Gold Tables ######
-get_gold_features = DummyOperator(task_id="fetch_processed_features_for_training", dag=dag)
 gold_feature_store = BashOperator(
     task_id='run_gold_feature_store',
     bash_command=(
-        'cd /opt/airflow/utils && '
-        'python3 data_processing_gold_table.py '
+        'cd /opt/airflow && '
+        'PYTHONPATH=/opt/airflow python3 utils/data_processing_gold_table.py '
         '--snapshotdate "{{ ds }}" '
         '--store feature '
     ),
@@ -83,8 +82,8 @@ gold_feature_store = BashOperator(
 gold_label_store = BashOperator(
     task_id='run_gold_label_store',
     bash_command=(
-        'cd /opt/airflow/utils && '
-        'python3 data_processing_gold_table.py '
+        'cd /opt/airflow && '
+        'PYTHONPATH=/opt/airflow python3 utils/data_processing_gold_table.py '
         '--snapshotdate "{{ ds }}" '
         '--store label '
     ),
@@ -95,7 +94,10 @@ gold_label_store = BashOperator(
 model_inference_start = DummyOperator(task_id="model_inference_start", dag=dag)
 inference_task = BashOperator(
     task_id='make_predictions',
-    bash_command = 'python /opt/model_deploy/inference.py',
+    bash_command = (
+        'cd /opt/airflow && '
+        'PYTHONPATH=/opt/airflow python /opt/airflow/model_deploy/inference.py --snapshotdate "{{ ds }}" '
+    ),
     dag=dag
 )
 
@@ -105,13 +107,21 @@ model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
 
 monitoring_task_prod = BashOperator(
     task_id='monitoring_prod',
-    bash_command = 'python /opt/model_monitor/model_monitoring_prod.py',
+    bash_command = (
+        'cd /opt/airflow && '
+        'PYTHONPATH=/opt/airflow python /opt/airflow/model_monitor/model_monitoring_prod.py'
+        '--snapshotdate "{{ ds }}" ' 
+    ),
     dag=dag
 )
 
 monitoring_task_shad = BashOperator(
     task_id='monitoring_shad',
-    bash_command = 'python /opt/model_monitor/model_monitoring_shad.py',
+    bash_command = (
+        'cd /opt/airflow && '
+        'PYTHONPATH=/opt/airflow python /opt/airflow/model_monitor/model_monitoring_shad.py'
+        '--snapshotdate "{{ ds }}" '
+    ),
     dag=dag
 )
 
@@ -128,18 +138,9 @@ monitoring_task_shad = BashOperator(
 #     dag=dag)
 
 model_monitor_completed = DummyOperator(task_id="model_monitor_completed",dag=dag)
-model_monitor_production = BashOperator(task_id="model_monitoring",
-                               bash_command = 'python /opt/utils/model_monitoring.py',
-                               dag=dag)
-
-model_monitor_shadow = BashOperator(task_id="model_monitoring",
-                               bash_command = 'python /opt/utils/model_monitoring.py',
-                               dag=dag)
 
 # Define task dependencies to run scripts sequentially
-# model_inference_completed >> model_monitor_start
-get_gold_features >> [gold_feature_store, gold_label_store]
 [gold_feature_store, gold_label_store] >> model_inference_start
 model_inference_start >> inference_task >> model_monitor_start
-model_monitor_start >>[ model_monitor_production,model_monitor_shadow] >> model_monitor_completed
+model_monitor_start >> [monitoring_task_prod,monitoring_task_shad] >> model_monitor_completed
 
