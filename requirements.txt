@@ -21,3 +21,4 @@ mlflow-skinny==3.1.0
 numpy==2.3.0
 jupyter
 boto3
+evidently

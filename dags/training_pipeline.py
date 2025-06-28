@@ -16,7 +16,7 @@ with DAG(
     default_args=default_args,
     description='training pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
-    start_date=datetime(2021, 8, 1), 
+    start_date=datetime(2021, 9, 1), # 6 has no data , 2021, 8, 1 training on 3 months of data 
     end_date=datetime(2021, 11, 1),
     catchup=True,
     tags=['training']

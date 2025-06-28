@@ -102,6 +102,20 @@ inference_task = BashOperator(
 
 # --- model monitoring ---
 model_monitor_start = DummyOperator(task_id="model_monitor_start", dag=dag)
+
+monitoring_task_prod = BashOperator(
+    task_id='monitoring_prod',
+    bash_command = 'python /opt/model_monitor/model_monitoring_prod.py',
+    dag=dag
+)
+
+monitoring_task_shad = BashOperator(
+    task_id='monitoring_shad',
+    bash_command = 'python /opt/model_monitor/model_monitoring_shad.py',
+    dag=dag
+)
+
+
 # model_monitor_start = PythonOperator(
 #     task_id="model_monitor_start",
 #     python_callable=model_monitoring,

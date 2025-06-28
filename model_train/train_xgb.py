@@ -71,7 +71,7 @@ def tune_threshold(y_true, y_prob):
 
     return best_threshold, best_score
 
-def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df, model_name,feature_col): # Ensure it's a DataFrame
+def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df, model_name,feature_col,snapshot_date): # Ensure it's a DataFrame
     # Start an MLflow run
     with mlflow.start_run(run_name=run_name):
 
@@ -128,6 +128,12 @@ def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df, mo
         print(f"Best threshold = {best_thresh:.2f} with F1 = {best_f1:.4f}")
 
         mlflow.log_params({"best_thresh":float(best_thresh)})
+        
+        if isinstance(snapshot_date, datetime):
+            formatted_date = snapshot_date.strftime("%Y %m %d")
+        else:
+            formatted_date = snapshot_date
+        mlflow.log_param("snapshot_date",str(formatted_date))
 
         df_pred = df_prob.withColumn(
             "custom_prediction",
@@ -238,7 +244,7 @@ def run_optuna_xgb( train_df, test_df,oot_df,feature_col,snapshot_date):
             "maxBins": trial.suggest_int("maxBins", 32, 500),
             "lossType":'logistic'
         }
-        _, f1 = register_model_mlflow(f"xgb_{snapshot_date}_trial_{trial.number}", params, GBTClassifier, train_df, test_df,oot_df, "GBTClassifier",feature_col)
+        _, f1 = register_model_mlflow(f"xgb_{snapshot_date}_trial_{trial.number}", params, GBTClassifier, train_df, test_df,oot_df, "GBTClassifier",feature_col,snapshot_date)
         return f1
 
     study = optuna.create_study(direction="maximize")
@@ -256,7 +262,7 @@ if __name__ == "__main__":
 
     service = connect_to_gdrive()
     snapshot_date = datetime.strptime(args.snapshotdate, "%Y-%m-%d")  # adjust format if needed
-    start_date = snapshot_date - relativedelta(months=5)
+    start_date = snapshot_date - relativedelta(months=3) # use 3 months of training used to be 5
     end_date = snapshot_date
     feature_df, input_df =get_gold_file_if_exist(service,start_date, end_date,spark)
     print(f"requested_df: {feature_df.count()} rows")

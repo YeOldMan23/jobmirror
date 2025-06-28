@@ -71,7 +71,7 @@ def tune_threshold(y_true, y_prob):
 
     return best_threshold, best_score
 
-def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df,model_name,feature_col): # Ensure it's a DataFrame
+def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df,model_name,feature_col,snapshot_date): # Ensure it's a DataFrame
     # Start an MLflow run
     with mlflow.start_run(run_name=run_name):
 
@@ -136,6 +136,12 @@ def register_model_mlflow(run_name, params, model, train_df, test_df, oot_df,mod
         print(f"Best threshold = {best_thresh:.2f} with F1 = {best_f1:.4f}")
 
         mlflow.log_params({"best_thresh":float(best_thresh)})
+        
+        if isinstance(snapshot_date, datetime):
+            formatted_date = snapshot_date.strftime("%Y %m %d")
+        else:
+            formatted_date = snapshot_date
+        mlflow.log_param("snapshot_date",str(formatted_date))
 
         df_pred = df_prob.withColumn(
             "custom_prediction",
@@ -247,7 +253,7 @@ def run_optuna_lgr(train_df, test_df,oot_df, feature_col, snapshot_date):
             "fitIntercept": trial.suggest_categorical("fitIntercept", [True, False]),
             "standardization": trial.suggest_categorical("standardization", [True, False]),
         }
-        _, f1 = register_model_mlflow(f"lgr_{snapshot_date}_trial_{trial.number}", params, LogisticRegression, train_df, test_df, oot_df,"LogisticRegression", feature_col)
+        _, f1 = register_model_mlflow(f"lgr_{snapshot_date}_trial_{trial.number}", params, LogisticRegression, train_df, test_df, oot_df,"LogisticRegression", feature_col,snapshot_date)
         return f1
 
     study = optuna.create_study(direction="maximize")
