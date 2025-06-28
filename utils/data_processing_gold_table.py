@@ -10,17 +10,15 @@ import argparse
 from datetime import datetime
 from dotenv import load_dotenv
 from pathlib import Path
-from utils.mongodb_utils import get_pyspark_session
-from utils.date_utils import get_snapshot_dates
+from mongodb_utils import get_pyspark_session
+from date_utils import get_snapshot_dates
 
 # from utils.s3_utils import upload_to_s3, read_parquet_from_s3
-
-from utils.gdrive_utils import connect_to_gdrive, get_folder_id_by_path, upload_file_to_drive
-from utils.gold_feature_extraction.extract_skills import create_hard_skills_general_column, create_hard_skills_specific_column, create_soft_skills_column
-from utils.gold_feature_extraction.feature_match import match_employment_type, match_work_authorization, match_location_preference
-from utils.gold_feature_extraction.process_label_data import process_labels
-from utils.gold_feature_extraction.extract_edu import extract_education_features
-from utils.gold_feature_extraction.match_experience import process_gold_experience
+from gold_feature_extraction.extract_skills import create_hard_skills_general_column, create_hard_skills_specific_column, create_soft_skills_column
+from gold_feature_extraction.feature_match import match_employment_type, match_work_authorization, match_location_preference
+from gold_feature_extraction.process_label_data import process_labels
+from gold_feature_extraction.extract_edu import extract_education_features
+from gold_feature_extraction.match_experience import process_gold_experience
 
 
 def read_silver_table(table_name: str, snapshot_date, spark, type: str):
@@ -140,13 +138,6 @@ def data_processing_gold_labels(snapshot_date: datetime, spark : SparkSession, t
     # upload_file_to_drive(service, output_path, directory_id)
 
 if __name__ == "__main__":
-    
-    load_dotenv("/opt/airflow/.env")
-    # os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-
-    # Get the pyspark session
-    spark = get_pyspark_session()
-    
     # Setup argparse to parse command-line arguments
     parser = argparse.ArgumentParser(description="run job")
     parser.add_argument("--snapshotdate", type=str, required=True, help="YYYY-MM-DD")
@@ -154,10 +145,23 @@ if __name__ == "__main__":
     parser.add_argument('--store', type=str, required = True, help='feature or label')
     args = parser.parse_args()
 
-    # process gold feature and label stores
-    if args.store == "feature":
-        data_processing_gold_features(args.snapshotdate, args.type, spark)
-    elif args.store == "label":
-        data_processing_gold_labels(args.snapshotdate, args.type, spark)
+    snapshot_date = datetime.strptime(args.snapshotdate, "%Y-%m-%d")
+
+    try:
+
+        load_dotenv("/opt/airflow/.env")
+        # os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
+        # Get the pyspark session
+        spark = get_pyspark_session()
+
+        # process gold feature and label stores
+        if args.store == "feature":
+            data_processing_gold_features(snapshot_date, args.type, spark)
+        elif args.store == "label":
+            data_processing_gold_labels(snapshot_date, args.type, spark)
+
+    except Exception as e:
+        print("An error occurred:", e)
     
 

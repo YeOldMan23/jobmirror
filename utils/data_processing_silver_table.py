@@ -45,13 +45,13 @@ def data_processing_silver_skills_ref(spark: SparkSession):
 def data_processing_silver_education_ref(spark: SparkSession):
     pass
 
-def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSession):
+def data_processing_silver_resume(snapshot_date : datetime, spark: SparkSession):
     """
     Processes resumes from bronze layer to silver layer
     Output: saves into parquet
     """    
     # Read from S3
-    filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
+    filename = f"{snapshot_date.year}-{snapshot_date.month}.parquet"
     # s3_key = f"datamart/online/bronze/resume/{filename}"
     # df = read_s3_data('jobmirror-s3', s3_key, spark)
 
@@ -60,7 +60,7 @@ def data_processing_silver_resume(snapshot_date : datetime, type, spark: SparkSe
     # elif type == "inference":
     #     filepath = f"datamart/online/bronze/resume/{filename}"
     
-    df = read_bronze_resume_as_pyspark(snapshot_date, type, spark)
+    df = read_bronze_resume_as_pyspark(snapshot_date, spark)
 
     # Add skills columns
     df = create_hard_skills_column(df, spark, og_column="hard_skills")
@@ -236,7 +236,7 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
     """
 
     # Read into pyspark dataframe
-    df = read_bronze_labels_as_pyspark(snapshot_date, type, spark)
+    df = read_bronze_labels_as_pyspark(snapshot_date, spark)
 
     # Group labels together
     df = standardize_label(df, "fit") \
@@ -256,7 +256,7 @@ def data_processing_silver_labels(snapshot_date : datetime, spark: SparkSession)
     # df.write.mode("overwrite").parquet(s3_output_path)
 
     project_root = Path("/opt/airflow")
-    selected_date = f"{snapshot_date.year}-{snapshot_date.month:02}"
+    selected_date = f"{snapshot_date.year}-{snapshot_date.month}"
     filename = f"{selected_date}.parquet"
 
     # Determine local output path
@@ -360,10 +360,6 @@ def data_processing_silver_combined(snapshot_date: datetime, spark : SparkSessio
     # print(f"Saved Silver Combined: {selected_date} No. Rows: {combined_jd_resume.count()}")
 
 if __name__ == "__main__":
-
-    # Get the pyspark session
-    spark = get_pyspark_session()
-
     # Setup argparse to parse command-line arguments
     parser = argparse.ArgumentParser(description="run job")
     parser.add_argument("--snapshotdate", type=str, required=True, help="YYYY-MM-DD")
@@ -372,16 +368,22 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    # Convert string to datetime object
-    snapshot_date = datetime.strptime(args.snapshotdate, "%Y-%m-%d")    
+    try:
+        # Convert string to datetime object
+        snapshot_date = datetime.strptime(args.snapshotdate, "%Y-%m-%d")  
 
-    if args.task == "data_processing_silver_resume":
-        data_processing_silver_resume(snapshot_date, args.type, spark)
-    elif args.task == "data_processing_silver_jd":
-        data_processing_silver_jd(snapshot_date, args.type, spark)
-    elif args.task == "data_processing_silver_combined":
-        data_processing_silver_combined(snapshot_date, args.type, spark)
-    elif args.task == "data_processing_silver_labels":
-        data_processing_silver_labels(snapshot_date, args.type, spark)
-    else:
-        raise ValueError(f"Unknown task: {args.task}")
+        # Get the pyspark session
+        spark = get_pyspark_session()  
+
+        if args.task == "data_processing_silver_resume":
+            data_processing_silver_resume(snapshot_date, spark)
+        elif args.task == "data_processing_silver_jd":
+            data_processing_silver_jd(snapshot_date, spark)
+        elif args.task == "data_processing_silver_combined":
+            data_processing_silver_combined(snapshot_date, spark)
+        elif args.task == "data_processing_silver_labels":
+            data_processing_silver_labels(snapshot_date, spark)
+        else:
+            raise ValueError(f"Unknown task: {args.task}")
+    except Exception as e:
+        print("An error occurred:", e)

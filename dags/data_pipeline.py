@@ -24,12 +24,13 @@ dag =  DAG(
     params={
         "bronze_start": 0,
         "bronze_end": 100, # feed in data in batches
+        "bronze_skip": True
     },
     description='data pipeline run once a month',
     schedule_interval='0 0 1 * *',  # At 00:00 on day-of-month 1: when you want to run (translate to cron)
     start_date=datetime(2022, 9, 1), 
     end_date=datetime(2022, 12, 1), # setting it to the max date we have
-    catchup=False,
+    catchup=True,
     max_active_runs=1,
 
 )
@@ -52,6 +53,7 @@ bronze_store = BashOperator(
         '--start {{ params.bronze_start }} '
         '--end {{ params.bronze_end }} '
         '--batch_size 10 '
+        '--skip {{ params.bronze_skip }}'
     ),
     dag=dag
 )

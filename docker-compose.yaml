@@ -63,9 +63,9 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
- 
-    # env_file:
-    #   - .env 
+      - PYTHONPATH=/app/utils
+    env_file:
+      - .env 
     volumes:
       - airflow_data:/opt/airflow
       - ./dags:/opt/airflow/dags
@@ -97,9 +97,9 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
-
-    # env_file:
-    #   - .env 
+      - PYTHONPATH=/app
+    env_file:
+      - .env 
     volumes:
       - airflow_data:/opt/airflow
       - ./dags:/opt/airflow/dags
