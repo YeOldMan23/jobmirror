@@ -7,11 +7,17 @@ import glob
 from pyspark.sql.functions import expr, udf, explode, collect_list, array
 from pyspark.sql import functions as F, Row
 
-from ..gdrive_utils import connect_to_gdrive, sync_gdrive_db_to_local
+import sys
+import os
+sys.path.insert(0, '/opt/airflow/utils')
+from s3_utils import upload_to_s3, read_s3_data
+# from ..gdrive_utils import connect_to_gdrive, sync_gdrive_db_to_local
+# from utils.s3_utils import upload_to_s3, read_s3_data
 
 from pyspark.sql.types import StructType, StructField, ArrayType, StringType, FloatType
 from rapidfuzz import process, fuzz
 import spacy
+from pathlib import Path
 
 # GLOBAL VARIABLES
 # Check if we need to download the spacy package
@@ -19,10 +25,20 @@ if not spacy.util.is_package("en_core_web_sm"):
     spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
 
-def read_hard_skills_list(spark):
-    # sync_gdrive_db_to_local()
+# def read_hard_skills_list(spark):
+#     # sync_gdrive_db_to_local()
     
-    df_hard_skills_keywords = spark.read.option("header", "true").parquet("datamart/references/Technology_Skills.parquet")
+#     df_hard_skills_keywords = spark.read.option("header", "true").parquet("datamart/references/Technology_Skills.parquet")
+#     return df_hard_skills_keywords
+
+def read_hard_skills_list(spark):
+    # Use your existing S3 read function
+    # df_hard_skills_keywords = read_s3_data('jobmirror-s3', "datamart/references/Technology_Skills.parquet", spark)
+    # Read the Parquet file locally
+    project_root = Path("/opt/airflow")
+    local_path = project_root / "datamart/references/Technology_Skills.parquet"
+    print(f"[INFO] Reading hard skills from: {local_path}")
+    df_hard_skills_keywords = spark.read.parquet(str(local_path))
     return df_hard_skills_keywords
 
 def hard_skills_fuzzy_match_udf_factory(mapping_dict):

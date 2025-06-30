@@ -1,5 +1,9 @@
 import pandas as pd
 import os
+import sys
+# Ensure /opt/airflow/utils is in sys.path
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
@@ -9,9 +13,10 @@ from tqdm import tqdm
 import string
 import re
 import time
+import argparse
 
-from .resume_schema import Resume
-from .jd_schema import JD
+from resume_schema import Resume
+from jd_schema import JD
 from pydantic import BaseModel, Field
 from typing import List, Optional, get_origin, get_args, Union
 
@@ -19,7 +24,10 @@ from langchain.output_parsers import PydanticOutputParser
 from mistralai import Mistral
 
 from pyspark.sql.types import ArrayType, StringType, IntegerType, FloatType, BooleanType, TimestampType, StructField, StructType
-from utils.mongodb_utils import get_collection, exists_in_collection
+from mongodb_utils import get_collection, exists_in_collection
+from mongodb_utils import get_pyspark_session
+# from utils.s3_utils import upload_to_s3
+from date_utils import *
 
 ###############
 # SOURCE
@@ -71,6 +79,56 @@ def retrieve_data_from_source():
     df['resume_id'] = df.apply(lambda row: generate_random_id('RES_', seed=row.name), axis=1)
     df['job_id'] = df.apply(lambda row: generate_random_id('JD_', seed=row.name), axis=1)
     df['label_id'] = df.apply(lambda row: generate_random_id('LABEL_', seed=row.name), axis=1)
+    
+    return df
+
+def retrieve_inference_data():
+    """
+    Reads data as Pandas dataframe from source
+    """
+    def generate_random_snapshot_dates(df):
+        rng = np.random.default_rng(seed=42)
+        # Define start and end date
+        start_date = pd.to_datetime('2022-06-01')
+        end_date = pd.to_datetime('2022-12-1')
+        # Generate random timestamps between start_date and end_date
+        random_dates = pd.to_datetime(
+            rng.uniform(start_date.value, end_date.value, size=len(df))
+        )
+        # Ensure it's treated as a pandas Series and convert to date
+        df['snapshot_date'] = pd.Series(random_dates).dt.date  # This will convert to date format
+        df['snapshot_date_str'] = df['snapshot_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
+        return df
+
+    def generate_random_id(prefix, seed, length=8, use_digits=True, use_letters=True):
+        rng = np.random.default_rng(seed=seed) 
+
+        characters = ''
+        
+        if use_digits:
+            characters += string.digits
+        if use_letters:
+            characters += string.ascii_letters
+
+        # Ensure we have characters to choose from
+        if not characters:
+            raise ValueError("At least one of 'use_digits' or 'use_letters' must be True.")
+        
+        # Use np.random.choice to randomly select characters
+        random_id = ''.join(rng.choice(list(characters), size=length))
+        return prefix + random_id
+    
+    # Download from huggingface
+    splits = {'train': 'train.csv', 'test': 'test.csv'}
+    df = pd.read_csv("hf://datasets/cnamuangtoun/resume-job-description-fit/" + splits["test"])
+
+    # Generate random snapshot dates
+    df = generate_random_snapshot_dates(df)
+
+    # Generate random ids
+    df['resume_id'] = df.apply(lambda row: generate_random_id('RES_', seed=(6241 + row.name)), axis=1)
+    df['job_id'] = df.apply(lambda row: generate_random_id('JD_', seed=(6241 + row.name)), axis=1)
+    df['label_id'] = df.apply(lambda row: generate_random_id('LABEL_', seed=(6241 + row.name)), axis=1)
     
     return df
 
@@ -176,12 +234,33 @@ def pydantic_to_spark_schema(model: type) -> StructType:
 ###############
 # MAIN FUNCTION
 ###############
-def process_bronze_table(spark, partition_start, partition_end, batch_size):
+def process_bronze_table(spark, partition_start, partition_end, batch_size, type):
     print("============ PROCESS BRONZE TABLE =============")
+
     ###############
     # Retrieve data from source
     ###############
-    df = retrieve_data_from_source()
+    # if type == "training":
+        # df = retrieve_data_from_source()
+        
+    resume_collection = get_collection("jobmirror_db", "bronze_resumes")
+    label_collection = get_collection("jobmirror_db", "bronze_labels")
+    jd_collection = get_collection("jobmirror_db", "bronze_job_descriptions")
+
+    # elif type == "inference":
+    #     # df = retrieve_inference_data()
+    #     resume_collection = get_collection("jobmirror_db", "online_bronze_resumes")
+    #     label_collection = get_collection("jobmirror_db", "online_bronze_labels")
+    #     jd_collection = get_collection("jobmirror_db", "online_bronze_job_descriptions")
+
+    # Load documents as DataFrames
+    resumes = pd.DataFrame(list(resume_collection.find()))
+    labels = pd.DataFrame(list(label_collection.find()))
+    jds = pd.DataFrame(list(jd_collection.find()))
+
+    # Merge based on IDs
+    df = labels.merge(resumes, on="resume_id").merge(jds, on="job_id")
+
     df['resume_text'] = df['resume_text'].apply(clean_text)
     df['job_description_text'] = df['job_description_text'].apply(clean_text)
 
@@ -197,7 +276,6 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
     ###############
     resume_parser = PydanticOutputParser(pydantic_object=Resume)
     jd_parser = PydanticOutputParser(pydantic_object=JD)
-
 
     ###############
     # Parse every row in df
@@ -252,14 +330,13 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
                     "snapshot_date": str(row['snapshot_date'])
                 })
 
-
             batch_idx += 1
 
             if batch_idx == batch_size:
                 resume_df = spark.createDataFrame(parsed_resumes, schema=pydantic_to_spark_schema(Resume))
                 jd_df = spark.createDataFrame(parsed_jds, schema=pydantic_to_spark_schema(JD))
                 label_df = spark.createDataFrame(parsed_labels, schema=label_schema)
-
+                # if type == "training":
                 resume_df.write.format("mongodb") \
                     .mode("append") \
                     .option("database", "jobmirror_db") \
@@ -281,6 +358,42 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
                 parsed_resumes.clear()
                 parsed_jds.clear()
                 parsed_labels.clear()
+
+                # elif type == "inference":
+                #     resume_df.write.format("mongodb") \
+                #         .mode("append") \
+                #         .option("database", "jobmirror_db") \
+                #         .option("collection", "online_bronze_resumes") \
+                #         .save()
+
+                #     jd_df.write.format("mongodb") \
+                #         .mode("append") \
+                #         .option("database", "jobmirror_db") \
+                #         .option("collection", "online_bronze_job_descriptions") \
+                #         .save()
+
+                #     label_df.write.format("mongodb") \
+                #         .mode("append") \
+                #         .option("database", "jobmirror_db") \
+                #         .option("collection", "online_bronze_labels") \
+                #         .save()
+
+                    # # Get snapshot_date from the row data
+                    # snapshot_date = row['snapshot_date']
+                    # inf_list = [("resume", resume_df), ("jd", jd_df), ("labels", label_df)]
+                    
+                    # for f, df_to_write in inf_list:
+                    #     filename = f"{snapshot_date.year}-{snapshot_date.month:02d}.parquet"
+                    #     s3_key = f"datamart/online/bronze/{f}/{filename}"
+                    #     output_path = os.path.join("datamart", "silver", f, filename)
+                        
+                    #     df_to_write.write.mode("overwrite").parquet(output_path)
+                    #     upload_to_s3(output_path, s3_key)
+                    
+                    # parsed_resumes.clear()
+                    # parsed_jds.clear()
+                    # parsed_labels.clear()                    
+
                 batch_idx = 0
 
             if idx % 100 == 0:
@@ -290,3 +403,24 @@ def process_bronze_table(spark, partition_start, partition_end, batch_size):
             print(f"Error parsing row {idx}: {e}")
 
     print(f"============ END PROCESS BRONZE TABLE =============")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process data.")
+    parser.add_argument('--start', type=int, required=True, help='Start index')
+    parser.add_argument('--end', type=int, required=True, help='End index')
+    parser.add_argument('--batch_size', type=int, default=1, help='Batch size for bronze table processing')
+    parser.add_argument('--skip', type=bool, default=True, help='Skip bronze table processing')
+    parser.add_argument('--type', type=str, default='training', help='Inference or training')
+    
+    args = parser.parse_args()  # Fixed - removed the extra argument definition
+
+    try:
+        if not args.skip:
+            load_dotenv("/opt/airflow/.env")
+            os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+            spark = get_pyspark_session()
+            # Get the range of dates
+            process_bronze_table(spark, args.start, args.end, args.batch_size, args.type) 
+    except Exception as e:
+        print("An error occurred:", e)
+

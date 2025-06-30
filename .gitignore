@@ -186,3 +186,8 @@ datamart/
 cache/
 .trunk
 credentials.json
+model_train/mlartifacts
+model_train/mlruns
+
+#secrets
+.credential.json

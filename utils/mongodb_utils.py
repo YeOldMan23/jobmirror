@@ -19,7 +19,22 @@ def get_mongo_client() -> MongoClient:
     client = MongoClient(uri, server_api=ServerApi('1'))
     return client
 
-def get_pyspark_session() -> SparkSession:
+def get_pyspark_session(is_local = False) -> SparkSession:
+    if is_local:
+        # use the local pyspark session
+        spark = SparkSession.builder \
+            .appName("LocalPySparkApp") \
+            .master("local[*]") \
+            .config("spark.driver.memory", "8g") \
+            .config("spark.executor.memory", "8g") \
+            .config("spark.sql.shuffle.partitions", "4") \
+            .config("spark.sql.debug.maxToStringFields", "100") \
+            .getOrCreate()
+        
+        spark.sparkContext.setLogLevel("ERROR")
+
+        return spark
+
     load_dotenv()
     mongodb_uri = os.getenv("MONGO_DB_URL")
     spark = SparkSession.builder \
@@ -27,9 +42,29 @@ def get_pyspark_session() -> SparkSession:
         .config("spark.mongodb.read.connection.uri", mongodb_uri) \
         .config("spark.mongodb.write.connection.uri", mongodb_uri) \
         .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0") \
-        .config("spark.driver.memory", "4g") \
         .config("spark.sql.debug.maxToStringFields", 100) \
         .getOrCreate()
+        
+
+    # spark = SparkSession.builder \
+    #     .appName("MongoDBSpark") \
+    #     .config("spark.mongodb.read.connection.uri", mongodb_uri) \
+    #     .config("spark.mongodb.write.connection.uri", mongodb_uri) \
+    #     .config("spark.jars.packages",
+    #             ",".join([
+    #                 "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0",
+    #                 "org.apache.hadoop:hadoop-aws:3.3.6"
+    #             ])) \
+    #     .config("spark.jars.repositories", "https://repo1.maven.org/maven2/") \
+    #     .config("spark.hadoop.fs.s3a.access.key", aws_access_key_id) \
+    #     .config("spark.hadoop.fs.s3a.secret.key", aws_secret_access_key) \
+    #     .config("spark.hadoop.fs.s3a.endpoint", "s3.amazonaws.com") \
+    #     .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+    #     .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+    #     .config("spark.driver.memory", "4g") \
+    #     .config("spark.sql.debug.maxToStringFields", 100) \
+    #     .getOrCreate()
+
     spark.sparkContext.setLogLevel("ERROR")
     return spark
 
@@ -70,15 +105,18 @@ def read_bronze_labels_as_pyspark(snapshot_date : datetime, spark: SparkSession)
     """
     Read labels as pyspark
     """
-
     # Datetime is randomized in the date of 2024, so we just need the month, datetime saved as string object
     # so need to use regex
 
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
 
-    # Use double curly braces to escape for formatting strings
-    df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_labels", spark)
+    # if type == "training":
+    collection_name = "bronze_labels"
+    # elif type == "inference":
+    #     collection_name = "online_bronze_labels"
+
+    df = read_bronze_table_as_pyspark("jobmirror_db", collection_name, spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
     print("Number of label rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
     
@@ -99,8 +137,12 @@ def read_bronze_jd_as_pyspark(snapshot_date : datetime, spark: SparkSession) -> 
 
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
+    # if type == "training":
+    collection_name = "bronze_job_descriptions"
+    # elif type == "inference":
+    #     collection_name = "online_bronze_job_descriptions"
 
-    df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_job_descriptions", spark)
+    df = read_bronze_table_as_pyspark("jobmirror_db", collection_name, spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
     print("Number of JD rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
     
@@ -125,8 +167,13 @@ def read_bronze_resume_as_pyspark(snapshot_date : datetime, spark: SparkSession)
 
     # Get the year-month from the snapshot date
     regex_string = "^" + str(snapshot_date.year) + "-" + str(snapshot_date.month).zfill(2)
+    # if type == "training":
+    collection_name = "bronze_resumes"
+    # elif type == "inference":
+    #     collection_name = "online_bronze_resumes"
 
-    df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_resumes", spark)
+    df = read_bronze_table_as_pyspark("jobmirror_db", collection_name, spark)
+    # df = read_bronze_table_as_pyspark("jobmirror_db", "bronze_resumes", spark)
     df = df.filter(col("snapshot_date").rlike(regex_string))
     print("Number of Resume rows read : {} Snapshot Date : {}".format(df.count(), datetime.strftime(snapshot_date, "%Y-%m-%d")))
 
@@ -172,3 +219,4 @@ def read_bronze_resume_as_pyspark(snapshot_date : datetime, spark: SparkSession)
     )
 
     return df_selected
+

@@ -10,6 +10,17 @@ def create_spark_session(app_name: str = "JobMirrorApp") -> SparkSession:
         .config("spark.mongodb.write.connection.uri", os.environ.get("MONGO_DB_URL")) \
         .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.2.0") \
         .getOrCreate()
+    # spark = SparkSession.builder \
+    # .appName(app_name) \
+    # .config("spark.mongodb.read.connection.uri", os.environ.get("MONGO_DB_URL")) \
+    # .config("spark.mongodb.write.connection.uri", os.environ.get("MONGO_DB_URL")) \
+    # .config("spark.jars.packages",
+    #             "org.mongodb.spark:mongo-spark-connector_2.12:10.2.0",) \
+    # .config("spark.driver.memory", "4g") \
+    # .config("spark.sql.debug.maxToStringFields", 100) \
+    # .getOrCreate()
+
+    spark.sparkContext.setLogLevel("ERROR")
     return spark
 
 def create_dataframe(spark: SparkSession, data: list, schema: StructType) -> DataFrame:

@@ -2,6 +2,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, lower, when, regexp_replace, split, trim, udf
 from pyspark.sql.types import StringType
 import pandas as pd 
+from pathlib import Path
 import re
 
 #######################################
@@ -32,7 +33,10 @@ def clean_employment_type_column(df: DataFrame, employment_type: str) -> DataFra
     )
 
 def location_lookup(target_country_code='US'):
-    city_df = pd.read_csv("datamart/bronze/location/cities.csv")
+
+    project_root = Path("/opt/airflow")
+    city_csv_path = project_root / "datamart/bronze/location/cities.csv"
+    city_df = pd.read_csv(str(city_csv_path))
     # This function returns a Python dict, so you can use it in a UDF
     location_lookup = {}
     for idx, row in city_df.iterrows():

@@ -1,3 +1,19 @@
+"""
+Converts the mongoDB to parquet file in datamart
+"""
+from mongodb_utils import *
+from feature_extraction.extract_features_jd import *
+from feature_extraction.extract_features_resume import *
+from mongodb_utils import get_pyspark_session
+import pyspark
+from pyspark.sql.functions import to_date, col, expr, when, struct, transform
+import os
+import json
+import boto3
+from config import AWSConfig
+import s3_utils, config
+import shutil
+from s3_utils import *
 # """
 # Converts the mongoDB to parquet file in datamart
 # """
@@ -39,6 +55,21 @@
 
 #     return df2
 
+    # filename    = "labels_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+
+    # # using boto3 to load to s3
+    # local_path = "/tmp/labels_output"
+    # df2.write.mode("overwrite").parquet(local_path)
+    
+    # for root, dirs, files in os.walk(local_path):
+    #     for file in files:
+    #         if file.endswith('.parquet'):
+    #             local_file_path = os.path.join(root, file)
+    #             s3_key = f"labels/{filename.replace('.parquet', '')}/{file}"
+    #             upload_to_s3(local_file_path, s3_key)
+    
+    # print(f"Successfully wrote to S3 Bucket")
+    # shutil.rmtree(local_path)
 # def read_silver_jd(spark : SparkSession, datamart_dir : str, snapshot_date : datetime) -> None:
 #     """
 #     Draw the JD and read the data, parse to parquet
@@ -127,6 +158,9 @@
 #         "certifications", "snapshot_date"
 #     )
 
+    # filename = "resume_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
+    # output_path = os.path.join(datamart_dir, filename)
+    # df_selected.write.mode("overwrite").parquet(output_path)
 #     filename = "resume_" + str(snapshot_date.year) + "-" + str(snapshot_date.month) + ".parquet"
 #     output_path = os.path.join(datamart_dir, 'resume', filename)
 #     df_selected.write.mode("overwrite").parquet(output_path)
