@@ -9,8 +9,6 @@ from langchain.prompts import PromptTemplate
 load_dotenv()
 google_apikey = os.getenv("GEMINI_APIKEY")
 
-gemini_model = ChatGoogleGenerativeAI(model="gemini-2.5-flash") # Replace with other models if necessary
-
 date_str = "31-12-2021"
 gemini_date_prompt = "Take current reference date as {}".format(date_str)
 
@@ -78,16 +76,20 @@ the number of years based off the job description.
 
 """
 
-gemini_match_prompt = f"""
+llm_match_prompt = f"""
 
 You are a recruiter for the company {COMPANY_NAME} and your job is to determine the match of the anonymous JD with
 the anonymous resume. The sensitive details for the applicant have been removed, so there should be no age, race or gender
 bias in the matching. Below are the string based inputs for the JD and the resume stuff, so do your best as a recruiter 
-to do a proper comparison between the 2 values
+to do a proper comparison between the 2 values.
 
 ** JD metrics **
 
 ** Resume Metrics ** 
+
+Return the value for the question below
+
+{QUESTION}
 
 """
 
@@ -101,6 +103,20 @@ def get_resume_metrics(pre_prompt : str, resume_details : str):
     """
     Get the resume details from the resume string
     """
+    pass
+
+def get_jd_metrics(pre_prompt : str, jd_details : str):
+    """
+    Get the JD details from the JD string
+    """
+    pass
+
+def get_matching_details(jd_json : dict, resume_json : dict):
+    """
+    Use the JD and Resume details, do a comparison between 2 details within the resume and JD
+    to give a score
+    """
+    pass
     
 
     
