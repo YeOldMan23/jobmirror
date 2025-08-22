@@ -76,22 +76,6 @@ the number of years based off the job description.
 
 """
 
-llm_match_prompt = f"""
-
-You are a recruiter for the company {COMPANY_NAME} and your job is to determine the match of the anonymous JD with
-the anonymous resume. The sensitive details for the applicant have been removed, so there should be no age, race or gender
-bias in the matching. Below are the string based inputs for the JD and the resume stuff, so do your best as a recruiter 
-to do a proper comparison between the 2 values.
-
-** JD metrics **
-
-** Resume Metrics ** 
-
-Return the value for the question below
-
-{QUESTION}
-
-"""
 
 def get_response(pre_prompt : str = ""):
     """
@@ -111,10 +95,28 @@ def get_jd_metrics(pre_prompt : str, jd_details : str):
     """
     pass
 
-def get_matching_details(jd_json : dict, resume_json : dict):
+def get_matching_details(jd_json : dict, resume_json : dict, question : str):
     """
     Use the JD and Resume details, do a comparison between 2 details within the resume and JD
     to give a score
+    """
+    company_name = jd_json['company_name']
+
+    llm_match_prompt = f"""
+
+    You are a recruiter for the company {company_name} and your job is to determine the match of the anonymous JD with
+    the anonymous resume. The sensitive details for the applicant have been removed, so there should be no age, race or gender
+    bias in the matching. Below are the string based inputs for the JD and the resume stuff, so do your best as a recruiter 
+    to do a proper comparison between the 2 values.
+
+    ** JD metrics **
+
+    ** Resume Metrics ** 
+
+    Return the value for the question below, consider its iterpretation or just the actual word if it is available in the dictionary
+
+    {question}
+
     """
     pass
     
