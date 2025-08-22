@@ -1,0 +1,38 @@
+# Stage 1: Build Llama.cpp and llama-cpp-python
+# This stage now also installs the Python dependencies
+FROM python:3.10-slim AS builder
+
+# Install necessary build tools and git
+RUN apt-get update && apt-get install -y git build-essential cmake curl
+
+# Clone and compile Llama.cpp
+RUN git clone https://github.com/ggml-org/llama.cpp.git
+WORKDIR /llama.cpp
+RUN make
+
+# Install llama-cpp-python with its compiled dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Final Image
+FROM python:3.10-slim
+WORKDIR /app
+
+# Define a build argument for the model URL
+ARG MODEL_URL
+
+# Copy the compiled llama.cpp library and the app files
+COPY --from=builder /llama.cpp/libllama.so /usr/lib/
+COPY --from=builder /llama-cpp-python /usr/local/lib/python3.10/site-packages
+COPY --from=builder /llama.cpp/main /app/
+COPY --from=builder /app.py /app/
+COPY --from=builder /requirements.txt /app/
+
+# Download the model
+RUN apt-get update && apt-get install -y curl && curl -L "${MODEL_URL}" -o /app/model.gguf
+
+# Expose the API port
+EXPOSE 5000
+
+# Set the command to run the Flask API
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]

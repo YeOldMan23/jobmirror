@@ -1,13 +1,9 @@
 import os
 import numpy as np
+import json
+import requests
 
-from google import genai
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage
-from langchain.prompts import PromptTemplate
-
-load_dotenv()
-google_apikey = os.getenv("GEMINI_APIKEY")
+llama_url = "http://llm-api:5000/"
 
 date_str = "31-12-2021"
 gemini_date_prompt = "Take current reference date as {}".format(date_str)
@@ -76,24 +72,77 @@ the number of years based off the job description.
 
 """
 
+# TODO Apply post prompt protection
 
-def get_response(pre_prompt : str = ""):
-    """
-    Get the prompt from gemini
-    """
-    pass
 
-def get_resume_metrics(pre_prompt : str, resume_details : str):
+def get_response(pre_prompt : str, main_information : str) -> str:
+    """
+    Get the prompt from Llama Dockerfile, and return the response 
+    """
+    generate_url = llama_url + "generate"
+    headers      = {"Content-Type": "application/json"}
+
+    # Make the prompt
+    total_prompt = gemini_date_prompt + pre_prompt + main_information
+
+    payload = {"prompt" : total_prompt}
+
+    try:
+        response = requests.post(generate_url, data=json.dumps(payload), headers=headers)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        result = response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error calling LLM API: {e}")
+        raise
+
+    return result
+
+def parse_json_string(json_string : str):
+    try:
+        # Attempt to load the string as a JSON object
+        json_object = json.loads(json_string)
+        print("The string is a valid JSON string.")
+        return json_object
+    except json.JSONDecodeError as e:
+        # Catch the specific error for invalid JSON format
+        print(f"The string is not a valid JSON string. Error: {e}")
+        return None
+
+def get_resume_metrics(pre_prompt : str, resume_details : str, verbose : bool = False):
     """
     Get the resume details from the resume string
     """
-    pass
+    json_string = get_response(pre_prompt, resume_details)
+    
+    # Print if necessary
+    if verbose:
+        print("Resume Metrics Result")
+        print(json_string)
 
-def get_jd_metrics(pre_prompt : str, jd_details : str):
+    # Check if the results is of json format
+    json_data = parse_json_string(json_string)
+    if json_data is None:
+        print("Resume JSON Data is unparsable")
+
+    return json_data
+
+def get_jd_metrics(pre_prompt : str, jd_details : str, verbose : bool = False):
     """
     Get the JD details from the JD string
     """
-    pass
+    json_string = get_response(pre_prompt, jd_details)
+    
+    # Print if necessary
+    if verbose:
+        print("Job Description Metrics Result")
+        print(json_string)
+
+    # Check if the results is of json format
+    json_data = parse_json_string(json_string)
+    if json_data is None:
+        print("Job Description JSON Data is unparsable")
+
+    return json_data
 
 def get_matching_details(jd_json : dict, resume_json : dict, question : str):
     """

@@ -22,3 +22,5 @@ numpy==2.3.0
 jupyter
 boto3
 evidently
+llama-cpp-python
+Flask

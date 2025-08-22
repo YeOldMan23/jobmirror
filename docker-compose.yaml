@@ -20,6 +20,8 @@ services:
       dockerfile: Dockerfile.Airflow
     depends_on:
       - fix-perms
+    .env_file:
+      - .env
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
@@ -70,6 +72,21 @@ services:
       timeout: 10s
       retries: 5
     command: webserver
+    networks:
+      - my-custom-network
+
+  llm-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Llama
+      args:
+        MODEL_URL: ${MODEL_URL}
+    environment:
+      - MODEL_PATH=/llm/model.gguf
+    ports:
+      - "5000:5000"
+    networks:
+      - my-custom-network
 
   airflow-scheduler:
     build:
@@ -112,3 +129,6 @@ services:
     volumes:
       - ./mlflow-data:/mlflow
 
+  networks:
+    my-custom-network:
+      driver: bridge
