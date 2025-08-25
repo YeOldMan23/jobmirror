@@ -17,6 +17,7 @@ def install_model(cache_dir : str,
     llm = Llama.from_pretrained(
         repo_id=model_id,
         filename=filename,
+        n_ctx=32768,
         verbose=False,  # Set to True for more detailed download progress
         **({'cache_dir': cache_dir} if cache_dir else {})
     )
@@ -29,15 +30,19 @@ def test_model(llm_model : Llama):
     """
     Test the model to see if the output is available, and check token per second
     """
+    
+    # Note : Mistral is very sensitive to the [INST] ... [/INST] format due to the way that it is trained
+    prompt = """[INST] You are a pure function that only counts numbers. Your only task is to output a comma-separated list of numbers. Do not provide any conversational text or explanations.
 
-    prompt = "Count from the number 1 to 100, return just the numbers with spaces inbetween"
-    max_token = 250
+            Count the numbers from 1 to 100, including ALL numbers, and do not skip any of them. [/INST]
+            """
+    max_token = 1000
 
     starttime = time.time_ns()
 
     output = llm_model(
         prompt,
-        max_tokens=max_token
+        max_tokens=max_token,
         echo=False,
         stop=["\n"]
     )
@@ -51,6 +56,7 @@ def test_model(llm_model : Llama):
         
         if duration > 0 and tokens_generated > 0:
             tps = tokens_generated / duration
+            print(f"Output : {output['choices'][0]['text']}")
             print(f"Output Size : {tokens_generated}")
             print(f"Time taken : {duration:6f} seconds")
             print(f"Token Per Second : {tps}")

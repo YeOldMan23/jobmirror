@@ -5,6 +5,10 @@ import requests
 
 llama_url = "http://llm-api:5000/"
 
+# LLM Stuff
+INST_BEGIN = "[INST] \n"
+INST_END   = "\n[INST]"
+
 date_str = "31-12-2021"
 gemini_date_prompt = "Take current reference date as {}".format(date_str)
 
@@ -75,7 +79,7 @@ the number of years based off the job description.
 # TODO Apply post prompt protection
 
 
-def get_response(pre_prompt : str, main_information : str) -> str:
+def get_response(main_information : str) -> str:
     """
     Get the prompt from Llama Dockerfile, and return the response 
     """
@@ -83,7 +87,7 @@ def get_response(pre_prompt : str, main_information : str) -> str:
     headers      = {"Content-Type": "application/json"}
 
     # Make the prompt
-    total_prompt = gemini_date_prompt + pre_prompt + main_information
+    total_prompt = gemini_date_prompt + INST_BEGIN + main_information + INST_END
 
     payload = {"prompt" : total_prompt}
 
@@ -112,7 +116,8 @@ def get_resume_metrics(pre_prompt : str, resume_details : str, verbose : bool = 
     """
     Get the resume details from the resume string
     """
-    json_string = get_response(pre_prompt, resume_details)
+    resume_prompt = pre_prompt + resume_details
+    json_string = get_response(resume_prompt)
     
     # Print if necessary
     if verbose:
@@ -130,7 +135,8 @@ def get_jd_metrics(pre_prompt : str, jd_details : str, verbose : bool = False):
     """
     Get the JD details from the JD string
     """
-    json_string = get_response(pre_prompt, jd_details)
+    jd_prompt = pre_prompt + jd_details
+    json_string = get_response(jd_prompt)
     
     # Print if necessary
     if verbose:
@@ -144,12 +150,16 @@ def get_jd_metrics(pre_prompt : str, jd_details : str, verbose : bool = False):
 
     return json_data
 
-def get_matching_details(jd_json : dict, resume_json : dict, question : str):
+def get_matching_details(jd_json : dict, resume_json : dict, question : str, expected_type = float):
     """
     Use the JD and Resume details, do a comparison between 2 details within the resume and JD
     to give a score
     """
     company_name = jd_json['company_name']
+
+    # Make the JSONs into string
+    jd_json_string = json.dumps(jd_json, indent=4)
+    resume_json_string = json.dumps(resume_json, indent=4)
 
     llm_match_prompt = f"""
 
@@ -160,14 +170,24 @@ def get_matching_details(jd_json : dict, resume_json : dict, question : str):
 
     ** JD metrics **
 
+    {jd_json_string}
+
     ** Resume Metrics ** 
 
-    Return the value for the question below, consider its iterpretation or just the actual word if it is available in the dictionary
+    {resume_json_string}
+
+    Return the value for the question below, consider its interpretation or just the actual word if it is available in the dictionary
 
     {question}
 
     """
-    pass
-    
 
-    
+    # Parse it throught 
+    answer_string = get_response(llm_match_prompt)
+
+    try:
+        parsed_output = expected_type(answer_string)
+    except:
+        print(f"{answer_string} cannot be converted to type {expected_type}")
+
+    return parsed_output
