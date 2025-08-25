@@ -191,4 +191,4 @@ model_train/mlruns
 
 #secrets
 .credential.json
-model_cache
+model_cache/
