@@ -6,6 +6,8 @@ from llama_cpp import Llama
 import os
 import time
 
+import argparse
+
 def install_model(cache_dir : str,
                   model_id : str = "TheBloke/Mistral-7B-Instruct-v0.2-GGUF", 
                   filename : str = "mistral-7b-instruct-v0.2.Q4_K_M.gguf"):
@@ -63,6 +65,17 @@ def test_model(llm_model : Llama):
     pass
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="run job")
+    parser.add_argument("--model_id", 
+                        type=str, 
+                        default="TheBloke/Mistral-7B-Instruct-v0.2-GGUF", 
+                        help="Model ID on Llama")    
+    parser.add_argument("--model_name",
+                        type=str,
+                        default="mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+                        help="Saved Model name")
+    args = parser.parse_args()
+
     home_dir = os.getcwd()
 
     print("--Installing Model--")
@@ -74,7 +87,9 @@ if __name__ == "__main__":
 
     print("--Starting Model Test--")
     # Prepare the model
-    llm_model = install_model(cache_dir)
+    llm_model = install_model(cache_dir,
+                              args.model_id,
+                              args.model_name)
 
     # Test the model
     test_model(llm_model)
