@@ -62,6 +62,10 @@ if __name__ == "__main__":
     print("--Installing Model--")
     cache_dir = os.path.join(home_dir, "model_cache")
 
+    # If the cache does not exist, create it
+    if not os.path.exists(cache_dir):
+        os.mkdir(cache_dir)
+
     print("--Starting Model Test--")
     # Prepare the model
     llm_model = install_model(cache_dir)
