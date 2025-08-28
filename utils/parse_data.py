@@ -67,15 +67,23 @@ def split_save_files(df : pd.DataFrame,
 
     # Iterate through the rows and save the data
     for index, row in tqdm(df.iterrows(), total=len(df)):
+        # Get the dates so thtat you know where to put the data
+        cur_date = row['snapshot_date']
+        
+        # Get the year and the month to form the date
+        year = cur_date.dt.year
+        month = cur_date.dt.month
+        date_file_dir = f"{year}_{month}"
+
         resume_file_name = f"{index}_resume.txt"
         jd_file_name = f"{index}_jd.txt"
         label_file_name = f"{index}_label.txt"
 
-        with open(os.path.join(resume_dir, resume_file_name), "w") as resume_f:
+        with open(os.path.join(resume_dir, date_file_dir, resume_file_name), "w") as resume_f:
             resume_f.write(row['resume_text'])
 
-        with open(os.path.join(resume_dir, jd_file_name), "w") as jd_f:
+        with open(os.path.join(resume_dir, date_file_dir, jd_file_name), "w") as jd_f:
             jd_f.write(row['job_description_text'])
 
-        with open(os.path.join(resume_dir, label_file_name), "w") as label_f:
+        with open(os.path.join(resume_dir, date_file_dir, label_file_name), "w") as label_f:
             label_f.write(row['label'])

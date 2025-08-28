@@ -33,9 +33,26 @@ def prepare_datamart(save_dir : str,
         os.mkdir(datamart_dir)
 
         # Make the sub_dirs
-        os.mkdir(os.path.join(datamart_dir, "resume"))
-        os.mkdir(os.path.join(datamart_dir, "job_description"))
-        os.mkdir(os.path.join(datamart_dir, "label"))
+        for i in range(1, 11):
+            cur_date = f"2021_{i}"
+
+            train_date_dir = os.path.join(train_datamart_dir, cur_date)
+            os.mkdir(train_date_dir)
+
+            os.mkdir(os.path.join(train_date_dir, "resume"))
+            os.mkdir(os.path.join(train_date_dir, "job_description"))
+            os.mkdir(os.path.join(train_date_dir, "label"))
+
+        for i in range(11, 13):
+            cur_date = f"2021_{i}"
+
+            test_date_dir = os.path.join(test_datamart_dir, cur_date)
+            os.mkdir(test_date_dir)
+
+            os.mkdir(os.path.join(test_date_dir, "resume"))
+            os.mkdir(os.path.join(test_date_dir, "job_description"))
+            os.mkdir(os.path.join(test_date_dir, "label"))
+
 
     print("---Downloading Dataset---")
     train_data, test_data = get_hugging_face_dataset()
@@ -57,6 +74,10 @@ def prepare_datamart(save_dir : str,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prepare Datamart")
+    parser.add_argument("--no_cache", type=bool, default=False, help="Make new datamart if True")
     args = parser.parse_args()
 
-    #s
+    save_dir = os.path.join(os.getcwd(), "..", "data")
+    
+    prepare_datamart(save_dir, args.no_cache)
+    pass

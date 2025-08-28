@@ -150,6 +150,18 @@ def get_jd_metrics(pre_prompt : str, jd_details : str, verbose : bool = False):
 
     return json_data
 
+def get_label_data(label_data : str) -> dict:
+    """
+    Map the labels to a number
+    """
+    label_dict = {
+        "No Fit" : 0.0,
+        "Potential Fit" : 0.75,
+        "Good Fit" : 1.0
+    }
+
+    return {"label" : label_dict[label_data]}
+
 def get_matching_details(jd_json : dict, resume_json : dict, question : str, expected_type = float):
     """
     Use the JD and Resume details, do a comparison between 2 details within the resume and JD
@@ -191,3 +203,23 @@ def get_matching_details(jd_json : dict, resume_json : dict, question : str, exp
         print(f"{answer_string} cannot be converted to type {expected_type}")
 
     return parsed_output
+
+def parse_w_llm_and_save_data(read_dir : str, save_dir : str):
+    """
+    Read the data and parse the data
+    """
+    with open(read_dir, "r") as data_f:
+        text_data = data_f.read()
+
+    # Seperate by the types 
+    if "resume.txt" in read_dir:
+        processed_data = get_resume_metrics(gemini_resume_prompt, text_data)
+    elif "job_description.txt" in read_dir:
+        processed_data = get_jd_metrics(gemini_jd_prompt, text_data)
+    else:
+        # Convert the value to 1, 0 or 0.75
+        processed_data = get_label_data(text_data)
+
+    # Dump the data in the save dir 
+    with open(save_dir, "w") as json_file:
+        json.dump(processed_data, json_file)
