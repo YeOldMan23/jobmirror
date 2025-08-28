@@ -20,8 +20,6 @@ def prepare_datamart(save_dir : str,
     Prepare the bronze table to be saved
     """
     datamart_dir = os.path.join(save_dir, "datamart")
-    train_datamart_dir = os.path.join(datamart_dir, "train")
-    test_datamart_dir = os.path.join(datamart_dir, "test")
 
     # Remove the old location if available 
     if no_cache:
@@ -33,42 +31,30 @@ def prepare_datamart(save_dir : str,
         os.mkdir(datamart_dir)
 
         # Make the sub_dirs
-        for i in range(1, 11):
+        for i in range(1, 13):
             cur_date = f"2021_{i}"
 
-            train_date_dir = os.path.join(train_datamart_dir, cur_date)
-            os.mkdir(train_date_dir)
+            datamart_date_dir = os.path.join(datamart_dir, cur_date)
+            os.mkdir(datamart_date_dir)
 
-            os.mkdir(os.path.join(train_date_dir, "resume"))
-            os.mkdir(os.path.join(train_date_dir, "job_description"))
-            os.mkdir(os.path.join(train_date_dir, "label"))
-
-        for i in range(11, 13):
-            cur_date = f"2021_{i}"
-
-            test_date_dir = os.path.join(test_datamart_dir, cur_date)
-            os.mkdir(test_date_dir)
-
-            os.mkdir(os.path.join(test_date_dir, "resume"))
-            os.mkdir(os.path.join(test_date_dir, "job_description"))
-            os.mkdir(os.path.join(test_date_dir, "label"))
+            os.mkdir(os.path.join(datamart_date_dir, "resume"))
+            os.mkdir(os.path.join(datamart_date_dir, "job_description"))
+            os.mkdir(os.path.join(datamart_date_dir, "label"))
 
 
     print("---Downloading Dataset---")
     train_data, test_data = get_hugging_face_dataset()
 
     # Backdate the dates for the train data to be first 10 months of the year 2021, then test is the last 2 months
-    train_start = Timestamp(datetime(2021, 1, 1))
-    train_end   = Timestamp(datetime(2021, 10, 31))
-    test_start  = Timestamp(datetime(2021, 11, 1))
-    test_end    = Timestamp(datetime(2021, 12, 31))
+    start = Timestamp(datetime(2021, 1, 1))
+    end   = Timestamp(datetime(2021, 12, 31))
 
-    train_data = generate_random_data_dates(train_data, train_start, train_end)
-    test_data = generate_random_data_dates(test_data, test_start, test_end)
+    train_data = generate_random_data_dates(train_data, start, end)
+    test_data = generate_random_data_dates(test_data, start, end)
 
     print("---Saving Datamart---")
-    split_save_files(train_data, train_datamart_dir, no_cache)
-    split_save_files(test_data, test_datamart_dir, no_cache)
+    split_save_files(train_data, datamart_dir, 0)
+    split_save_files(test_data, datamart_dir, len(train_data))
 
     print("---Job Complete---")
 

@@ -3,12 +3,12 @@ Prepare the Bronze Table After basic processing
 """
 import os
 import sys
-import json
+import argparse
 import shutil
 from tqdm import tqdm
 
-import pyspark
-from pyspark.sql.session import SparkSession
+# import pyspark
+# from pyspark.sql.session import SparkSession
 
 # Do regular imports
 from llama_cpp import Llama
@@ -19,19 +19,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from utils.parse_data import *
 from utils.llm_methods import *
 
-def prepare_bronze_table(spark : SparkSession,
-                         save_dir : str,
+def prepare_bronze_table(save_dir : str,
+                         snapshot_date : str,
                          no_cache : bool) -> None:
     """
     Prepare the bronze table by parsing the data through a LLM
     """
-    datamart_dir = os.path.join(save_dir, "datamart")
-    train_datamart_dir = os.path.join(datamart_dir, "train")
-    test_datamart_dir = os.path.join(datamart_dir, "test")
+    year = snapshot_date.split()[0]
+    month = snapshot_date.split()[1]
 
-    bronze_dir = os.path.join(save_dir, "bronze")
-    train_bronze_dir = os.path.join(bronze_dir, "train")
-    test_bronze_dir = os.path.join(bronze_dir, "test")
+    datamart_dir = os.path.join(save_dir, "datamart", f"{year}_{month}")
+    bronze_dir = os.path.join(save_dir, "bronze", f"{year}_{month}")
 
     if no_cache:
         if os.path.exists(bronze_dir):
@@ -42,83 +40,54 @@ def prepare_bronze_table(spark : SparkSession,
         os.mkdir(bronze_dir)
 
         # Make the dates
-        for i in range(1, 11):
-            cur_date = f"2021_{i}"
-
-            os.mkdir(os.path.join(train_bronze_dir, cur_date, "resume"))
-            os.mkdir(os.path.join(train_bronze_dir, cur_date, "job_description"))
-            os.mkdir(os.path.join(train_bronze_dir, cur_date, "label"))
-
-        for i in range(11, 13):
-            cur_date = f"2021_{i}"
-
-            os.mkdir(os.path.join(test_bronze_dir, cur_date, "resume"))
-            os.mkdir(os.path.join(test_bronze_dir, cur_date, "job_description"))
-            os.mkdir(os.path.join(test_bronze_dir, cur_date, "label"))
+        os.mkdir(os.path.join(bronze_dir, "resume"))
+        os.mkdir(os.path.join(bronze_dir, "job_description"))
+        os.mkdir(os.path.join(bronze_dir, "label"))
 
     # Read the data from each directory, and parse the data (train first)
-    for i in range(1, 11):
-        cur_date = f"2021_{i}"
+    print(f"Parsing Training Bronze Table Date {year}_{month}")
 
-        print(f"Parsing Training Bronze Table Date {cur_date}")
+    train_dataset_resume_loc = os.path.join(datamart_dir, "resume")
+    train_dataset_jd_loc = os.path.join(datamart_dir, "job_description")
+    train_dataset_label_loc = os.path.join(datamart_dir, "label")
 
-        train_dataset_resume_loc = os.path.join(train_datamart_dir, cur_date, "resume")
-        train_dataset_jd_loc = os.path.join(train_datamart_dir, cur_date, "job_description")
-        train_dataset_label_loc = os.path.join(train_datamart_dir, cur_date, "label")
+    train_data_resume_file_list = os.listdir(train_dataset_resume_loc)
+    train_data_jd_file_list = os.listdir(train_dataset_jd_loc)
+    train_data_label_file_list = os.listdir(train_dataset_label_loc)
 
-        train_data_resume_file_list = os.listdir(train_dataset_resume_loc)
-        train_data_jd_file_list = os.listdir(train_dataset_jd_loc)
-        train_data_label_file_list = os.listdir(train_dataset_label_loc)
+    print("---Preparing Bronze Train Resume Data---")
+    for resume_file in tqdm(train_data_resume_file_list):
+        json_format = resume_file.rstrip("txt") + "json"
+        cur_save_file = os.path.join(bronze_dir, "resume", json_format)
+        cur_read_file = os.path.join(train_dataset_resume_loc, resume_file)
+        parse_w_llm_and_save_data(cur_read_file, cur_save_file)
+    
+    print("---Preparing Bronze Train JD Data---")
+    for jd_file in tqdm(train_data_jd_file_list):
+        json_format = jd_file.rstrip("txt") + "json"
+        cur_save_file = os.path.join(bronze_dir, "job_description", json_format)
+        cur_read_file = os.path.join(train_dataset_jd_loc, jd_file)
+        parse_w_llm_and_save_data(cur_read_file, cur_save_file)
 
-        print("---Preparing Bronze Train Resume Data---")
-        for resume_file in tqdm(train_data_resume_file_list):
-            cur_save_file = os.path.join(train_bronze_dir, cur_date, "resume", resume_file)
-            cur_read_file = os.path.join(train_dataset_resume_loc, resume_file)
-            parse_w_llm_and_save_data(cur_read_file, cur_save_file)
-        
-        print("---Preparing Bronze Train JD Data---")
-        for jd_file in tqdm(train_data_jd_file_list):
-            cur_save_file = os.path.join(train_bronze_dir, cur_date, "job_description", jd_file)
-            cur_read_file = os.path.join(train_dataset_jd_loc, jd_file)
-            parse_w_llm_and_save_data(cur_read_file, cur_save_file)
-
-        print("---Preparing Bronze Train Label Data---")
-        for label_file in tqdm(train_data_label_file_list):
-            cur_save_file = os.path.join(train_bronze_dir, cur_date, "job_description", label_file)
-            cur_read_file = os.path.join(train_dataset_label_loc, label_file)
-            parse_w_llm_and_save_data(cur_read_file, cur_save_file)
-
-    # Now do the test data
-    for i in range(11, 13):
-        cur_date = f"2021_{i}"
-
-        print(f"Parsing Testing Bronze Table Date {cur_date}")
-
-        test_dataset_resume_loc = os.path.join(test_datamart_dir, cur_date, "resume")
-        test_dataset_jd_loc = os.path.join(test_datamart_dir, cur_date, "job_description")
-        test_dataset_label_loc = os.path.join(test_datamart_dir, cur_date, "label")
-
-        test_data_resume_file_list = os.listdir(test_dataset_resume_loc)
-        test_data_jd_file_list = os.listdir(test_dataset_jd_loc)
-        test_data_label_file_list = os.listdir(test_dataset_label_loc)
-        
-        print("---Preparing Bronze Test Resume Data---")
-        for resume_file in tqdm(test_data_resume_file_list):
-            cur_save_file = os.path.join(test_bronze_dir, cur_date, "resume", resume_file)
-            cur_read_file = os.path.join(test_dataset_resume_loc, resume_file)
-            parse_w_llm_and_save_data(cur_read_file, cur_save_file)
-        
-        print("---Preparing Bronze Test JD Data---")
-        for jd_file in tqdm(test_data_jd_file_list):
-            cur_save_file = os.path.join(test_bronze_dir, cur_date, "job_description", jd_file)
-            cur_read_file = os.path.join(test_dataset_jd_loc, jd_file)
-            parse_w_llm_and_save_data(cur_read_file, cur_save_file)
-
-        print("---Preparing Bronze Test Label Data---")
-        for label_file in tqdm(test_data_label_file_list):
-            cur_save_file = os.path.join(test_bronze_dir, cur_date, "job_description", label_file)
-            cur_read_file = os.path.join(test_dataset_label_loc, label_file)
-            parse_w_llm_and_save_data(cur_read_file, cur_save_file)
+    print("---Preparing Bronze Train Label Data---")
+    for label_file in tqdm(train_data_label_file_list):
+        json_format = label_file.rstrip("txt") + "json"
+        cur_save_file = os.path.join(bronze_dir, "job_description", json_format)
+        cur_read_file = os.path.join(train_dataset_label_loc, label_file)
+        parse_w_llm_and_save_data(cur_read_file, cur_save_file)
 
     print("---Job Complete---")
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Prepare Datamart")
+    parser.add_argument("--snapshot_date", type=str, help="Date of snapshot")
+    parser.add_argument("--no_cache", type=bool, default=False, help="Make new datamart if True")
+    args = parser.parse_args()
+
+    print("---Starting Job---")
+
+    save_dir = os.path.join(os.getcwd(), "..", "data")
+    prepare_bronze_table(save_dir, args.snapshot_date, args.no_cache)
+
+    print("---Job Complete---")

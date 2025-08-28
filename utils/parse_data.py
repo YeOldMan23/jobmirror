@@ -43,28 +43,11 @@ def generate_random_data_dates(df : pd.DataFrame,
     return df
 
 def split_save_files(df : pd.DataFrame,
-                     save_dir : str,
-                     no_cache : bool) -> None:
+                     save_dir : str, 
+                     index_offset : int) -> None:
     """
     Split the dataset into resume, JD and labels
     """
-    # Directories to conside
-    jd_dir = os.path.join(save_dir, "job_description")
-    resume_dir = os.path.join(save_dir, "resume")
-    label_dir = os.path.join(save_dir, "label")
-    
-    # Clean the cache 
-    if no_cache:
-        if os.path.exists(save_dir):
-            shutil.rmtree(save_dir)
-
-    # Make the new dirs
-    if not os.path.exists(save_dir):
-        os.mkdir(save_dir)
-        os.mkdir(jd_dir)
-        os.mkdir(resume_dir)
-        os.mkdir(label_dir)
-
     # Iterate through the rows and save the data
     for index, row in tqdm(df.iterrows(), total=len(df)):
         # Get the dates so thtat you know where to put the data
@@ -75,15 +58,15 @@ def split_save_files(df : pd.DataFrame,
         month = cur_date.dt.month
         date_file_dir = f"{year}_{month}"
 
-        resume_file_name = f"{index}_resume.txt"
-        jd_file_name = f"{index}_jd.txt"
-        label_file_name = f"{index}_label.txt"
+        resume_file_name = f"{index + index_offset}_resume.txt"
+        jd_file_name = f"{index + index_offset}_jd.txt"
+        label_file_name = f"{index + index_offset}_label.txt"
 
-        with open(os.path.join(resume_dir, date_file_dir, resume_file_name), "w") as resume_f:
+        with open(os.path.join(save_dir, date_file_dir, "resume", resume_file_name), "w") as resume_f:
             resume_f.write(row['resume_text'])
 
-        with open(os.path.join(resume_dir, date_file_dir, jd_file_name), "w") as jd_f:
+        with open(os.path.join(save_dir, date_file_dir, "job_description", jd_file_name), "w") as jd_f:
             jd_f.write(row['job_description_text'])
 
-        with open(os.path.join(resume_dir, date_file_dir, label_file_name), "w") as label_f:
+        with open(os.path.join(save_dir, date_file_dir, "label", label_file_name), "w") as label_f:
             label_f.write(row['label'])
