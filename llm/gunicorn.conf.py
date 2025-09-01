@@ -4,7 +4,7 @@
 bind = "0.0.0.0:5000"
 
 # Number of worker processes. A good starting point is (2 x $num_cores) + 1
-workers = 3
+workers = 1
 
 # The type of worker class
 worker_class = "sync"
@@ -20,4 +20,5 @@ accesslog = "-"  # Log to stdout
 errorlog = "-"   # Log to stderr
 
 # Note : use code 
-# gunicorn --config gunicorn.conf.py app:app
+# # Make sure (venv) is active
+# python -m gunicorn --config gunicorn.conf.py llm_flask:app
