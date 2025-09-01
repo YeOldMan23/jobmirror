@@ -54,8 +54,8 @@ def split_save_files(df : pd.DataFrame,
         cur_date = row['snapshot_date']
         
         # Get the year and the month to form the date
-        year = cur_date.dt.year
-        month = cur_date.dt.month
+        year = cur_date.year
+        month = cur_date.month
         date_file_dir = f"{year}_{month}"
 
         resume_file_name = f"{index + index_offset}_resume.txt"
