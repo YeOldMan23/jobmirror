@@ -25,8 +25,8 @@ def prepare_bronze_table(save_dir : str,
     """
     Prepare the bronze table by parsing the data through a LLM
     """
-    year = snapshot_date.split()[0]
-    month = snapshot_date.split()[1]
+    year = snapshot_date.split("_")[0]
+    month = snapshot_date.split("_")[1]
 
     datamart_dir = os.path.join(save_dir, "datamart", f"{year}_{month}")
     bronze_dir = os.path.join(save_dir, "bronze", f"{year}_{month}")
@@ -72,7 +72,7 @@ def prepare_bronze_table(save_dir : str,
     print("---Preparing Bronze Train Label Data---")
     for label_file in tqdm(train_data_label_file_list):
         json_format = label_file.rstrip("txt") + "json"
-        cur_save_file = os.path.join(bronze_dir, "job_description", json_format)
+        cur_save_file = os.path.join(bronze_dir, "label", json_format)
         cur_read_file = os.path.join(train_dataset_label_loc, label_file)
         parse_w_llm_and_save_data(cur_read_file, cur_save_file)
 
