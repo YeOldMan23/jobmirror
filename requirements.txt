@@ -1,5 +1,6 @@
 google_api_python_client==2.172.0
 google_auth_oauthlib==1.2.2
+gunicorn
 langchain==0.3.25
 mistralai==1.8.2
 optuna==4.4.0
