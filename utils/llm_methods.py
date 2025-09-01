@@ -192,6 +192,8 @@ def get_matching_details(jd_json : dict, resume_json : dict, question : str, exp
 
     {question}
 
+    Return the value as type {expected_type.__name__}
+
     """
 
     # Parse it throught 
@@ -200,7 +202,7 @@ def get_matching_details(jd_json : dict, resume_json : dict, question : str, exp
     try:
         parsed_output = expected_type(answer_string)
     except:
-        print(f"{answer_string} cannot be converted to type {expected_type}")
+        print(f"{answer_string} cannot be converted to type {expected_type.__name__}")
 
     return parsed_output
 
