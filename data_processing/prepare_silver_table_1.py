@@ -1,5 +1,7 @@
 """
 Prepare the silver table from the bronze table
+1) Combine all the data from all jsons into a single table
+2) Convert the table to Pyspark Dataframe
 """
 import pyspark
 from pyspark.sql.session import SparkSession
@@ -10,9 +12,10 @@ import sys
 import shutil
 import json
 
-def prepare_silver_table(save_dir : str,
+def prepare_silver_table_1(save_dir : str,
                          snapshot_date : str,
-                         no_cache : bool):
+                         no_cache : bool,
+                         spark : SparkSession):
     year = snapshot_date.split("_")[0]
     month = snapshot_date.split("_")[1]
 
@@ -53,9 +56,7 @@ def prepare_silver_table(save_dir : str,
         with open(os.path.join(label_dir, label_item), "r") as label_f:
             label_data = json.load(resume_f)
 
-        # Things to get
-
-        # 1. Get the best match experience of JD title vs Resume Title(s)
+        # 
         
 
     pass
