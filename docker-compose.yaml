@@ -1,8 +1,8 @@
+# Define the services (containers) that make up your application.
 services:
   fix-perms:
     image: busybox
     user: root
-    command: 
     command: >
       sh -c "chown -R 50000:0 /opt/airflow && 
              chown -R 50000:0 /opt/airflow/datamart && 
@@ -16,11 +16,11 @@ services:
     restart: "no"
   airflow-init:
     build:
-      context: .              
+      context: .
       dockerfile: Dockerfile.Airflow
     depends_on:
       - fix-perms
-    .env_file:
+    env_file:
       - .env
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
@@ -41,7 +41,7 @@ services:
 
   airflow-webserver:
     build:
-      context: .              
+      context: .
       dockerfile: Dockerfile.Airflow
     depends_on:
       - airflow-init
@@ -75,22 +75,9 @@ services:
     networks:
       - my-custom-network
 
-  llm-api:
-    build:
-      context: .
-      dockerfile: Dockerfile.Llama
-      args:
-        MODEL_URL: ${MODEL_URL}
-    environment:
-      - MODEL_PATH=/llm/model.gguf
-    ports:
-      - "5000:5000"
-    networks:
-      - my-custom-network
-
   airflow-scheduler:
     build:
-      context: .              
+      context: .
       dockerfile: Dockerfile.Airflow
     depends_on:
       - airflow-init
@@ -129,6 +116,11 @@ services:
     volumes:
       - ./mlflow-data:/mlflow
 
-  networks:
-    my-custom-network:
-      driver: bridge
+networks:
+  my-custom-network:
+    driver: bridge
+
+volumes:
+  airflow_data:
+  mlflow_data:
+  ivy_cache:
